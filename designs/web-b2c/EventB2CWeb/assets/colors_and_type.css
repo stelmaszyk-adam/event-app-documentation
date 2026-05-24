@@ -1,0 +1,251 @@
+/* =============================================================================
+   eventapp — Foundations: Colors + Type
+   Phase 0 design tokens. Source: Foundation.fig (Light + Dark Foundation frames).
+   Brand: event-discovery platform for Polish cities.
+   ============================================================================= */
+
+/* Inter + Cousine via Google Fonts. NOTE: this is a CDN substitution —
+   the Figma file references locally-licensed Inter + Cousine. Ship the
+   actual font files for production. See README "Fonts" section. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cousine:wght@400&display=swap");
+
+:root {
+  /* -------------------------------------------------------------------------
+     PRIMITIVES — Purple (brand scale, 50–900)
+     ------------------------------------------------------------------------- */
+  --purple-50:  #F3EEFF;
+  --purple-100: #E6DCFE;
+  --purple-200: #C9B0FC;
+  --purple-300: #A97EF8;
+  --purple-400: #8C56F4;
+  --purple-500: #6C3FEB;   /* brand */
+  --purple-600: #5A2FD0;
+  --purple-700: #4622A8;
+  --purple-800: #341A82;
+  --purple-900: #21125A;
+
+  /* -------------------------------------------------------------------------
+     PRIMITIVES — Amber (tertiary / accent, 50–700)
+     ------------------------------------------------------------------------- */
+  --amber-50:  #FFF8ED;
+  --amber-100: #FFECCC;
+  --amber-200: #FFD699;
+  --amber-300: #FFC066;
+  --amber-400: #FFB84D;
+  --amber-500: #FF9920;   /* tertiary */
+  --amber-600: #F97316;
+  --amber-700: #B84400;
+
+  /* -------------------------------------------------------------------------
+     PRIMITIVES — Neutral Gray (50–950)
+     Neutral has a faint blue-violet tilt — important to keep on-brand.
+     ------------------------------------------------------------------------- */
+  --gray-50:  #F8F8FB;
+  --gray-100: #F1F1F6;
+  --gray-150: #E8E8F0;
+  --gray-200: #DCDCE8;
+  --gray-300: #C4C4D4;
+  --gray-400: #9898B0;
+  --gray-500: #6C6C88;
+  --gray-600: #525272;
+  --gray-700: #34344E;
+  --gray-800: #22223A;
+  --gray-900: #10101E;
+  --gray-950: #07071A;
+
+  /* -------------------------------------------------------------------------
+     SEMANTIC — Light mode (default)
+     ------------------------------------------------------------------------- */
+  --brand-primary:           var(--purple-500);
+  --brand-primary-container: var(--purple-50);
+  --brand-primary-on:        #FFFFFF;
+  --brand-gradient:          linear-gradient(135deg, var(--purple-500) 0%, var(--purple-300) 100%);
+
+  --color-tertiary:           var(--amber-600);
+  --color-tertiary-container: var(--amber-100);
+
+  --surface-bg:    var(--gray-50);    /* page background */
+  --surface-low:   var(--gray-100);   /* recessed (input bg) */
+  --surface-mid:   var(--gray-150);   /* chip bg */
+  --surface-high:  #FFFFFF;           /* card */
+
+  --on-surface:          var(--gray-900);
+  --on-surface-variant:  var(--gray-500);
+  --on-surface-muted:    var(--gray-400);
+
+  --outline:        var(--gray-200);
+  --outline-strong: var(--gray-300);
+
+  --destructive:           #E5484D;
+  --destructive-container: #FFE8E8;
+
+  --live-red:    #E5484D;
+
+  /* glass / blur surfaces */
+  --glass-light:  rgba(255, 255, 255, 0.18);
+  --glass-medium: rgba(255, 255, 255, 0.32);
+  --glass-heavy:  rgba(255, 255, 255, 0.58);
+  --backdrop-blur: 16px;
+
+  /* -------------------------------------------------------------------------
+     SPACING — 4px base unit
+     ------------------------------------------------------------------------- */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* -------------------------------------------------------------------------
+     RADIUS — pillar of the visual identity (pill, soft cards)
+     ------------------------------------------------------------------------- */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-2xl:  32px;
+  --radius-full: 9999px;
+
+  /* -------------------------------------------------------------------------
+     ELEVATION — soft, low-contrast shadows that read on F8F8FB bg
+     ------------------------------------------------------------------------- */
+  --shadow-sm: 0 1px 2px rgba(15,15,30,0.04), 0 1px 1px rgba(15,15,30,0.04);
+  --shadow-md: 0 2px 4px rgba(15,15,30,0.06), 0 4px 6px rgba(15,15,30,0.07);
+  --shadow-lg: 0 4px 8px rgba(15,15,30,0.06), 0 10px 20px rgba(15,15,30,0.08);
+  --shadow-xl: 0 8px 16px rgba(15,15,30,0.08), 0 20px 40px rgba(15,15,30,0.12);
+  --shadow-brand: 0 6px 18px rgba(108, 63, 235, 0.28);
+
+  /* -------------------------------------------------------------------------
+     NUMBERS — icon sizes, strokes, opacity
+     ------------------------------------------------------------------------- */
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --icon-lg: 24px;
+  --icon-xl: 32px;
+
+  --stroke-thin:    1px;
+  --stroke-regular: 1.5px;
+  --stroke-medium:  2px;
+
+  --opacity-hover:    0.04;   /* layered hover tint */
+  --opacity-pressed:  0.12;
+  --opacity-disabled: 0.38;
+
+  /* -------------------------------------------------------------------------
+     MOTION — soft easing, no bounces. Decisive but not snappy.
+     ------------------------------------------------------------------------- */
+  --ease-out:  cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+
+  /* -------------------------------------------------------------------------
+     TYPOGRAPHY — base + semantic
+     ------------------------------------------------------------------------- */
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Cousine", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Semantic type — match Figma "Typography" section.
+     Use as: font: var(--type-headline-l); or via the .type-* utility classes below. */
+  --type-display-l:  700 36px/44px var(--font-sans);   /* hero only */
+  --type-headline-l: 700 30px/37.5px var(--font-sans); /* page title */
+  --type-headline-m: 700 20px/28px var(--font-sans);   /* section title */
+  --type-title-l:    500 18px/24.75px var(--font-sans);/* card title */
+  --type-title-m:    500 18px/28px var(--font-sans);   /* secondary card title */
+  --type-body-l:     400 16px/24px var(--font-sans);
+  --type-body-m:     400 14px/20px var(--font-sans);
+  --type-label-m:    500 14px/20px var(--font-sans);   /* button / strong inline */
+  --type-label-s:    500 12px/16px var(--font-sans);   /* eyebrow (UPPERCASE, tracked) */
+  --type-caption:    400 12px/16px var(--font-sans);
+  --type-overline:   700 11px/16.5px var(--font-sans); /* SubLabel — TRACKED UPPERCASE */
+  --type-code:       400 11px/16.5px var(--font-mono); /* design-token names */
+
+  --tracking-headline-l: -0.204px;
+  --tracking-headline-m: -0.649px;
+  --tracking-title-l:    -0.439px;
+  --tracking-body-l:     -0.313px;
+  --tracking-body-m:     -0.150px;
+  --tracking-label-s:    1.2px;       /* eyebrow */
+  --tracking-overline:   1.164px;     /* sublabel */
+}
+
+/* -----------------------------------------------------------------------------
+   DARK MODE — auto + opt-in via [data-theme="dark"]
+   ----------------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { color-scheme: dark; }
+  :root:not([data-theme="light"]) {
+    --brand-primary:           var(--purple-400);
+    --brand-primary-container: #1A0F3D;
+    --color-tertiary:           var(--amber-500);
+    --color-tertiary-container: #3D2300;
+
+    --surface-bg:    var(--gray-950);
+    --surface-low:   #1C1C32;
+    --surface-mid:   #22223A;
+    --surface-high:  var(--gray-900);
+
+    --on-surface:          #FFFFFF;
+    --on-surface-variant:  #9898B0;
+    --on-surface-muted:    #6C6C88;
+
+    --outline:        #2A2A44;
+    --outline-strong: #2E2E48;
+
+    --destructive-container: #3D0F12;
+
+    --glass-light:  rgba(255, 255, 255, 0.08);
+    --glass-medium: rgba(255, 255, 255, 0.14);
+    --glass-heavy:  rgba(255, 255, 255, 0.22);
+
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.35), 0 1px 1px rgba(0,0,0,0.25);
+    --shadow-md: 0 2px 4px rgba(0,0,0,0.35), 0 4px 6px rgba(0,0,0,0.30);
+    --shadow-lg: 0 4px 8px rgba(0,0,0,0.40), 0 10px 20px rgba(0,0,0,0.40);
+    --shadow-xl: 0 8px 16px rgba(0,0,0,0.45), 0 20px 40px rgba(0,0,0,0.55);
+  }
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --brand-primary:           var(--purple-400);
+  --brand-primary-container: #1A0F3D;
+  --color-tertiary:           var(--amber-500);
+  --color-tertiary-container: #3D2300;
+  --surface-bg:    var(--gray-950);
+  --surface-low:   #1C1C32;
+  --surface-mid:   #22223A;
+  --surface-high:  var(--gray-900);
+  --on-surface:          #FFFFFF;
+  --on-surface-variant:  #9898B0;
+  --on-surface-muted:    #6C6C88;
+  --outline:        #2A2A44;
+  --outline-strong: #2E2E48;
+  --destructive-container: #3D0F12;
+  --glass-light:  rgba(255, 255, 255, 0.08);
+  --glass-medium: rgba(255, 255, 255, 0.14);
+  --glass-heavy:  rgba(255, 255, 255, 0.22);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.35), 0 1px 1px rgba(0,0,0,0.25);
+  --shadow-md: 0 2px 4px rgba(0,0,0,0.35), 0 4px 6px rgba(0,0,0,0.30);
+  --shadow-lg: 0 4px 8px rgba(0,0,0,0.40), 0 10px 20px rgba(0,0,0,0.40);
+  --shadow-xl: 0 8px 16px rgba(0,0,0,0.45), 0 20px 40px rgba(0,0,0,0.55);
+}
+
+/* -----------------------------------------------------------------------------
+   TYPOGRAPHY UTILITY CLASSES
+   ----------------------------------------------------------------------------- */
+.type-headline-l { font: var(--type-headline-l); letter-spacing: var(--tracking-headline-l); color: var(--on-surface); }
+.type-headline-m { font: var(--type-headline-m); letter-spacing: var(--tracking-headline-m); color: var(--on-surface); }
+.type-title-l    { font: var(--type-title-l);    letter-spacing: var(--tracking-title-l);    color: var(--on-surface); }
+.type-title-m    { font: var(--type-title-m);    letter-spacing: var(--tracking-title-l);    color: var(--on-surface); }
+.type-body-l     { font: var(--type-body-l);     letter-spacing: var(--tracking-body-l);     color: var(--on-surface); }
+.type-body-m     { font: var(--type-body-m);     letter-spacing: var(--tracking-body-m);     color: var(--on-surface); }
+.type-label-m    { font: var(--type-label-m);    letter-spacing: var(--tracking-body-m);     color: var(--on-surface); }
+.type-label-s    { font: var(--type-label-s);    letter-spacing: var(--tracking-label-s);    color: var(--on-surface-variant); text-transform: uppercase; }
+.type-caption    { font: var(--type-caption);    color: var(--on-surface-variant); }
+.type-overline   { font: var(--type-overline);   letter-spacing: var(--tracking-overline);   color: var(--on-surface-variant); text-transform: uppercase; }
+.type-code       { font: var(--type-code);       color: var(--on-surface-variant); }
