@@ -77,7 +77,7 @@
 
 ### 1.3 Map and discovery
 
-- [ ] P0 Main screen: map with event pins (Google Maps SDK — see [ARCHITECTURE.md ADR #17](./ARCHITECTURE.md#11-key-architectural-decisions-log))
+- [ ] P0 Main screen: map with event pins (MapLibre Native via `@maplibre/maplibre-react-native` — see [ARCHITECTURE.md ADR #17](./ARCHITECTURE.md#11-key-architectural-decisions-log))
 - [ ] P0 Geolocation — request location access on first launch
 - [ ] P0 Fallback when no location — list view (not an empty map)
 - [ ] P0 Pin clustering at high zoom-out (to avoid flooding with pins when many events)

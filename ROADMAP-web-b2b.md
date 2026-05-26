@@ -136,12 +136,12 @@
 
 - [ ] P0 Claim landing page: "Do you manage this venue? Claim the profile for free."
 - [ ] P0 **Registration of a venue not on the map:** form with name, address, category, phone number, and email
-  - Address validation via Google Geocoding API (must be a valid location)
+  - Address validation via Nominatim geocoding (must be a valid location)
   - **Fallback when address is not recognized by Geocoding API:** organizer can manually set a pin on the map (drag & drop) — GPS coordinates saved directly, text address entered manually without validation
   - After admin approval: venue appears on the map, organizer automatically becomes its owner (without a separate claim flow)
   - Review time: max 24h
 - [ ] P0 **Method 1 (priority):** SMS verification UI — enter OTP code received via SMS
-- [ ] P0 **Method 2:** Email verification UI — backend auto-matches organizer's email domain with venue website domain from Google Maps; enter code or click verification link sent to that email
+- [ ] P0 **Method 2:** Email verification UI — backend auto-matches organizer's email domain with venue website domain from aggregated data; enter code or click verification link sent to that email
 - [ ] P1 **Method 3:** Google Business Profile verification UI (OAuth flow)
 - [ ] P1 **Method 4 (fallback):** Document upload form (CEIDG/KRS/invoice)
 - [ ] P0 **Aggregated event handover on claim:**
@@ -169,7 +169,7 @@
   - Temporary closures (e.g., "Closed for renovation Jan 15-Feb 1") — date range + optional reason, displayed on venue profile
   - Holiday hours / special hours (e.g., Christmas Eve, New Year's — override regular hours for specific dates)
   - Variable closing times ("Open until late") — option to mark closing time as approximate/flexible instead of a fixed hour
-  - Address (edit if incorrect from GMaps)
+  - Address (edit if incorrect from aggregated data)
   - Website, Facebook/Instagram profile
 - [ ] P0 Preview of how the profile looks to users (preview mode)
 

@@ -180,7 +180,7 @@
 #### Security headers
 
 - [x] P0 Install and configure `helmet` middleware in NestJS (`app.use(helmet())`) — sets CSP, X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy out of the box
-- [x] P0 Tune `helmet` CSP policy to allow required origins (Cloudflare Images, Google Maps, Sentry, etc.)
+- [x] P0 Tune `helmet` CSP policy to allow required origins (Cloudflare Images, Stadia Maps, Sentry, etc.)
 - [ ] P1 Add security headers to Next.js apps via `next.config.js` `headers()` — CSP, X-Frame-Options, Permissions-Policy for Web B2C, Web B2B, and Web Admin
 
 ### 0.2.5 Structured Logging
@@ -523,7 +523,7 @@
 
 - [x] P1 Auto-filters before moderation:
   - Fuzzy match with existing events (duplicate blocking)
-  - Address validation (Google Geocoding API)
+  - Address validation (Nominatim geocoding)
   - Date validation (must be in the future)
   - Basic spam filter (regex on description)
   - Rate limit: max 2 submissions/day per user
@@ -651,12 +651,12 @@
 
 > Web B2B counterpart: [ROADMAP-web-b2b.md](./ROADMAP-web-b2b.md#21-venue-claim-flow)
 
-- [ ] P0 SMS verification — OTP code sent to the number from Google Maps (Twilio/Vonage)
-- [ ] P0 Email verification on own domain — auto-match email domain with venue website domain from GMaps (verification email sent via Resend)
+- [ ] P0 SMS verification — OTP code sent to the venue's listed phone number (Twilio/Vonage)
+- [ ] P0 Email verification on own domain — auto-match email domain with venue website domain from aggregated data (verification email sent via Resend)
 - [ ] P1 Google Business Profile API verification (OAuth)
 - [ ] P1 Document upload processing — manual review by admin within 24h
 - [ ] P0 72-hour dispute window — dispute email sent via Resend: "Your profile was just claimed by [email]. If this wasn't you, click here"
-- [ ] P0 Claim alert email after each claim (to owner at email from Google Maps if available) — via Resend
+- [ ] P0 Claim alert email after each claim (to owner email from aggregated data if available) — via Resend
 - [ ] P0 Claim rate limiting: max 3 attempts/account/week, accounts created <24h cannot claim
 - [ ] P0 Venue registration endpoint — goes to admin moderation before publishing
 - [ ] P1 Automatic address verification via CEIDG API (matching NIP or business address)

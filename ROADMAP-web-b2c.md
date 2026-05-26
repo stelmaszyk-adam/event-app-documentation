@@ -117,7 +117,7 @@ The companion **ROADMAP-design-web-b2c.md** contains the full design roadmap: co
 
 ### 1.3 Map and discovery
 
-- [ ] P0 Main page: map with event pins (Google Maps JS API — see [ARCHITECTURE.md ADR #17](./ARCHITECTURE.md#11-key-architectural-decisions-log))
+- [ ] P0 Main page: map with event pins (MapLibre GL JS + Stadia Maps — see [ARCHITECTURE.md ADR #17](./ARCHITECTURE.md#11-key-architectural-decisions-log))
 - [ ] P0 Pin clustering at high zoom-out
 - [ ] P0 Custom pin icons per unified category (same 12 categories as mobile — see [central roadmap](./ROADMAP.md#unified-category-system))
 - [ ] P0 Category filter (multiselect)
@@ -178,7 +178,7 @@ The companion **ROADMAP-design-web-b2c.md** contains the full design roadmap: co
   - Description
   - Venue name with link to venue profile page
   - CTA "Buy tickets" (deep link to external system)
-  - CTA "Navigate" (link to Google Maps)
+  - CTA "Navigate" (deep link to Google Maps / Apple Maps — free, no API key needed)
   - Source attribution for aggregated events
 - [ ] P0 "Share" button (copy link)
 - [ ] P1 "Add to calendar" button (dropdown with options):

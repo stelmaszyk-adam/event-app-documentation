@@ -18,7 +18,7 @@
 
 > Launch the application in 7 Polish cities with a minimum of 1,000 events on the map, 200 claimed venues, and the first active organizers (claimed venue + published events + sent pushes) within 3 months of starting development.
 
-**Stack:** React Native (CLI) · NestJS (backend API) · Next.js (web frontend: B2C pages + B2B dashboard + admin panel) · PostgreSQL + PostGIS · Railway · FCM + APNs (`@react-native-firebase/messaging`) · Cloudflare R2 + Cloudflare Images · Resend (transactional email) · PostHog · Twilio (SMS) · Google Maps (Maps SDK + JS API)
+**Stack:** React Native (CLI) · NestJS (backend API) · Next.js (web frontend: B2C pages + B2B dashboard + admin panel) · PostgreSQL + PostGIS · Railway · FCM + APNs (`@react-native-firebase/messaging`) · Cloudflare R2 + Cloudflare Images · Resend (transactional email) · PostHog · Twilio (SMS) · MapLibre GL JS + Stadia Maps (web) / MapLibre Native (mobile)
 
 ---
 
@@ -94,7 +94,7 @@ Map pins use the **category** field directly. Each of the 12 categories has a di
 
 - [ ] P0 Define the list of allowed aggregation sources (city portals, Eventbrite public API, Google Places API, RSS/iCal venue feeds)
 - [ ] P0 Prepare Privacy Policy and Terms of Service (GDPR-compliant) — B2C and B2B users
-- [ ] P0 Define what constitutes acceptable proof of venue ownership for claims (SMS to Google Maps number, email on own domain, CEIDG/KRS document)
+- [ ] P0 Define what constitutes acceptable proof of venue ownership for claims (SMS to phone number from venue listing, email on own domain, CEIDG/KRS document)
 - [ ] P1 Check availability of CEIDG API (public, free) for automatic business address verification
 - [ ] P1 Check Google Business Profile API — scope and requirements for venue verification through Google
 
@@ -330,7 +330,7 @@ Map pins use the **category** field directly. Each of the 12 categories has a di
 |---|---|---|---|---|
 | 1 | **Apple App Store rejection** — content policy, missing privacy labels, or metadata issues | High — blocks mobile launch | Medium | Submit early (Week 10), allow 2 review cycles. Prepare Privacy Nutrition Labels. TestFlight beta first. |
 | 2 | **Aggregation pipeline yields insufficient data** — fewer than 500 events per city | High — empty map = no retention | Medium | Start pipeline in Week 1. Manual data entry as fallback. Prioritize Poznan (densest). Lower city count if needed. |
-| 3 | **Google Maps API costs exceed budget** — high map tile / Places API usage | Medium — cost overrun | Medium | Set billing alerts + quota caps. Evaluate Mapbox as alternative. Cache aggressively. |
+| 3 | **Stadia Maps free tier exceeded** — high map tile usage beyond 200k/month | Low — cost overrun | Low | Stadia Maps paid plans are affordable at scale. Alternatively self-host tiles with OpenMapTiles. Monitor usage via https://client.stadiamaps.com dashboard. |
 | 4 | **Venue owners don't claim profiles** — low B2B activation | High — no supply-side | Medium | Pre-launch outreach (50 venues, personal calls to 10). Show follower count as incentive. Free tier removes friction. |
 | 5 | **GDPR compliance gaps** — insufficient consent tracking, data deletion issues | High — legal risk | Low | ToS acceptance audit trail, account deletion E2E tests, data export endpoint. Legal review of Privacy Policy. |
 | 6 | **Third-party API changes** — Eventbrite, Google Places, Twilio rate limits or pricing changes | Medium — pipeline disruption | Low | Abstraction layer per source. Multiple sources reduce single-point dependency. Monitor deprecation notices. |

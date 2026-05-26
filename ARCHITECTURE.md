@@ -9,7 +9,7 @@
 | Repository | Purpose | Tech Stack | Deployment Target |
 |---|---|---|---|
 | `eventapp-backend` | REST API, aggregation pipeline, push jobs, auth | NestJS, Drizzle ORM, PostgreSQL + PostGIS, Redis, Bull | Railway |
-| `eventapp-mobile-b2c` | Consumer mobile app (iOS + Android) | React Native (CLI), React Navigation, Google Maps SDK | App Store / Google Play (Fastlane) |
+| `eventapp-mobile-b2c` | Consumer mobile app (iOS + Android) | React Native (CLI), React Navigation, MapLibre Native | App Store / Google Play (Fastlane) |
 | `eventapp-web-b2c` | Public read-only discovery pages (SSR, SEO, OG tags) | Next.js (App Router), SSR | Cloudflare Pages / Vercel |
 | `eventapp-web-b2b` | Organizer dashboard — venue & event management | Next.js (App Router), TanStack Query | Cloudflare Pages / Vercel |
 | `eventapp-web-admin-internal` | Internal admin panel — moderation, KPIs, user mgmt | Next.js (App Router), TanStack Query | Cloudflare Pages / Vercel (IP-restricted) |
@@ -526,7 +526,7 @@ Supporting tools (P1, post-launch):
 | Resend | Transactional email (password reset, claim alerts, moderation, welcome emails, reports) |
 | PostHog | Product analytics |
 | Sentry | Error monitoring |
-| Google Maps (Maps SDK + JS API) | Map rendering (mobile + web) — see ADR #17 |
+| MapLibre GL JS + Stadia Maps (web) / MapLibre Native (mobile) | Map rendering — see ADR #17 |
 
 ---
 
@@ -586,7 +586,7 @@ Supporting tools (P1, post-launch):
 | 14 | **NativeWind** for mobile UI | Tamagui | Unified Tailwind mental model across web and mobile. Active community, good docs. Tamagui offers better raw performance but higher learning curve. |
 | 15 | **shadcn/ui + Tailwind CSS** for web UI | Material UI, Chakra UI, Radix + custom | Composable primitives, full control over styling, no vendor lock-in. Copy-paste model avoids dependency version churn. |
 | 16 | **Drizzle ORM** for database access | TypeORM, Prisma | TypeScript-first, SQL-like query builder with zero abstraction overhead. Lightweight, fast migrations, excellent PostgreSQL support. TypeORM has decorator-heavy API and maintenance concerns; Prisma adds a build step (generate) and uses a custom query engine. |
-| 17 | **Google Maps** as the single map provider (mobile + web) | Mapbox, MapLibre | Google Maps has superior POI data in Poland (critical for venue matching), native SDKs for both platforms (Google Maps SDK for React Native, Google Maps JS API for web), and the Google Places API is already used in the aggregation pipeline. Mapbox has better customization but weaker POI coverage in Polish cities. Revisit if Google Maps API costs exceed $500/month — Mapbox is the fallback. |
+| 17 | **MapLibre + Stadia Maps** as the single map provider (mobile + web) | Google Maps, Mapbox | Open-source MapLibre GL JS (web) and MapLibre Native (mobile) with Stadia Maps as tile and data provider (https://client.stadiamaps.com). Poland has excellent OpenStreetMap coverage. Stadia Maps free tier covers 200k tile requests/month — eliminates Google Maps cost risk entirely. Full style customization, EU-hosted. Geocoding via Nominatim (free, self-hostable) replaces Google Geocoding API. Google Maps deep links remain for navigation CTAs (free). |
 | 18 | **Zustand** for mobile state management | React Context, Jotai, Redux | Minimal boilerplate, tiny bundle size (~1KB), works seamlessly with React Native. No providers needed (unlike Context), no actions/reducers ceremony (unlike Redux). Jotai is comparable but Zustand has a larger ecosystem and better devtools. Used for: auth state, selected city, filter state, cached user preferences. Server state (API data) is handled by the API client layer, not Zustand. |
 
 ---
