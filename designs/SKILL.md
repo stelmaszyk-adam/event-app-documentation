@@ -1,6 +1,6 @@
 # Figma Design System Skill — The Radiant Curator
 
-> Instructions for building and maintaining the EventApp design system in Figma. Use this as the authoritative reference when executing `figma-use`, `figma-generate-library`, or `figma-generate-design` skills.
+> Instructions for building and maintaining the Wydarzka design system in Figma. Use this as the authoritative reference when executing `figma-use`, `figma-generate-library`, or `figma-generate-design` skills.
 
 ---
 

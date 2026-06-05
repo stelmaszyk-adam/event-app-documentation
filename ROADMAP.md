@@ -1,4 +1,4 @@
-# EventApp — Central Roadmap
+# Wydarzka — Central Roadmap
 
 > **This is the central roadmap.** It contains cross-cutting decisions, shared standards, success criteria, and links to platform-specific roadmaps. For implementation details, see the platform roadmaps below.
 
@@ -9,7 +9,7 @@
 | Mobile B2C | React Native (CLI) — iOS + Android consumer app | [ROADMAP-mobile-b2c.md](./ROADMAP-mobile-b2c.md) |
 | Web B2C | Next.js public pages — read-only discovery (SSR, SEO, OG tags) | [ROADMAP-web-b2c.md](./ROADMAP-web-b2c.md) |
 | Web B2B | Next.js organizer dashboard — venue & event management | [ROADMAP-web-b2b.md](./ROADMAP-web-b2b.md) |
-| Web Admin | Next.js admin panel (`eventapp-web-admin-internal` repo) — internal tools, IP-restricted | [ROADMAP-web-admin-internal.md](./ROADMAP-web-admin-internal.md) |
+| Web Admin | Next.js admin panel (`wydarzka-web-admin-internal` repo) — internal tools, IP-restricted | [ROADMAP-web-admin-internal.md](./ROADMAP-web-admin-internal.md) |
 | Backend | NestJS API server, database, infrastructure, aggregation pipeline | [ROADMAP-backend.md](./ROADMAP-backend.md) |
 
 ---
@@ -282,8 +282,8 @@ Map pins use the **category** field directly. Each of the 12 categories has a di
 - Follow venue, save event, push notifications, submit event, submit event tip (Community Scout)
 
 **B2C <-> B2B navigation:**
-- B2C site (`eventapp.dev`) links to B2B dashboard (`dashboard.eventapp.dev`) and vice versa
-- No shared auth session — B2C is unauthenticated; organizers navigate to `dashboard.eventapp.dev` and log in separately
+- B2C site (`wydarzka.dev`) links to B2B dashboard (`dashboard.wydarzka.dev`) and vice versa
+- No shared auth session — B2C is unauthenticated; organizers navigate to `dashboard.wydarzka.dev` and log in separately
 
 ---
 
@@ -294,7 +294,7 @@ Map pins use the **category** field directly. Each of the 12 categories has a di
 ### Why free during MVP
 
 - Organizers must claim venues and post events **before** there's anything worth charging for.
-- The core validation question is: "Do organizers find value in reaching followers through EventApp?" — measurable without payment.
+- The core validation question is: "Do organizers find value in reaching followers through Wydarzka?" — measurable without payment.
 - Once 50+ organizers are active and push open rates are proven, there's leverage to introduce paid tiers.
 
 ### Planned revenue model (Month 4-6, post-launch)
@@ -373,18 +373,18 @@ Introduce API versioning (`/api/v1/`) before:
 ### Data & Content
 - [ ] >= 1,000 events in database across 7 cities
 - [ ] Zero-result search rate < 10% for main queries per city
-- [ ] Privacy Policy and Terms of Service published at `eventapp.dev/privacy` and `eventapp.dev/terms`
+- [ ] Privacy Policy and Terms of Service published at `wydarzka.dev/privacy` and `wydarzka.dev/terms`
 - [ ] All email templates tested (password reset, claim alert, welcome, moderation decision)
 
 ### Infrastructure
 - [ ] Production environment deployed and stable (backend, all web apps)
-- [ ] DNS configured: `api.eventapp.dev`, `eventapp.dev`, `dashboard.eventapp.dev`, `admin.eventapp.dev`
+- [ ] DNS configured: `api.wydarzka.dev`, `wydarzka.dev`, `dashboard.wydarzka.dev`, `admin.wydarzka.dev`
 - [ ] SSL certificates active on all domains
 - [ ] CORS configured for production origins only
 - [ ] Rate limiting active on all endpoints
 - [ ] Health check endpoint responding on backend
 - [ ] Cloudflare R2 bucket configured for production
-- [ ] Email sending domain (`mail.eventapp.dev`) DNS records verified (SPF, DKIM, DMARC)
+- [ ] Email sending domain (`mail.wydarzka.dev`) DNS records verified (SPF, DKIM, DMARC)
 - [ ] Load test: API handles 100 concurrent users without degradation (see ROADMAP-backend 4.1.1)
 - [ ] Redis eviction policy configured (`allkeys-lru`, `maxmemory` set per environment)
 
@@ -430,7 +430,7 @@ Introduce API versioning (`/api/v1/`) before:
 | CUT Chats / social feed | Users have WhatsApp. High cost, low differentiation. |
 | CUT Reviews and event ratings | Cold-start problem. Zero value with a small user base. |
 | CUT "Friends" and social graph | Too complex for PoC. Not needed for validation. |
-| CUT EventApp+ premium for users | Kills growth before 50K MAU. |
+| CUT Wydarzka+ premium for users | Kills growth before 50K MAU. |
 | CUT Facebook / Instagram venue verification | Meta API — weeks of procedures. Phase 2+. |
 | CUT Mobile dashboard for organizers | Web is sufficient. Bar owner manages at the computer. |
 | CUT Hyper-Boost / contextual advertising | Requires scale. Phase 3+. |
@@ -441,23 +441,23 @@ Introduce API versioning (`/api/v1/`) before:
 ## Technical Architecture — Summary
 
 ```
-Repo: eventapp-mobile-b2c (React Native CLI)
+Repo: wydarzka-mobile-b2c (React Native CLI)
     |-- B2C App (iOS + Android)
     |-- Push notifications (@react-native-firebase/messaging -> FCM + APNs)
 
-Repo: eventapp-web-b2c (Next.js — SSR, no API routes)
+Repo: wydarzka-web-b2c (Next.js — SSR, no API routes)
     |-- Public Pages (SSR for SEO + og:tags)
-    |-- Domain: eventapp.dev
+    |-- Domain: wydarzka.dev
 
-Repo: eventapp-web-b2b (Next.js — Organizer Dashboard)
+Repo: wydarzka-web-b2b (Next.js — Organizer Dashboard)
     |-- Venue management, Event management
     |-- Push notification sender, Analytics
-    |-- Domain: dashboard.eventapp.dev
+    |-- Domain: dashboard.wydarzka.dev
 
-Repo: eventapp-web-admin-internal (Next.js — Admin Panel, IP-restricted)
+Repo: wydarzka-web-admin-internal (Next.js — Admin Panel, IP-restricted)
     |-- Event moderation, Venue/User management, KPI dashboard
 
-Repo: eventapp-backend (NestJS — standalone Node.js server)
+Repo: wydarzka-backend (NestJS — standalone Node.js server)
     |-- AuthModule, EventsModule, VenuesModule, UsersModule
     |-- NotificationsModule, UploadsModule, ImportersModule
     |-- ClaimsModule, AdminModule

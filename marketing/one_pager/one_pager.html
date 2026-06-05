@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wydarzka — One-Pager</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root {
+    --primary: #4900cc;
+    --primary-container: #6134e3;
+    --secondary: #8935b6;
+    --secondary-container: #f3e5f9;
+    --tertiary: #a8275a;
+    --tertiary-container: #fce4ec;
+    --surface: #fcf8ff;
+    --surface-container-low: #f7f0fc;
+    --surface-container: #f1eaf7;
+    --surface-container-high: #ebe4f2;
+    --surface-container-highest: #e5deec;
+    --on-surface: #1c1a22;
+    --on-surface-variant: #49454f;
+    --on-primary: #ffffff;
+    --on-primary-container: #f0e6ff;
+    --outline-variant: #cbc4d0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--surface);
+    color: var(--on-surface);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    background: var(--surface);
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-container) 50%, var(--secondary) 100%);
+    padding: 40px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -40px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+
+  .hero-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-logo svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .hero-brand-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--on-primary);
+    letter-spacing: -0.02em;
+  }
+
+  .hero-tagline {
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-left: 2px;
+  }
+
+  .hero h1 {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--on-primary);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--tertiary-container);
+  }
+
+  .hero-subtitle {
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    margin-top: 10px;
+    position: relative;
+    z-index: 1;
+    font-weight: 400;
+    letter-spacing: 0.015em;
+  }
+
+  /* ---- PROBLEM ---- */
+  .problem {
+    padding: 28px 48px 24px;
+    background: var(--surface-container-low);
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .section-label::before {
+    content: '';
+    width: 16px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--primary-container));
+    border-radius: 1px;
+  }
+
+  .problem p {
+    font-size: 13px;
+    color: var(--on-surface-variant);
+    line-height: 1.6;
+    letter-spacing: 0.015em;
+  }
+
+  .problem strong {
+    color: var(--on-surface);
+    font-weight: 600;
+  }
+
+  .problem em {
+    font-style: normal;
+    color: var(--tertiary);
+    font-weight: 600;
+  }
+
+  /* ---- SOLUTION ---- */
+  .solution {
+    padding: 28px 48px 24px;
+    background: var(--surface);
+  }
+
+  .solution-intro {
+    font-size: 13px;
+    color: var(--on-surface-variant);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    letter-spacing: 0.015em;
+  }
+
+  .solution-intro strong {
+    color: var(--primary);
+    font-weight: 700;
+  }
+
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    background: var(--surface-container-low);
+    border-radius: 16px;
+  }
+
+  .step-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary), var(--primary-container));
+  }
+
+  .step-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .step-content h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--on-surface);
+    margin-bottom: 2px;
+    letter-spacing: -0.01em;
+  }
+
+  .step-content p {
+    font-size: 11.5px;
+    color: var(--on-surface-variant);
+    line-height: 1.5;
+    letter-spacing: 0.015em;
+  }
+
+  .step-content p strong {
+    color: var(--on-surface);
+    font-weight: 600;
+  }
+
+  /* ---- BENEFITS ---- */
+  .benefits {
+    padding: 28px 48px 24px;
+    background: var(--surface-container-low);
+  }
+
+  .benefits-grid {
+    display: flex;
+    gap: 12px;
+  }
+
+  .benefit-card {
+    flex: 1;
+    padding: 16px;
+    background: var(--surface);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .benefit-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .benefit-card:nth-child(1)::before {
+    background: linear-gradient(90deg, var(--primary), var(--primary-container));
+  }
+
+  .benefit-card:nth-child(2)::before {
+    background: linear-gradient(90deg, var(--secondary), #b560d9);
+  }
+
+  .benefit-card:nth-child(3)::before {
+    background: linear-gradient(90deg, var(--tertiary), #c94a74);
+  }
+
+  .benefit-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .benefit-card:nth-child(1) .benefit-icon {
+    background: var(--on-primary-container);
+  }
+
+  .benefit-card:nth-child(2) .benefit-icon {
+    background: var(--secondary-container);
+  }
+
+  .benefit-card:nth-child(3) .benefit-icon {
+    background: var(--tertiary-container);
+  }
+
+  .benefit-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .benefit-card h3 {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--on-surface);
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+
+  .benefit-card p {
+    font-size: 11px;
+    color: var(--on-surface-variant);
+    line-height: 1.5;
+    letter-spacing: 0.015em;
+  }
+
+  /* ---- EARLY ADOPTER ---- */
+  .early-adopter {
+    padding: 28px 48px 24px;
+    background: var(--surface);
+  }
+
+  .early-adopter-content {
+    background: linear-gradient(135deg, rgba(73,0,204,0.04) 0%, rgba(137,53,182,0.04) 100%);
+    border-radius: 20px;
+    padding: 20px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .early-adopter-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--tertiary));
+  }
+
+  .early-intro {
+    font-size: 12px;
+    color: var(--on-surface-variant);
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+
+  .early-intro strong {
+    color: var(--on-surface);
+    font-weight: 600;
+  }
+
+  .perks {
+    display: flex;
+    gap: 16px;
+  }
+
+  .perk {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .perk-bullet {
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-top: 5px;
+  }
+
+  .perk:nth-child(1) .perk-bullet { background: var(--primary); }
+  .perk:nth-child(2) .perk-bullet { background: var(--secondary); }
+  .perk:nth-child(3) .perk-bullet { background: var(--tertiary); }
+
+  .perk h4 {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--on-surface);
+    margin-bottom: 1px;
+  }
+
+  .perk p {
+    font-size: 10.5px;
+    color: var(--on-surface-variant);
+    line-height: 1.45;
+  }
+
+  /* ---- CTA ---- */
+  .cta {
+    padding: 28px 48px 32px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-container) 60%, var(--secondary) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -60px;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+
+  .cta .section-label {
+    color: rgba(255,255,255,0.6);
+  }
+
+  .cta .section-label::before {
+    background: linear-gradient(90deg, rgba(255,255,255,0.4), rgba(255,255,255,0.1));
+  }
+
+  .cta-options {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-option {
+    flex: 1;
+    padding: 16px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .cta-option-label {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 6px;
+  }
+
+  .cta-option h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--on-primary);
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+
+  .cta-option p {
+    font-size: 10.5px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.45;
+  }
+
+  .cta-option.featured {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .cta-option.featured .cta-option-label {
+    color: rgba(255,255,255,0.7);
+  }
+
+  .featured-badge {
+    display: inline-block;
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: var(--tertiary);
+    color: var(--on-primary);
+    padding: 2px 8px;
+    border-radius: 9999px;
+    margin-bottom: 8px;
+  }
+
+  /* ---- FOOTER ---- */
+  .footer {
+    padding: 16px 48px;
+    background: var(--on-surface);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .footer-logo {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .footer-logo svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .footer-brand {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--on-primary);
+    letter-spacing: -0.01em;
+  }
+
+  .footer-contact {
+    display: flex;
+    gap: 20px;
+  }
+
+  .footer-contact a, .footer-contact span {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    letter-spacing: 0.01em;
+    font-weight: 500;
+  }
+
+  .footer-cities {
+    font-size: 9px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-brand">
+      <div class="hero-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+      </div>
+      <div>
+        <div class="hero-brand-name">Wydarzka</div>
+        <div class="hero-tagline">Event Discovery Platform</div>
+      </div>
+    </div>
+    <h1>Stop shouting into the void.<br><em>Start filling your venue.</em></h1>
+    <p class="hero-subtitle">The event discovery app that connects your venue with thousands of people actively looking for plans.</p>
+  </div>
+
+  <!-- PROBLEM -->
+  <div class="problem">
+    <div class="section-label">The Problem</div>
+    <p>
+      You pour hours into promoting your events &mdash; posting on Facebook, updating Instagram, juggling Google listings &mdash; and still, <em>half the seats are empty on a Tuesday night.</em>
+      People in your city <strong>want</strong> to go out. They just don't know you exist. Your posts drown in algorithmic feeds. Tourists walking past your door have no idea what's happening inside.
+      You're spending time on marketing instead of what you love &mdash; <strong>running great events.</strong>
+    </p>
+  </div>
+
+  <!-- SOLUTION -->
+  <div class="solution">
+    <div class="section-label">The Solution</div>
+    <p class="solution-intro">
+      <strong>Wydarzka</strong> puts your venue on a live, interactive map &mdash; visible to every user in your city who's looking for something to do <strong>right now.</strong>
+    </p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <div class="step-content">
+          <h3>Your venue is already on our map</h3>
+          <p>We aggregate public event data from across the web. Just <strong>claim your profile for free</strong> &mdash; verify with a quick SMS or email, and you're in control.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+        <div class="step-content">
+          <h3>Create and publish events in minutes</h3>
+          <p>A simple dashboard for adding events, uploading photos, setting prices, and linking tickets. <strong>No design skills needed.</strong></p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </div>
+        <div class="step-content">
+          <h3>Push-notify your followers directly</h3>
+          <p>One tap, and everyone who follows your venue gets a direct notification. <strong>No algorithm. No pay-to-play. They see it. Period.</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BENEFITS -->
+  <div class="benefits">
+    <div class="section-label">Why It Works</div>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#4900cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <h3>More people through your door</h3>
+        <p>Your events are discoverable by thousands of locals and visitors actively looking for plans &mdash; not passively scrolling a feed.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#8935b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <h3>Zero marketing budget</h3>
+        <p>No ads to buy, no posts to boost. Push notifications reach your followers directly &mdash; for free. The reach of a campaign with the effort of a button press.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#a8275a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <h3>Know what's working</h3>
+        <p>See exactly how many people viewed your event, clicked "Buy tickets," or tapped "Navigate." Real numbers, not vanity metrics.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- EARLY ADOPTER -->
+  <div class="early-adopter">
+    <div class="section-label">Exclusive for Early Adopters</div>
+    <div class="early-adopter-content">
+      <p class="early-intro">
+        We're launching in <strong>7 Polish cities</strong> (Poznan, Warszawa, Krakow, Wroclaw, Lodz, Gdansk, Szczecin) and we're handpicking our first organizers.
+      </p>
+      <div class="perks">
+        <div class="perk">
+          <div class="perk-bullet"></div>
+          <div>
+            <h4>Free access &mdash; forever</h4>
+            <p>No subscription fees, no commission. Early adopters lock in free status permanently.</p>
+          </div>
+        </div>
+        <div class="perk">
+          <div class="perk-bullet"></div>
+          <div>
+            <h4>Direct line to our team</h4>
+            <p>Tell us what you need. Your feedback shapes the product. We build this with you.</p>
+          </div>
+        </div>
+        <div class="perk">
+          <div class="perk-bullet"></div>
+          <div>
+            <h4>First-mover visibility</h4>
+            <p>Fewer venues on the map = more eyes on yours. The earlier you join, the more you stand out.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <div class="section-label">What's Next? Let's Talk.</div>
+    <div class="cta-options">
+      <div class="cta-option">
+        <div class="cta-option-label">Option A</div>
+        <h3>Join the Beta</h3>
+        <p>Claim your venue at dashboard.wydarzka.dev and start publishing events today. Takes 2 minutes.</p>
+      </div>
+      <div class="cta-option featured">
+        <div class="featured-badge">Recommended</div>
+        <div class="cta-option-label">Option B</div>
+        <h3>Coffee at Your Place</h3>
+        <p>We'll swing by your venue, show you the app on the spot, and set everything up &mdash; face to face. 15 min.</p>
+      </div>
+      <div class="cta-option">
+        <div class="cta-option-label">Option C</div>
+        <h3>Quick Video Call</h3>
+        <p>Book a short call and we'll walk you through the dashboard together. 15 min.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-left">
+      <div class="footer-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+      </div>
+      <div>
+        <div class="footer-brand">Wydarzka</div>
+        <div class="footer-cities">Poznan &bull; Warszawa &bull; Krakow &bull; Wroclaw &bull; Lodz &bull; Gdansk &bull; Szczecin</div>
+      </div>
+    </div>
+    <div class="footer-contact">
+      <span>kontakt@wydarzka.dev</span>
+      <span>wydarzka.dev</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

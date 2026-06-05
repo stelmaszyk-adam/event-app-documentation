@@ -49,7 +49,7 @@ Build as Figma components with variants and auto-layout. Follow token bindings f
   - Mobile: hamburger or minimal bar, search icon triggers overlay; "For Organizers" inside hamburger menu
 - [ ] **Footer** — organized in sections:
   - **Discover:** city links, category links
-  - **For Organizers:** "Organizer Dashboard" link (→ `dashboard.eventapp.dev`, external, new tab) with optional short description "Manage your venue, create events, and track analytics"
+  - **For Organizers:** "Organizer Dashboard" link (→ `dashboard.wydarzka.dev`, external, new tab) with optional short description "Manage your venue, create events, and track analytics"
   - **Legal:** Terms of Service, Privacy Policy, Cookie Policy, "Manage cookie preferences"
   - **Get the App:** app store badges
   - **Social:** social media links
@@ -210,7 +210,7 @@ The primary experience. Follows a **Booking.com-style split-screen pattern**: th
 - [ ] **Empty state: no upcoming events** — friendly message
 - [ ] **Address with embedded map** — small static map or interactive map snippet
 - [ ] **Smart banner: "Follow this venue in the app"** — app store link
-- [ ] **"Is this your venue?" CTA** — subtle contextual link below venue info: "Is this your venue? Claim it on the Organizer Dashboard" → links to `dashboard.eventapp.dev` (external, new tab). Tertiary text style, visually understated — not a primary CTA. Positioned after venue description, before upcoming events list
+- [ ] **"Is this your venue?" CTA** — subtle contextual link below venue info: "Is this your venue? Claim it on the Organizer Dashboard" → links to `dashboard.wydarzka.dev` (external, new tab). Tertiary text style, visually understated — not a primary CTA. Positioned after venue description, before upcoming events list
 - [ ] All three breakpoints
 
 ---

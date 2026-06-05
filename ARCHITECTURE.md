@@ -1,4 +1,4 @@
-# EventApp — Architecture (Multi-Repo)
+# Wydarzka — Architecture (Multi-Repo)
 
 > **Guiding principle:** 5 independent repositories, zero shared packages. The backend's OpenAPI specification is the single source of truth for all API contracts.
 
@@ -8,11 +8,11 @@
 
 | Repository | Purpose | Tech Stack | Deployment Target |
 |---|---|---|---|
-| `eventapp-backend` | REST API, aggregation pipeline, push jobs, auth | NestJS, Drizzle ORM, PostgreSQL + PostGIS, Redis, Bull | Railway |
-| `eventapp-mobile-b2c` | Consumer mobile app (iOS + Android) | React Native (CLI), React Navigation, MapLibre Native | App Store / Google Play (Fastlane) |
-| `eventapp-web-b2c` | Public read-only discovery pages (SSR, SEO, OG tags) | Next.js (App Router), SSR | Cloudflare Pages / Vercel |
-| `eventapp-web-b2b` | Organizer dashboard — venue & event management | Next.js (App Router), TanStack Query | Cloudflare Pages / Vercel |
-| `eventapp-web-admin-internal` | Internal admin panel — moderation, KPIs, user mgmt | Next.js (App Router), TanStack Query | Cloudflare Pages / Vercel (IP-restricted) |
+| `wydarzka-backend` | REST API, aggregation pipeline, push jobs, auth | NestJS, Drizzle ORM, PostgreSQL + PostGIS, Redis, Bull | Railway |
+| `wydarzka-mobile-b2c` | Consumer mobile app (iOS + Android) | React Native (CLI), React Navigation, MapLibre Native | App Store / Google Play (Fastlane) |
+| `wydarzka-web-b2c` | Public read-only discovery pages (SSR, SEO, OG tags) | Next.js (App Router), SSR | Cloudflare Pages / Vercel |
+| `wydarzka-web-b2b` | Organizer dashboard — venue & event management | Next.js (App Router), TanStack Query | Cloudflare Pages / Vercel |
+| `wydarzka-web-admin-internal` | Internal admin panel — moderation, KPIs, user mgmt | Next.js (App Router), TanStack Query | Cloudflare Pages / Vercel (IP-restricted) |
 
 Each repo has its own `package.json`, CI pipeline, deployment config, and `.env.example`. There is no monorepo, no shared `packages/` directory, and no workspace linking between repos.
 
@@ -22,7 +22,7 @@ Each repo has its own `package.json`, CI pipeline, deployment config, and `.env.
 
 ```
                         ┌──────────────────────────────┐
-                        │      eventapp-backend         │
+                        │      wydarzka-backend         │
                         │         (NestJS)              │
                         │                               │
                         │  GET /api/docs-json ──────────┼──── OpenAPI 3.0 spec (JSON)
@@ -99,10 +99,10 @@ Every frontend repo contains a codegen script:
 
 | Frontend | Codegen Tool | Output Style | Why |
 |---|---|---|---|
-| `eventapp-mobile-b2c` | `orval` | Axios request functions | Axios works well in React Native; orval generates clean function signatures |
-| `eventapp-web-b2c` | `openapi-typescript` + `openapi-fetch` | Typed fetch wrapper | Lightweight, no runtime dependencies, SSR-friendly for Next.js server components |
-| `eventapp-web-b2b` | `orval` | TanStack Query hooks | Dashboard is heavily interactive; auto-generated `useQuery`/`useMutation` hooks save boilerplate |
-| `eventapp-web-admin-internal` | `orval` | TanStack Query hooks | Same rationale as B2B |
+| `wydarzka-mobile-b2c` | `orval` | Axios request functions | Axios works well in React Native; orval generates clean function signatures |
+| `wydarzka-web-b2c` | `openapi-typescript` + `openapi-fetch` | Typed fetch wrapper | Lightweight, no runtime dependencies, SSR-friendly for Next.js server components |
+| `wydarzka-web-b2b` | `orval` | TanStack Query hooks | Dashboard is heavily interactive; auto-generated `useQuery`/`useMutation` hooks save boilerplate |
+| `wydarzka-web-admin-internal` | `orval` | TanStack Query hooks | Same rationale as B2B |
 
 ### 3.4 Spec consumption options
 
@@ -119,10 +119,10 @@ No versioning for MVP. The API is at a single version. Breaking changes are coor
 
 ## 4. Per-Repo Folder Structure
 
-### eventapp-backend
+### wydarzka-backend
 
 ```
-eventapp-backend/
+wydarzka-backend/
 ├── src/
 │   ├── auth/              # AuthModule (JWT, OAuth, guards)
 │   ├── events/            # EventsModule (CRUD, geospatial queries)
@@ -146,10 +146,10 @@ eventapp-backend/
 └── package.json
 ```
 
-### eventapp-mobile-b2c
+### wydarzka-mobile-b2c
 
 ```
-eventapp-mobile-b2c/
+wydarzka-mobile-b2c/
 ├── src/
 │   ├── api/
 │   │   ├── generated/     # Auto-generated Axios functions (orval output)
@@ -172,10 +172,10 @@ eventapp-mobile-b2c/
 └── package.json
 ```
 
-### eventapp-web-b2c
+### wydarzka-web-b2c
 
 ```
-eventapp-web-b2c/
+wydarzka-web-b2c/
 ├── src/
 │   ├── api/
 │   │   ├── generated/     # openapi-typescript types + openapi-fetch client
@@ -197,10 +197,10 @@ eventapp-web-b2c/
 └── package.json
 ```
 
-### eventapp-web-b2b
+### wydarzka-web-b2b
 
 ```
-eventapp-web-b2b/
+wydarzka-web-b2b/
 ├── src/
 │   ├── api/
 │   │   ├── generated/     # orval TanStack Query hooks
@@ -223,10 +223,10 @@ eventapp-web-b2b/
 └── package.json
 ```
 
-### eventapp-web-admin-internal
+### wydarzka-web-admin-internal
 
 ```
-eventapp-web-admin-internal/
+wydarzka-web-admin-internal/
 ├── src/
 │   ├── api/
 │   │   ├── generated/     # orval TanStack Query hooks
@@ -257,7 +257,7 @@ eventapp-web-admin-internal/
 
 ```
 ┌─────────────────────────────────────────────┐
-│  Docker Compose (from eventapp-backend)     │
+│  Docker Compose (from wydarzka-backend)     │
 │  ┌──────────────────┐  ┌─────────────────┐  │
 │  │ PostgreSQL 16     │  │ Redis 7         │  │
 │  │ + PostGIS 3.4     │  │                 │  │
@@ -287,7 +287,7 @@ Each repo has its own `.env.example` with only the variables it needs. No cross-
 
 **Backend `.env.example`:**
 ```bash
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/eventapp
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/wydarzka
 REDIS_URL=redis://localhost:6379
 JWT_SECRET=change-me
 JWT_REFRESH_SECRET=change-me
@@ -356,7 +356,7 @@ hotfix/*    ← urgent fixes (PR into main, cherry-pick to develop)
 
 ## 6. CI/CD Strategy Per Repo
 
-### eventapp-backend
+### wydarzka-backend
 
 ```yaml
 # Triggered on: push to develop, push to main, PR
@@ -370,7 +370,7 @@ steps:
   - Deploy to Railway (develop → staging, main → production)
 ```
 
-### eventapp-web-b2c / eventapp-web-b2b / eventapp-web-admin-internal
+### wydarzka-web-b2c / wydarzka-web-b2b / wydarzka-web-admin-internal
 
 ```yaml
 # Triggered on: push to develop, push to main, PR
@@ -382,7 +382,7 @@ steps:
   - Deploy to Cloudflare Pages / Vercel (develop → preview, main → production)
 ```
 
-### eventapp-mobile-b2c
+### wydarzka-mobile-b2c
 
 ```yaml
 # Triggered on: push to develop, push to main, PR
@@ -416,7 +416,7 @@ steps:
 - More than 3 frontend repos need identical complex logic (not just types).
 - API spec divergence causes frequent integration bugs.
 
-At that point, consider extracting a `@eventapp/ui` design system package or moving to a monorepo with Turborepo.
+At that point, consider extracting a `@wydarzka/ui` design system package or moving to a monorepo with Turborepo.
 
 ---
 
@@ -468,7 +468,7 @@ design-tokens.ts (or .json)
 Since the project uses multi-repo with no shared packages (see section 7), design tokens are shared by:
 
 - **MVP:** Copy the token file across repos with a version pin. Update manually when tokens change.
-- **Post-MVP (when team > 5):** Extract a published `@eventapp/design-tokens` npm package, or move to a monorepo with Turborepo.
+- **Post-MVP (when team > 5):** Extract a published `@wydarzka/design-tokens` npm package, or move to a monorepo with Turborepo.
 
 Supporting tools (P1, post-launch):
 - **Figma design file** mirroring token values for design handoff and visual QA.
@@ -489,15 +489,15 @@ Supporting tools (P1, post-launch):
           ┌──────────────────┼──────────────────────┐
           │                  │                       │
   ┌───────▼────────┐  ┌─────▼──────────┐  ┌────────▼───────────┐
-  │ api.eventapp.dev│  │ eventapp.dev   │  │ dashboard.         │
-  │                │  │                │  │ eventapp.dev       │
+  │ api.wydarzka.dev│  │ wydarzka.dev   │  │ dashboard.         │
+  │                │  │                │  │ wydarzka.dev       │
   │ → Railway      │  │ → Cloudflare   │  │ → Cloudflare       │
   │   (backend)    │  │   Pages/Vercel │  │   Pages/Vercel     │
   │                │  │   (web-b2c)    │  │   (web-b2b)        │
   └────────────────┘  └────────────────┘  └────────────────────┘
                                                     │
                                           ┌─────────▼──────────┐
-                                          │ admin.eventapp.dev │
+                                          │ admin.wydarzka.dev │
                                           │                    │
                                           │ → Cloudflare       │
                                           │   Pages/Vercel     │
@@ -508,11 +508,11 @@ Supporting tools (P1, post-launch):
 
 | Domain | Service | Repo |
 |---|---|---|
-| `api.eventapp.dev` | Backend API | `eventapp-backend` |
-| `eventapp.dev` | Public discovery pages | `eventapp-web-b2c` |
-| `dashboard.eventapp.dev` | Organizer dashboard | `eventapp-web-b2b` |
-| `admin.eventapp.dev` | Admin panel (IP-restricted) | `eventapp-web-admin-internal` |
-| App Store / Google Play | Mobile app | `eventapp-mobile-b2c` |
+| `api.wydarzka.dev` | Backend API | `wydarzka-backend` |
+| `wydarzka.dev` | Public discovery pages | `wydarzka-web-b2c` |
+| `dashboard.wydarzka.dev` | Organizer dashboard | `wydarzka-web-b2b` |
+| `admin.wydarzka.dev` | Admin panel (IP-restricted) | `wydarzka-web-admin-internal` |
+| App Store / Google Play | Mobile app | `wydarzka-mobile-b2c` |
 
 ### External services
 
@@ -561,7 +561,7 @@ Supporting tools (P1, post-launch):
 - **Event tips (Community Scout):** max 5/day/user.
 - **Admin panel:** IP-restricted at the infrastructure level (Cloudflare Access or firewall rules).
 - **GDPR:** account deletion endpoint removes all user data; data export available on request.
-- **CORS:** backend allows only known frontend origins (`eventapp.dev`, `dashboard.eventapp.dev`, `admin.eventapp.dev`).
+- **CORS:** backend allows only known frontend origins (`wydarzka.dev`, `dashboard.wydarzka.dev`, `admin.wydarzka.dev`).
 - **Secrets:** no cross-repo env sharing; each repo holds only its own credentials.
 
 ---
@@ -571,8 +571,8 @@ Supporting tools (P1, post-launch):
 | # | Decision | Alternatives Considered | Rationale |
 |---|---|---|---|
 | 1 | **Multi-repo (5 repos)** over monorepo | Turborepo monorepo, Nx | 1-3 dev team; monorepo tooling overhead not justified. Independent deploy cycles. |
-| 2 | **OpenAPI as single source of truth** over shared types package | Shared `@eventapp/types` npm package, tRPC | No publish/version/sync overhead. Each frontend generates exactly what it needs. |
-| 3 | **No shared UI components** | `@eventapp/ui` component library | Mobile (React Native) vs Web (React DOM) — fundamentally different. Even web apps serve different audiences. |
+| 2 | **OpenAPI as single source of truth** over shared types package | Shared `@wydarzka/types` npm package, tRPC | No publish/version/sync overhead. Each frontend generates exactly what it needs. |
+| 3 | **No shared UI components** | `@wydarzka/ui` component library | Mobile (React Native) vs Web (React DOM) — fundamentally different. Even web apps serve different audiences. |
 | 4 | **NestJS** for backend | Express, Fastify, Hono | Built-in module system, DI, Swagger integration, guards, Bull queue support. Scales well for this domain. |
 | 5 | **React Native (CLI)** for mobile | Flutter, native iOS/Android, Expo | JS/TS across the stack. React Navigation for routing. Fastlane for builds. Full native control without managed workflow constraints. |
 | 6 | **Next.js App Router** for all web apps | Remix, Vite SPA, Astro | SSR for B2C SEO. Consistent DX across 3 web repos. App Router is the current standard. |
@@ -582,7 +582,7 @@ Supporting tools (P1, post-launch):
 | 10 | **openapi-typescript + openapi-fetch** for web-b2c | orval, openapi-generator | Zero runtime overhead, type-safe fetch, ideal for Next.js server components and SSR. |
 | 11 | **No API versioning for MVP** | URL versioning (`/v1/`), header versioning | 1-3 devs control all consumers. Coordinate breaking changes directly. Revisit when external consumers appear. |
 | 12 | **Trunk-based branching** | Gitflow, GitHub Flow | Simple, fast, suits a small team shipping frequently. |
-| 13 | **Per-repo codegen** (duplicated clients) over shared SDK | Published `@eventapp/api-client` package | Each frontend needs different output (Axios fns vs fetch vs TanStack hooks). Shared SDK would be lowest-common-denominator. |
+| 13 | **Per-repo codegen** (duplicated clients) over shared SDK | Published `@wydarzka/api-client` package | Each frontend needs different output (Axios fns vs fetch vs TanStack hooks). Shared SDK would be lowest-common-denominator. |
 | 14 | **NativeWind** for mobile UI | Tamagui | Unified Tailwind mental model across web and mobile. Active community, good docs. Tamagui offers better raw performance but higher learning curve. |
 | 15 | **shadcn/ui + Tailwind CSS** for web UI | Material UI, Chakra UI, Radix + custom | Composable primitives, full control over styling, no vendor lock-in. Copy-paste model avoids dependency version churn. |
 | 16 | **Drizzle ORM** for database access | TypeORM, Prisma | TypeScript-first, SQL-like query builder with zero abstraction overhead. Lightweight, fast migrations, excellent PostgreSQL support. TypeORM has decorator-heavy API and maintenance concerns; Prisma adds a build step (generate) and uses a custom query engine. |
@@ -597,7 +597,7 @@ Supporting tools (P1, post-launch):
 
 ```
 ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
-│ mobile-b2c       │  │ web-b2c / b2b /  │  │ eventapp-backend │
+│ mobile-b2c       │  │ web-b2c / b2b /  │  │ wydarzka-backend │
 │ @sentry/react-   │  │ admin            │  │ @sentry/node     │
 │ native           │  │ @sentry/nextjs   │  │                  │
 └────────┬─────────┘  └────────┬─────────┘  └────────┬─────────┘
@@ -613,11 +613,11 @@ Supporting tools (P1, post-launch):
 
 | Component | Sentry SDK | Project |
 |---|---|---|
-| Backend | `@sentry/node` + `@sentry/nestjs` | `eventapp-backend` |
-| Mobile B2C | `@sentry/react-native` | `eventapp-mobile` |
-| Web B2C | `@sentry/nextjs` | `eventapp-web-b2c` |
-| Web B2B | `@sentry/nextjs` | `eventapp-web-b2b` |
-| Web Admin | `@sentry/nextjs` | `eventapp-web-admin` |
+| Backend | `@sentry/node` + `@sentry/nestjs` | `wydarzka-backend` |
+| Mobile B2C | `@sentry/react-native` | `wydarzka-mobile` |
+| Web B2C | `@sentry/nextjs` | `wydarzka-web-b2c` |
+| Web B2B | `@sentry/nextjs` | `wydarzka-web-b2b` |
+| Web Admin | `@sentry/nextjs` | `wydarzka-web-admin` |
 
 All projects share a single Sentry organization. `correlationId` (generated by the backend per request) is attached to both backend and frontend error reports for cross-layer tracing.
 
@@ -714,7 +714,7 @@ Backend → Exchange code for provider token → Verify → Create/link user →
 | Data | Seed data (`pnpm db:seed`) | Seed + test pipeline data | Aggregation pipeline only |
 | Logs | `debug` level, pretty-printed | `info` level, JSON | `info` level, JSON |
 | Sentry | Disabled or separate DSN | Staging DSN | Production DSN |
-| Email (Resend) | Sandbox mode / test domain | Staging domain | `mail.eventapp.dev` |
+| Email (Resend) | Sandbox mode / test domain | Staging domain | `mail.wydarzka.dev` |
 
 | **Mock (frontends only)** | MSW intercepts all API calls — no backend needed | N/A | N/A |
 
@@ -789,11 +789,11 @@ Each environment has fully isolated credentials. No cross-environment data shari
 
 | Repo | Unit Coverage | E2E Scope |
 |---|---|---|
-| `eventapp-backend` | 80% on services and modules | Auth flow, geo queries, claim flow, GDPR deletion |
-| `eventapp-mobile-b2c` | Key hooks and utils | Discovery → follow → push → navigation |
-| `eventapp-web-b2c` | — | SSR rendering, OG tags, sitemap validation |
-| `eventapp-web-b2b` | — | Claim → event CRUD → push → analytics |
-| `eventapp-web-admin-internal` | — | Login → moderation → audit log |
+| `wydarzka-backend` | 80% on services and modules | Auth flow, geo queries, claim flow, GDPR deletion |
+| `wydarzka-mobile-b2c` | Key hooks and utils | Discovery → follow → push → navigation |
+| `wydarzka-web-b2c` | — | SSR rendering, OG tags, sitemap validation |
+| `wydarzka-web-b2b` | — | Claim → event CRUD → push → analytics |
+| `wydarzka-web-admin-internal` | — | Login → moderation → audit log |
 
 > Implementation tasks are tracked in Phase 4 (section 4.1) of each platform ROADMAP.
 
@@ -824,7 +824,7 @@ Logged-in users receive higher rate limits (override `getTracker()` to use `user
 
 ### 18.4 Infrastructure Layer
 
-Cloudflare WAF rate limiting rules on `api.eventapp.dev` serve as a first-layer defense before requests reach Railway. This absorbs volumetric attacks without consuming application resources.
+Cloudflare WAF rate limiting rules on `api.wydarzka.dev` serve as a first-layer defense before requests reach Railway. This absorbs volumetric attacks without consuming application resources.
 
 ---
 

@@ -1,7 +1,7 @@
-# EventApp — Mobile B2C Roadmap
+# Wydarzka — Mobile B2C Roadmap
 
 > **Platform:** React Native (CLI) — iOS + Android consumer app
-> **Repo:** `eventapp-mobile-b2c`
+> **Repo:** `wydarzka-mobile-b2c`
 > **Central roadmap:** [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -50,7 +50,7 @@
 - [ ] P0 Environment variable toggle: `API_MOCKING=true`
 - [ ] P0 `.env.mock` file + `pnpm start:mock` script in `package.json`
 
-### 0.5.4 GitHub Actions — eventapp-mobile-b2c
+### 0.5.4 GitHub Actions — wydarzka-mobile-b2c
 
 - [ ] P0 **CI workflow** (triggered on: push to `develop`, push to `main`, PR to either):
   - `pnpm install` (with dependency caching)
@@ -261,7 +261,7 @@
 
 > Backend counterpart: [ROADMAP-backend.md](./ROADMAP-backend.md#18-deep-linking--universal-links)
 
-- [ ] P0 Define URL scheme for the app (e.g., `eventapp://event/123`, `eventapp://venue/456`)
+- [ ] P0 Define URL scheme for the app (e.g., `wydarzka://event/123`, `wydarzka://venue/456`)
 - [ ] P0 React Native deep linking configuration (React Navigation linking config, iOS `Info.plist` URL types + Android `AndroidManifest.xml` intent filters)
 - [ ] P0 Route mapping: define which URLs open which screens (event detail, venue profile, password reset, etc.)
 - [ ] P0 Fallback handling: unrecognized deep links open the app home screen gracefully
@@ -400,7 +400,7 @@
 
 ### 5.2 Ticketing (native)
 
-> Build only after confirming that venues want to migrate ticketing from eBilet/Going to EventApp.
+> Build only after confirming that venues want to migrate ticketing from eBilet/Going to Wydarzka.
 
 - [ ] P2 Ticket purchase flow in mobile app (select tickets -> pay -> receive QR)
 - [ ] P2 QR ticket display in user profile

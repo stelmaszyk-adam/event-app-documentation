@@ -1,4 +1,4 @@
-# EventApp — B2B Marketing Plan (Venue Acquisition)
+# Wydarzka — B2B Marketing Plan (Venue Acquisition)
 
 > **Goal:** Acquire 200 claimed venues within 3 months of launch across 7 Polish cities.
 > **Target audience:** Venue owners, event organizers, bar/club managers, cultural center directors, restaurant owners hosting events.
@@ -9,7 +9,7 @@
 
 ### Core messaging (PL primary, EN secondary)
 
-| Pain Point | EventApp Solution |
+| Pain Point | Wydarzka Solution |
 |---|---|
 | Events scattered across Facebook, Instagram, own website — no single source of truth | One dashboard to publish events, visible on map to thousands of local users |
 | No direct communication channel with attendees | Free push notifications to venue followers (1/day) |
@@ -19,11 +19,11 @@
 
 ### Elevator pitch (PL)
 
-> "EventApp to darmowa platforma, dzieki ktorej Twoje wydarzenia trafiaja na interaktywna mape miasta. Zarzadzaj wydarzeniami z jednego panelu, wysylaj powiadomienia push do obserwujacych i sledz statystyki — bez oplat, bez prowizji."
+> "Wydarzka to darmowa platforma, dzieki ktorej Twoje wydarzenia trafiaja na interaktywna mape miasta. Zarzadzaj wydarzeniami z jednego panelu, wysylaj powiadomienia push do obserwujacych i sledz statystyki — bez oplat, bez prowizji."
 
 ### Elevator pitch (EN)
 
-> "EventApp is a free platform that puts your events on an interactive city map. Manage events from one dashboard, send push notifications to followers, and track analytics — no fees, no commissions."
+> "Wydarzka is a free platform that puts your events on an interactive city map. Manage events from one dashboard, send push notifications to followers, and track analytics — no fees, no commissions."
 
 ---
 
@@ -60,8 +60,8 @@
 | Email | Timing | Subject (PL) | Content |
 |---|---|---|---|
 | #1 Introduction | Day 0 | "Twoje wydarzenia na mapie [City] — za darmo" | Value prop + screenshot of their venue already on map (from aggregated data) |
-| #2 Follow-up | Day 3 | "Widzielismy [Event Name] — swietna frekwencja!" | Reference a specific recent event, show how it looks on EventApp map |
-| #3 Social proof | Day 7 | "[Competitor Venue] juz jest na EventApp" | Show early adopters in their city/category |
+| #2 Follow-up | Day 3 | "Widzielismy [Event Name] — swietna frekwencja!" | Reference a specific recent event, show how it looks on Wydarzka map |
+| #3 Social proof | Day 7 | "[Competitor Venue] juz jest na Wydarzka" | Show early adopters in their city/category |
 | #4 Final | Day 14 | "Ostatnia wiadomosc — darmowy panel czeka" | FOMO + direct link to claim page |
 
 #### Phone/in-person outreach
@@ -88,7 +88,7 @@
 
 | Partner type | Approach | Mutual benefit |
 |---|---|---|
-| City cultural departments | Official partnership, data sharing | City promotes EventApp as "event calendar", we promote city events |
+| City cultural departments | Official partnership, data sharing | City promotes Wydarzka as "event calendar", we promote city events |
 | Tourism boards | Integration with city tourism apps | Tourist traffic to venues, official endorsement |
 | Local media (radio, city portals) | Sponsored content, event listings | Media gets fresh content, we get visibility |
 | Event ticketing platforms (eBilet, Going) | Deep link integration | They get traffic, we get event data quality |
@@ -109,8 +109,8 @@
 | Material | Use case | Details |
 |---|---|---|
 | One-pager (A5 flyer) | Leave at venues during visits | QR code to claim page, 3 key benefits, screenshot of dashboard |
-| Sticker for venue door/window | Claimed venues display it | "Find our events on EventApp" + QR to venue profile |
-| Table tent card | Bars/restaurants | "Scan to follow us on EventApp" — drives consumer app installs too |
+| Sticker for venue door/window | Claimed venues display it | "Find our events on Wydarzka" + QR to venue profile |
+| Table tent card | Bars/restaurants | "Scan to follow us on Wydarzka" — drives consumer app installs too |
 
 ### 3.6 Digital Advertising (Low budget, high targeting)
 
@@ -249,7 +249,7 @@
 
 | Objection | Response |
 |---|---|
-| "We already use Facebook Events" | "EventApp shows your events to people who don't follow you on Facebook — they discover you on the map by location and category." |
+| "We already use Facebook Events" | "Wydarzka shows your events to people who don't follow you on Facebook — they discover you on the map by location and category." |
 | "We don't have time for another platform" | "5 minutes to claim. After that, one event form replaces posting across 3 platforms. Plus push notifications your followers actually see (not buried in algorithm)." |
 | "What does it cost?" | "Completely free. No commission, no subscription, no hidden fees. We monetize through promoted placements (optional, coming later)." |
 | "How many users do you have?" | "X,000 events already on the map in [city]. Y users discovering events daily. Your competitors [Venue A, B] are already listed." |

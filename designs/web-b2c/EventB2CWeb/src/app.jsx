@@ -1,4 +1,4 @@
-// Main app for eventapp Web B2C
+// Main app for wydarzka Web B2C
 const { useState: _aus, useEffect: _aue } = React;
 
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{

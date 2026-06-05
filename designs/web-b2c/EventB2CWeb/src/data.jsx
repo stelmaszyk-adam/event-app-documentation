@@ -1,4 +1,4 @@
-// Mock data for eventapp Web B2C — Poznań events
+// Mock data for wydarzka Web B2C — Poznań events
 // Map coords are in 0..1000 (x), 0..720 (y) — for our stylized SVG map canvas.
 
 const CATEGORIES = [

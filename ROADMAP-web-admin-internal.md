@@ -1,8 +1,8 @@
-# EventApp — Web Admin Internal Roadmap
+# Wydarzka — Web Admin Internal Roadmap
 
 > **Platform:** Next.js admin panel — internal tools, IP-restricted
-> **Repo:** `eventapp-web-admin-internal`
-> **Domain:** `admin.eventapp.dev`
+> **Repo:** `wydarzka-web-admin-internal`
+> **Domain:** `admin.wydarzka.dev`
 > **Central roadmap:** [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -36,7 +36,7 @@
 - [ ] P0 Environment variable toggle: `NEXT_PUBLIC_API_MOCKING=true`
 - [ ] P0 `.env.mock` file + `pnpm dev:mock` script in `package.json`
 
-### 0.5.3 GitHub Actions — eventapp-web-admin-internal
+### 0.5.3 GitHub Actions — wydarzka-web-admin-internal
 
 > Same CI/CD workflow as other web apps — see [central roadmap, section 0.5.3](./ROADMAP.md#053-github-actions--web-apps-b2c--b2b--admin).
 

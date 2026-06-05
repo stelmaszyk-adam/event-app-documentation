@@ -1,8 +1,8 @@
-# EventApp — Web B2B Roadmap
+# Wydarzka — Web B2B Roadmap
 
 > **Platform:** Next.js organizer dashboard — venue & event management
-> **Repo:** `eventapp-web-b2b`
-> **Domain:** `dashboard.eventapp.dev`
+> **Repo:** `wydarzka-web-b2b`
+> **Domain:** `dashboard.wydarzka.dev`
 > **Central roadmap:** [ROADMAP.md](./ROADMAP.md)
 
 ---

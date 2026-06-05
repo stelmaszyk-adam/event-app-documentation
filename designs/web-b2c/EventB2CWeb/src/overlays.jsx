@@ -1,4 +1,4 @@
-// Overlays for eventapp Web B2C
+// Overlays for wydarzka Web B2C
 const { useState: _ous, useMemo: _oum } = React;
 
 // =============================================================

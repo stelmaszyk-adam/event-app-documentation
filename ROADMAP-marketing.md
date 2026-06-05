@@ -1,8 +1,8 @@
-# EventApp — Marketing Roadmap (MVP Launch)
+# Wydarzka — Marketing Roadmap (MVP Launch)
 
 > **Goal:** Launch in 7 Polish cities, acquire 200 claimed venues, 1,000+ events on the map, and first active organizers within 3 months of starting development. This roadmap covers only the MVP phase — getting first customers (both B2C users and B2B organizers).
 
-> **Two-sided marketplace:** EventApp must acquire both supply (venues/organizers) and demand (event-goers) simultaneously. Supply-side activation is the primary constraint — without active venues publishing events, there's nothing for users to discover.
+> **Two-sided marketplace:** Wydarzka must acquire both supply (venues/organizers) and demand (event-goers) simultaneously. Supply-side activation is the primary constraint — without active venues publishing events, there's nothing for users to discover.
 
 ---
 
@@ -32,19 +32,19 @@
 
 ### 0.1 Brand & Visual Identity
 
-- [ ] P0 **Brand name finalization** — secure domain (`eventapp.dev`), social media handles (@eventapp_pl)
+- [ ] P0 **Brand name finalization** — secure domain (`wydarzka.dev`), social media handles (@wydarzka_pl)
 - [ ] P0 **Logo and brand assets** — logo, favicon, app icon, color palette (matching design tokens)
 - [ ] P0 **Brand voice definition** — casual, local, community-driven (PL primary, EN secondary)
 - [ ] P0 **Social media profile setup:**
-  - Instagram (@eventapp_pl) — visual, event highlights
-  - TikTok (@eventapp_pl) — short-form event content
+  - Instagram (@wydarzka_pl) — visual, event highlights
+  - TikTok (@wydarzka_pl) — short-form event content
   - Facebook Page — community building, event sharing
   - LinkedIn (company page) — B2B credibility, organizer outreach
 - [ ] P1 **Brand guidelines document** — logo usage, tone of voice, visual style for consistency
 
 ### 0.2 Landing Page (Pre-Launch)
 
-- [ ] P0 **"Coming Soon" landing page** at `eventapp.dev` (before full web B2C is ready):
+- [ ] P0 **"Coming Soon" landing page** at `wydarzka.dev` (before full web B2C is ready):
   - Hero: value proposition — "Discover events happening near you"
   - City selection: "We're launching in Poznan, Warsaw, Krakow, Wroclaw, Gdansk, Katowice, Lodz"
   - Email signup form: "Be the first to know when we launch in your city"
@@ -67,7 +67,7 @@
   - "co robic w Poznaniu" / "co robic w Warszawie" / etc.
   - "wydarzenia Poznan" / "eventy Krakow" / etc.
   - "koncerty dzisiaj" / "imprezy w weekend" / etc.
-- [ ] P1 **Blog section plan** (at `eventapp.dev/blog`) — SEO-driven content for long-tail discovery queries
+- [ ] P1 **Blog section plan** (at `wydarzka.dev/blog`) — SEO-driven content for long-tail discovery queries
 
 ### 0.4 B2B Outreach Preparation
 
@@ -76,7 +76,7 @@
   - Sources: Google Maps, Facebook Events, Eventbrite, local "what to do" guides
   - Score by: event frequency, social media activity, follower count, category diversity
 - [ ] P0 **Outreach materials:**
-  - One-pager PDF: "What is EventApp + why claim your venue" (PL + EN)
+  - One-pager PDF: "What is Wydarzka + why claim your venue" (PL + EN)
   - Email template: cold outreach to venue owners
   - LinkedIn message template
   - Phone call script (for top-50 venues)
@@ -92,7 +92,7 @@
 ### 0.5 App Store Optimization (ASO) Preparation
 
 - [ ] P0 **App name and subtitle optimization:**
-  - iOS: "EventApp — Events Near You" / "EventApp — Wydarzenia w okolicy"
+  - iOS: "Wydarzka — Events Near You" / "Wydarzka — Wydarzenia w okolicy"
   - Android: same approach, localized for PL
 - [ ] P0 **Keyword research for app stores:**
   - Primary: "events nearby", "what to do today", "wydarzenia", "imprezy", "koncerty"
@@ -136,7 +136,7 @@
   - Day 1: Initial contact (call/email/DM)
   - Day 3: Follow-up if no response
   - Day 7: Second follow-up with "X venues in your area have already claimed"
-  - Day 14: Final attempt with social proof ("join 30+ venues already on EventApp")
+  - Day 14: Final attempt with social proof ("join 30+ venues already on Wydarzka")
 
 ### 1.2 Expansion to Other 6 Cities
 
@@ -176,7 +176,7 @@
   - Validate map density feels sufficient
 - [ ] P0 **Public launch (Week 12):**
   - App Store + Google Play live
-  - Web B2C live at `eventapp.dev`
+  - Web B2C live at `wydarzka.dev`
   - Launch email to full waitlist
   - Social media announcement across all channels
   - Press release to local Poznan media
@@ -190,19 +190,19 @@
   - Instagram: carousel showing the app + "10 events happening this weekend in [city]"
   - TikTok: 30-second app walkthrough video
   - Facebook: launch announcement in local city groups (with permission)
-  - LinkedIn: B2B angle — "EventApp is live, claim your venue for free"
+  - LinkedIn: B2B angle — "Wydarzka is live, claim your venue for free"
 - [ ] P0 **Reddit / local forums:**
   - r/poznan, r/polska — organic post (not spammy), "Made this app to find events near you"
   - Pair with genuine engagement (answer questions, respond to feedback)
-- [ ] P0 **Google My Business** listing for EventApp (if applicable)
+- [ ] P0 **Google My Business** listing for Wydarzka (if applicable)
 - [ ] P1 **University channels:**
   - Student union partnerships (Poznan, Warsaw, Krakow — largest universities)
   - Posters in student commons with QR codes
   - Student ambassador program (free "Pro" features when available, in exchange for spreading the word)
 - [ ] P1 **Venue cross-promotion:**
-  - Provide claimed venues with "Find us on EventApp" stickers/table cards
+  - Provide claimed venues with "Find us on Wydarzka" stickers/table cards
   - QR code posters for venue entrances: "See tonight's events"
-  - Social media templates for venues to share: "Follow us on EventApp"
+  - Social media templates for venues to share: "Follow us on Wydarzka"
 
 #### Paid (Small Budget — 500-2000 PLN/month)
 
@@ -300,10 +300,10 @@
   - Tags/mentions of featured venues (incentivizes venues to share)
 - [ ] P1 **Venue spotlight series** — Instagram story / Reel featuring a claimed venue:
   - Interview with owner (30-60 second video)
-  - "Follow them on EventApp to get notified about their events"
+  - "Follow them on Wydarzka to get notified about their events"
   - 1-2 per week across all cities
 - [ ] P1 **User-generated content:**
-  - Encourage users to share events they discover ("Found this on @eventapp_pl")
+  - Encourage users to share events they discover ("Found this on @wydarzka_pl")
   - Repost stories/photos from events discovered through the app
   - Instagram "Share to Stories" CTA after attending an event
 - [ ] P1 **TikTok content:**
@@ -314,14 +314,14 @@
 ### 3.4 Community Building
 
 - [ ] P1 **Facebook Groups:**
-  - "EventApp [City]" group per launch city for event recommendations
+  - "Wydarzka [City]" group per launch city for event recommendations
   - Moderate and seed with content initially
   - Goal: organic event sharing between users
 - [ ] P1 **WhatsApp Broadcast lists** (opt-in):
   - Weekly event roundup per city
   - Low-friction sharing (WhatsApp dominant in Poland)
 - [ ] P2 **Event meet-ups:**
-  - Organize "EventApp Networking Night" in Poznan (Month 2)
+  - Organize "Wydarzka Networking Night" in Poznan (Month 2)
   - Invite claimed venues + power users
   - Content opportunity (photos, testimonials)
 
@@ -345,7 +345,7 @@
 ### 3.6 Referral & Virality
 
 - [ ] P1 **Share incentives:**
-  - "Share EventApp with 5 friends" — no reward needed initially (validate natural virality first)
+  - "Share Wydarzka with 5 friends" — no reward needed initially (validate natural virality first)
   - Track viral coefficient: shares per user, installs per share
 - [ ] P1 **Deep links for sharing:**
   - When users share an event, the link opens web B2C page with smart banner -> app install
@@ -429,7 +429,7 @@
   - Pre-filled message with event details + deep link
 - [ ] P1 **Leverage Facebook Groups:**
   - Poland has highly active local Facebook groups ("Wydarzenia w [City]", "Co robic w [City]")
-  - Engage organically (answer "what to do this weekend?" questions with EventApp links)
+  - Engage organically (answer "what to do this weekend?" questions with Wydarzka links)
   - Do not spam — provide genuine value
 - [ ] P1 **Student event calendar integration:**
   - Partner with university event organizers
@@ -516,7 +516,7 @@
 
 | Marketing Milestone | Depends On |
 |--------------------|------------|
-| Pre-launch landing page | Domain (`eventapp.dev`) configured — ROADMAP.md Launch Checklist |
+| Pre-launch landing page | Domain (`wydarzka.dev`) configured — ROADMAP.md Launch Checklist |
 | App Store launch | Mobile app approved — ROADMAP-mobile-b2c 4.3 |
 | SEO traffic | Web B2C live with SSR — ROADMAP-web-b2c Phase 1 |
 | Venue outreach | B2B dashboard functional (claim flow) — ROADMAP-web-b2b 2.1 |

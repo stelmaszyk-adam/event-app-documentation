@@ -1,7 +1,7 @@
-# EventApp — Backend Roadmap
+# Wydarzka — Backend Roadmap
 
 > **Platform:** NestJS API server, database, infrastructure, aggregation pipeline
-> **Repo:** `eventapp-backend`
+> **Repo:** `wydarzka-backend`
 > **Central roadmap:** [ROADMAP.md](./ROADMAP.md)
 
 ---
@@ -76,7 +76,7 @@
 - [x] P0 **Seed: users** — 50 users:
   - Roles: 40 x `user`, 8 x `organizer`, 2 x `admin`
   - Organizers linked to claimed venues
-  - Admins with dedicated email addresses (`admin@eventapp.dev`)
+  - Admins with dedicated email addresses (`admin@wydarzka.dev`)
   - Varied `reputation_score`: 0-100
 - [x] P0 **Seed: relationships** — follows, saved_events, claim_requests:
   - Each user follows 3-15 random venues
@@ -98,7 +98,7 @@
 
 - [x] P0 **Provider: Resend** — simple API, React Email templates, generous free tier (3,000 emails/month), scales to paid plans when needed
 - [x] P0 Configure Resend account + API key per environment (dev / staging / production)
-- [ ] P0 Set up sending domain: `mail.eventapp.dev` (DNS: SPF, DKIM, DMARC records via Cloudflare)
+- [ ] P0 Set up sending domain: `mail.wydarzka.dev` (DNS: SPF, DKIM, DMARC records via Cloudflare)
 - [x] P0 Create `EmailModule` in NestJS backend (wraps Resend SDK, injectable service)
 - [x] P0 Build base email templates with React Email (`@react-email/components`):
   - Password reset (token link, 1h expiry)
@@ -149,7 +149,7 @@
   - `POST` write endpoints — tighter per-endpoint limits
 - [x] P0 Skip rate limiting on `GET /health` and `GET /ready` endpoints (`@SkipThrottle()`)
 - [ ] P1 Differentiate authenticated vs anonymous limits — logged-in users get higher limits (override `getTracker()` to use `userId`)
-- [ ] P1 Add Cloudflare WAF rate limiting rules on `api.eventapp.dev` as a first-layer defense before requests hit Railway
+- [ ] P1 Add Cloudflare WAF rate limiting rules on `api.wydarzka.dev` as a first-layer defense before requests hit Railway
 - [ ] P1 Monitor 429 responses in Sentry — tune limits based on real traffic after launch
 
 #### Redis Memory Management
@@ -167,9 +167,9 @@
 > Three frontends and the mobile app all hit a single NestJS API.
 
 - [x] P0 Configure CORS in NestJS (`@nestjs/common` `enableCors`) with explicit allowed origins:
-  - `https://eventapp.dev` (Web B2C)
-  - `https://dashboard.eventapp.dev` (Web B2B)
-  - `https://admin.eventapp.dev` (Web Admin)
+  - `https://wydarzka.dev` (Web B2C)
+  - `https://dashboard.wydarzka.dev` (Web B2B)
+  - `https://admin.wydarzka.dev` (Web Admin)
   - `http://localhost:3000`, `http://localhost:3001`, `http://localhost:3002`, `http://localhost:3003` (local development)
 - [x] P0 Load allowed origins from environment variable (`CORS_ALLOWED_ORIGINS`) — different per environment (dev / staging / production)
 - [x] P0 Allow credentials (`credentials: true`) — needed for JWT auth cookies if used, and for `Authorization` header
@@ -311,7 +311,7 @@
 - [ ] P0 **Source #2 — Eventbrite public API:** integration with the public API, periodic event fetching from free endpoints
 - [ ] P0 **Source #3 — RSS / iCal venue feeds:** venue publishes a feed -> the app subscribes and automatically imports new events
 - [ ] P0 **Source #4 — City portals and cultural institutions:** official public data (e.g., poznan.pl/events, community centers, libraries) — exclusively through official APIs or open data, no scraping
-- [ ] P0 **Source #5 — WhatsApp / email bot collecting events from venues:** venue sends event info to a dedicated WhatsApp number or email (inbound via Resend webhook on `submit@eventapp.dev`) -> auto-parser extracts data and writes to database — zero friction for the owner, full automation
+- [ ] P0 **Source #5 — WhatsApp / email bot collecting events from venues:** venue sends event info to a dedicated WhatsApp number or email (inbound via Resend webhook on `submit@wydarzka.dev`) -> auto-parser extracts data and writes to database — zero friction for the owner, full automation
 - [ ] P1 **Source #6 — Self-submission form for venues:** "Add your event" available publicly — supplement for venues without an integrated feed (verify if not already implemented in B2B dashboard)
 - [ ] P0 Implement **event deduplication pipeline** — the same event from two sources = one entry (fuzzy match: name + date + address)
 - [ ] P0 Implement **venue deduplication pipeline** — the same venue from multiple sources (e.g., Google Places + Eventbrite) = one entry:
@@ -327,7 +327,7 @@
 - [ ] P1 Extend pipeline to remaining 6 cities (Warsaw, Krakow, Wroclaw, Lodz, Gdansk, Szczecin)
 - [ ] P1 Build importer monitoring: last_run, success_rate, error_count, events_imported
 
-### 0.5.2 GitHub Actions — eventapp-backend
+### 0.5.2 GitHub Actions — wydarzka-backend
 
 - [ ] P0 **CI workflow** (triggered on: push to `develop`, push to `main`, PR to either):
   - `pnpm install` (with dependency caching)
@@ -400,8 +400,8 @@
 - [x] P0 `POST /auth/login` — login with email + password; returns access + refresh tokens
 - [x] P0 `POST /auth/refresh` — exchange valid refresh token for new access + refresh token pair (rotation)
 - [x] P0 `POST /auth/logout` — revoke the current refresh token (requires auth)
-- [x] P0 `POST /auth/oauth/google` — exchange Google authorization code for EventApp access + refresh tokens (creates or links user)
-- [x] P0 `POST /auth/oauth/apple` — exchange Apple authorization code for EventApp access + refresh tokens (creates or links user)
+- [x] P0 `POST /auth/oauth/google` — exchange Google authorization code for Wydarzka access + refresh tokens (creates or links user)
+- [x] P0 `POST /auth/oauth/apple` — exchange Apple authorization code for Wydarzka access + refresh tokens (creates or links user)
 - [x] P0 `POST /auth/password-reset/request` — send password reset email (accepts email, always returns 200 to prevent enumeration)
 - [x] P0 `POST /auth/password-reset/confirm` — reset password using token from email link (token, new_password)
 - [x] P0 `PATCH /auth/password` — change password for authenticated user (current_password, new_password); revokes all other sessions
@@ -516,7 +516,7 @@
 
 ### 1.6 Social sharing
 
-- [x] P1 Dynamic OG graphic generation per event (venue photo + overlay with name + date + EventApp logo) via Cloudflare Worker / satori
+- [x] P1 Dynamic OG graphic generation per event (venue photo + overlay with name + date + Wydarzka logo) via Cloudflare Worker / satori
 - [x] P0 Deep link routing service (resolve event URLs -> app or web)
 
 ### 1.7 Event submission
@@ -598,13 +598,13 @@
 
 > Mobile counterpart: [ROADMAP-mobile-b2c.md](./ROADMAP-mobile-b2c.md#18-deep-linking--universal-links)
 
-- [x] P0 Apple Universal Links: host `apple-app-site-association` file at `https://eventapp.dev/.well-known/apple-app-site-association`
+- [x] P0 Apple Universal Links: host `apple-app-site-association` file at `https://wydarzka.dev/.well-known/apple-app-site-association`
   - Configure `applinks` entries for event, venue, and password reset paths
   - Deploy via Cloudflare / Next.js public directory
-- [x] P0 Android App Links: host `assetlinks.json` file at `https://eventapp.dev/.well-known/assetlinks.json`
+- [x] P0 Android App Links: host `assetlinks.json` file at `https://wydarzka.dev/.well-known/assetlinks.json`
   - Configure `delegate_permission/common.handle_all_urls` with app package name and SHA-256 fingerprint
-- [x] P0 Deep link routing service: resolve `https://eventapp.dev/event/:id` -> open in app (if installed) or web (if not)
-- [x] P0 Password reset deep link: `https://eventapp.dev/reset-password?token=xxx` -> app screen or web page
+- [x] P0 Deep link routing service: resolve `https://wydarzka.dev/event/:id` -> open in app (if installed) or web (if not)
+- [x] P0 Password reset deep link: `https://wydarzka.dev/reset-password?token=xxx` -> app screen or web page
 - [x] P1 Deferred deep linking: user without the app clicks a link -> app store -> after install, app opens the original target screen
 
 ### 1.9 Internationalization (i18n)
@@ -752,7 +752,7 @@
 - [ ] P2 Generate ready-made graphics per event via Cloudflare Worker with satori:
   - Format 1080x1080 (Instagram feed)
   - Format 1080x1920 (Instagram Stories)
-  - Content: venue photo as background + overlay with event name + date + EventApp logo
+  - Content: venue photo as background + overlay with event name + date + Wydarzka logo
 
 ### 2.8 Image Processing Pipeline
 

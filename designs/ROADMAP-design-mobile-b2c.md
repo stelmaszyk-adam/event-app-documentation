@@ -1,4 +1,4 @@
-# EventApp — Mobile B2C Figma Design Roadmap
+# Wydarzka — Mobile B2C Figma Design Roadmap
 
 > **Platform:** iOS + Android (React Native CLI)
 > **Design system:** The Radiant Curator (see [DESIGN.md](./DESIGN.md))

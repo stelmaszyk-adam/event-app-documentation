@@ -1,4 +1,4 @@
-# EventApp — B2C Marketing Plan
+# Wydarzka — B2C Marketing Plan
 
 > **Target:** Consumer users (event-goers) in Polish cities
 > **Goal:** 1,000+ events on the map, strong D7/D30 retention, organic growth loop
@@ -51,19 +51,19 @@ Web B2C launches with SSR pages optimized for search from day one. This is the s
 **Platforms (priority order):**
 
 1. **Instagram** — primary visual channel
-   - Handle: `@eventapp.pl`
+   - Handle: `@wydarzka.pl`
    - Content: event highlights, venue spotlights, weekend roundups
    - Reels: 15-30s event teasers, "best events this weekend" compilations
    - Stories: daily "what's happening today" polls, countdowns to big events
 
 2. **TikTok** — discovery and virality
-   - Handle: `@eventapp.pl`
+   - Handle: `@wydarzka.pl`
    - Content: "hidden gem" events, "things to do in [city]" format
    - Trend-jacking: local event reactions, "POV: you discover [event]"
 
 3. **Facebook** — community building + events
-   - Page: EventApp
-   - Groups: "EventApp [City]" for each launch city (start with Poznan)
+   - Page: Wydarzka
+   - Groups: "Wydarzka [City]" for each launch city (start with Poznan)
    - Cross-post events to Facebook Events for additional reach
 
 **Actions:**
@@ -74,7 +74,7 @@ Web B2C launches with SSR pages optimized for search from day one. This is the s
 
 ### 2.3 Landing Page & Waitlist
 
-Before the app is live, deploy a simple landing page at `eventapp.dev`:
+Before the app is live, deploy a simple landing page at `wydarzka.dev`:
 
 - Hero: "Discover events in your city" with city selector
 - Preview: map screenshot with pins, 3-4 sample event cards
@@ -83,7 +83,7 @@ Before the app is live, deploy a simple landing page at `eventapp.dev`:
 - Social proof: "1,000+ events already mapped"
 
 **Actions:**
-- [ ] Deploy landing page at `eventapp.dev` (Week 10)
+- [ ] Deploy landing page at `wydarzka.dev` (Week 10)
 - [ ] Set up email list (Resend or Mailchimp free tier)
 - [ ] Run a small Instagram/Facebook ad campaign targeting Poznan (50-100 PLN budget) to build initial waitlist
 
@@ -93,8 +93,8 @@ Before the app is live, deploy a simple landing page at `eventapp.dev`:
 
 - [ ] Compile list of 50 target venues in Poznan (bars, clubs, theaters, galleries, concert halls)
 - [ ] Personal outreach to 10 key venues (phone calls, in-person visits)
-- [ ] Offer: "Your venue is already on EventApp with [X] followers. Claim it for free to manage your events."
-- [ ] Provide venues with branded "Find us on EventApp" window stickers and table tents
+- [ ] Offer: "Your venue is already on Wydarzka with [X] followers. Claim it for free to manage your events."
+- [ ] Provide venues with branded "Find us on Wydarzka" window stickers and table tents
 
 ---
 
@@ -112,7 +112,7 @@ Before the app is live, deploy a simple landing page at `eventapp.dev`:
 |---------|--------|--------|
 | Instagram | Launch post + 5 Stories + Reel "1000 events on one map" | Organic |
 | TikTok | "Things to do in Poznan this weekend" video series (3 videos) | Organic |
-| Facebook | Launch announcement in Poznan groups + EventApp group | Organic |
+| Facebook | Launch announcement in Poznan groups + Wydarzka group | Organic |
 | Instagram Ads | Targeted ads in Poznan: 18-35, interests: events, nightlife, culture | 200-500 PLN/week |
 | Google Ads | Search ads on "wydarzenia Poznan", "co robic w weekend Poznan" | 200-500 PLN/week |
 | Local media | Press release to Poznan city blogs (epoznan.pl, poznan.naszemiasto.pl) | Free |
@@ -122,7 +122,7 @@ Before the app is live, deploy a simple landing page at `eventapp.dev`:
 
 - [ ] Publish app on App Store + Google Play
 - [ ] Switch landing page to full web B2C experience
-- [ ] Send email to waitlist: "EventApp is live in Poznan!"
+- [ ] Send email to waitlist: "Wydarzka is live in Poznan!"
 - [ ] Post across all social channels simultaneously
 - [ ] Activate Instagram + Google Ads campaigns
 - [ ] Share in local Reddit communities (r/poznan, r/poland)
@@ -201,14 +201,14 @@ Google search: "koncerty Poznan weekend"
 ### 4.3 App Store Optimization (ASO)
 
 **App Store (iOS):**
-- Title: "EventApp — Events Near You"
+- Title: "Wydarzka — Events Near You"
 - Subtitle: "Find events in your area"
 - Keywords: events, concerts, nightlife, things to do, weekend, nearby, Poznan, Krakow, Warszawa
 - Screenshots: map view, event detail, venue profile, category filters
 - Description: bilingual (PL primary, EN secondary)
 
 **Google Play:**
-- Title: "EventApp — Discover Events Nearby"
+- Title: "Wydarzka — Discover Events Nearby"
 - Short description: "Find concerts, parties, art, food events and more on one map"
 - Feature graphic: map with colored pins + event cards
 - Screenshots: same as iOS, adapted for Android frame
@@ -221,7 +221,7 @@ Google search: "koncerty Poznan weekend"
 
 ### 4.4 Community Building
 
-**EventApp Scouts Program:**
+**Wydarzka Scouts Program:**
 - Users who submit event tips earn "Scout" and "Top Scout" badges
 - Monthly leaderboard: "Top Scouts in [city]" — featured on social media
 - Top Scouts get early access to new features and a "Scout" badge on their profile
@@ -234,7 +234,7 @@ Google search: "koncerty Poznan weekend"
 
 ### 4.5 Partnerships
 
-| Partner Type | Value for EventApp | Value for Partner | Examples |
+| Partner Type | Value for Wydarzka | Value for Partner | Examples |
 |-------------|-------------------|-------------------|----------|
 | Venue owners | Content supply, venue claims | Free event promotion, follower growth | SQ Klub, Stary Browar, Fabryka |
 | City portals | Data for aggregation pipeline | Traffic referral, app integration | epoznan.pl, krakow.pl |
@@ -260,7 +260,7 @@ Google search: "koncerty Poznan weekend"
 **Instagram/Facebook:**
 - Carousel: "5 events you didn't know about in [city] this weekend"
 - Video: 15s map animation showing pins appearing on the city map
-- Story: interactive poll "What are you doing this weekend?" -> swipe up to EventApp
+- Story: interactive poll "What are you doing this weekend?" -> swipe up to Wydarzka
 
 **Google Search:**
 - Target high-intent queries: "wydarzenia [miasto]", "co robic [miasto] weekend"
@@ -337,7 +337,7 @@ When expanding to a new city, follow this checklist:
 - [ ] Local media contacts compiled (city blogs, radio stations)
 
 ### Launch
-- [ ] Social media announcement: "EventApp is now in [city]!"
+- [ ] Social media announcement: "Wydarzka is now in [city]!"
 - [ ] Post in all identified local groups and communities
 - [ ] Email subscribers in the city (from waitlist or IP-based targeting)
 - [ ] Instagram/Facebook ad campaign targeting the city (200-500 PLN/week for 2 weeks)

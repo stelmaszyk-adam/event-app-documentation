@@ -1,4 +1,4 @@
-// Screens for eventapp Web B2C
+// Screens for wydarzka Web B2C
 const { useState: _us, useEffect: _ue, useMemo: _um, useRef: _ur } = React;
 
 // =============================================================

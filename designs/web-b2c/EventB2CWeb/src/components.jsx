@@ -1,4 +1,4 @@
-// Shared components for eventapp Web B2C
+// Shared components for wydarzka Web B2C
 const { useState, useEffect, useRef, useMemo } = React;
 
 // ---------- ICONS FROM CATEGORY ----------
@@ -14,7 +14,7 @@ function Logo({ onClick }) {
   return (
     <button onClick={onClick} style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
       <span className="logo-glyph">E</span>
-      <span className="logo-wordmark">eventapp</span>
+      <span className="logo-wordmark">wydarzka</span>
     </button>
   );
 }
@@ -265,7 +265,7 @@ function AppFooter() {
           <div className="footer-brand">
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
               <span className="logo-glyph">E</span>
-              <span className="logo-wordmark">eventapp</span>
+              <span className="logo-wordmark">wydarzka</span>
             </div>
             <p>Odkrywaj koncerty, kluby, wystawy i wydarzenia w polskich miastach. Twoja lokalna scena, w jednym miejscu.</p>
             <div className="footer-app-badges">
@@ -319,7 +319,7 @@ function AppFooter() {
           </div>
         </div>
         <div className="app-footer-bottom">
-          <span>© 2026 eventapp · Wszystkie prawa zastrzeżone</span>
+          <span>© 2026 wydarzka · Wszystkie prawa zastrzeżone</span>
           <div className="social-row">
             <button className="btn-icon" aria-label="Instagram"><Icon.Instagram /></button>
             <button className="btn-icon" aria-label="Facebook"><Icon.Facebook /></button>
