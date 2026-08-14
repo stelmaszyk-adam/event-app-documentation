@@ -178,6 +178,61 @@
 
 > Admin panel is IP-restricted and used only by internal team members. PostHog is not integrated (no analytics tracking on admin panel). No cookie consent banner needed — only essential cookies (auth session) are used.
 
+### 3.9 Blog Moderation & Admin Authorship
+
+> **Goal:** Admins moderate organizer-submitted blog posts (approve / reject) and can write their own city-guide and editorial articles published immediately without moderation.
+>
+> Backend counterpart: [ROADMAP-backend.md](./ROADMAP-backend.md#25-blog-week-7-9)
+> Web B2B counterpart: [ROADMAP-web-b2b.md](./ROADMAP-web-b2b.md#25-blog-editor)
+> Web B2C counterpart: [ROADMAP-web-b2c.md](./ROADMAP-web-b2c.md#25-blog-pages)
+
+#### Routes
+
+```
+app/(dashboard)/blog/page.tsx              -- all posts DataTable (any status)
+app/(dashboard)/blog/moderation/page.tsx   -- pending_review queue
+app/(dashboard)/blog/new/page.tsx          -- admin creates post (published immediately)
+app/(dashboard)/blog/[id]/page.tsx         -- post detail + approve/reject actions
+app/(dashboard)/blog/[id]/edit/            -- admin edits any post
+```
+
+#### Moderation queue
+
+- [ ] P1 `useGetAdminBlogModeration()` orval TanStack Query hook — `GET /admin/blog/moderation`; `refetchInterval: 30000` (matches existing event moderation queue polling pattern from section 3.1)
+- [ ] P1 **Per-post moderation card** shows:
+  - Post title, excerpt, category badge, reading time
+  - Author info: avatar, name, venue name, account join date, prior post counts (approved / rejected)
+  - Featured image thumbnail
+  - Rendered preview of the first 200 words (server-side `generateHTML()` call, read-only Tiptap)
+  - Action buttons: **Approve** (green, calls `PATCH /admin/blog/:id/approve`) | **Reject** (opens modal with `rejection_reason` textarea, then `PATCH /admin/blog/:id/reject`) | **Edit** (navigates to editor)
+- [ ] P1 **Sidebar badge:** pending review count from `blog:moderation:count` Redis key, surfaced via `GET /admin/blog/moderation` `meta.total` — same badge pattern as event moderation queue (section 3.1)
+
+#### All posts DataTable
+
+- [ ] P1 `GET /admin/blog` — all posts, any status; cursor-based pagination
+- [ ] P1 DataTable columns: Title, Author (name + venue), Author Type (`organizer` / `admin`), Status badge, Category, Published date, Views, Actions (Edit, Delete)
+- [ ] P1 Filters: status, author_type, category; search by title; sort by published_at, view_count, created_at
+
+#### Admin blog editor
+
+- [ ] P1 Same Tiptap setup as organizer editor (section 2.5.3 in Web B2B roadmap) plus:
+  - **`Callout` block extension** — editorial highlight box styled with secondary/tertiary tokens (for city guide tips and roundup highlights)
+  - No venue association required (admin articles are not venue-scoped)
+  - No moderation step — `POST /admin/blog` publishes immediately; admin can also save as `draft` for review before publishing
+  - Status field: admin can set directly to `published` or `draft`
+  - Locale selector: PL / EN
+
+#### Audit log
+
+- [ ] P1 All admin blog actions recorded in existing `audit_log` infrastructure (ROADMAP-backend §3.2): new action types `blog_post_approved`, `blog_post_rejected`, `blog_post_edited_by_admin`, `blog_post_deleted`
+
+#### MSW mock handlers
+
+- [ ] P1 `GET /admin/blog/moderation` → 5 pending posts
+- [ ] P1 `PATCH /admin/blog/:id/approve` → 200 with updated post
+- [ ] P1 `PATCH /admin/blog/:id/reject` → 200 with `status: 'rejected'`
+- [ ] P1 `GET /admin/blog` → 20 posts of mixed statuses
+
 ---
 
 ## Phase 4 — Testing and Launch (Week 9-12)

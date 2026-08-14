@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <title>eventapp · Mobile Preview</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="assets/colors_and_type.css">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #0E0E1A; font-family: var(--font-sans); }
+    .stage {
+      min-height: 100vh;
+      padding: 56px 32px 64px;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 32px;
+    }
+    .header {
+      text-align: center; color: #fff; max-width: 720px;
+    }
+    .header .eyebrow {
+      font: 600 11px/1 var(--font-sans);
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: #A97EF8;
+      margin-bottom: 12px;
+    }
+    .header h1 {
+      font: 700 32px/1.15 var(--font-sans);
+      letter-spacing: -0.6px;
+      margin: 0 0 10px;
+    }
+    .header p {
+      font: 400 15px/1.55 var(--font-sans);
+      color: rgba(255,255,255,0.65);
+      margin: 0;
+      max-width: 560px;
+      margin-inline: auto;
+    }
+    .row {
+      display: flex; gap: 28px; align-items: flex-start;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .phone-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+    }
+    .phone-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px;
+      color: #fff;
+      font: 500 12px/1 var(--font-sans);
+      letter-spacing: 0.2px;
+    }
+    .phone-label .step {
+      width: 18px; height: 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #6C3FEB, #A97EF8);
+      color: #fff;
+      font: 700 10px/1 var(--font-sans);
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .phone-frame {
+      width: 402px; height: 874px;
+      background: #000;
+      border-radius: 56px;
+      padding: 12px;
+      box-shadow:
+        0 0 0 2px #2A2A33,
+        0 0 0 8px #0A0A10,
+        0 30px 80px rgba(0,0,0,0.55),
+        0 8px 24px rgba(108,63,235,0.18);
+      position: relative;
+    }
+    .phone-screen {
+      width: 100%; height: 100%;
+      border-radius: 44px;
+      overflow: hidden;
+      background: var(--surface-bg);
+      position: relative;
+    }
+    .phone-screen iframe {
+      width: 100%; height: 100%;
+      border: 0;
+      display: block;
+    }
+    .notch {
+      position: absolute;
+      top: 22px; left: 50%;
+      transform: translateX(-50%);
+      width: 120px; height: 32px;
+      background: #000;
+      border-radius: 999px;
+      z-index: 5;
+    }
+    .home-indicator {
+      position: absolute;
+      bottom: 18px; left: 50%;
+      transform: translateX(-50%);
+      width: 134px; height: 5px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.85);
+      z-index: 5;
+      mix-blend-mode: difference;
+    }
+    .footer-note {
+      max-width: 640px; text-align: center;
+      font: 400 13px/1.6 var(--font-sans);
+      color: rgba(255,255,255,0.45);
+    }
+    .footer-note code {
+      font: 500 12px/1 var(--font-mono);
+      color: #A97EF8;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(169,126,248,0.1);
+    }
+  </style>
+  <script>
+    // Suppress benign ResizeObserver browser warning emitted from iframes
+    const _resizeObsRe = /ResizeObserver loop/;
+    window.addEventListener('error', function(e) {
+      if (e.message && _resizeObsRe.test(e.message)) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        return true;
+      }
+    }, true);
+    const _origOnError = window.onerror;
+    window.onerror = function(msg, ...rest) {
+      if (typeof msg === 'string' && _resizeObsRe.test(msg)) return true;
+      return _origOnError ? _origOnError.call(this, msg, ...rest) : false;
+    };
+  </script>
+</head>
+<body>
+  <div class="stage">
+    <div class="header">
+      <div class="eyebrow">eventapp · Mobile responsive</div>
+      <h1>How it looks on a phone</h1>
+      <p>The Web B2C site uses a mobile-first responsive layout — below 768px the map collapses, the header trims to logo + city, and detail pages stack vertically. Each frame below is a live iframe of <code style="font-family: var(--font-mono); font-size: 12px; color: #A97EF8;">index.html</code> at 402&nbsp;×&nbsp;874 (iPhone Pro).</p>
+    </div>
+
+    <div class="row">
+      <div class="phone-wrap">
+        <div class="phone-label"><span class="step">1</span> Wyszukiwarka — home</div>
+        <div class="phone-frame">
+          <div class="notch"></div>
+          <div class="phone-screen">
+            <iframe src="index.html#home" title="Home screen — mobile"></iframe>
+          </div>
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+
+      <div class="phone-wrap">
+        <div class="phone-label"><span class="step">2</span> Szczegóły wydarzenia</div>
+        <div class="phone-frame">
+          <div class="notch"></div>
+          <div class="phone-screen">
+            <iframe src="index.html#event/e1" title="Event detail — mobile"></iframe>
+          </div>
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+
+      <div class="phone-wrap">
+        <div class="phone-label"><span class="step">3</span> Profil miejsca</div>
+        <div class="phone-frame">
+          <div class="notch"></div>
+          <div class="phone-screen">
+            <iframe src="index.html#venue/v3" title="Venue profile — mobile"></iframe>
+          </div>
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Live frames — scroll inside any phone to explore. The mobile behaviour is driven by the existing media queries in <code>assets/app.css</code> (<code>@media (max-width: 767px)</code>). Open <code>index.html</code> directly and narrow the window to confirm.
+    </div>
+  </div>
+</body>
+</html>

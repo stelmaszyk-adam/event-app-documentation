@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<title>eventapp dla organizatorów — Twoje miejsce już jest na mapie</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Darmowa platforma do publikacji wydarzeń w 7 polskich miastach. Mapa, powiadomienia push, analityka — bez prowizji.">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--surface-bg); }
+  body {
+    font-family: var(--font-sans);
+    color: var(--on-surface);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 9999px; border: 2px solid var(--surface-bg); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gray-300); }
+  ::selection { background: var(--purple-200); color: var(--purple-900); }
+
+  @keyframes mFadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes mPulseDot {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.7; }
+  }
+  @keyframes mGradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  @keyframes mFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes mShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  @keyframes mPing {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; }
+  button:focus-visible, a:focus-visible {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Section layout helpers */
+  .mw { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600; letter-spacing: 1.4px;
+    text-transform: uppercase; color: var(--brand-primary);
+  }
+  .eyebrow::before {
+    content: ""; width: 24px; height: 1.5px; background: var(--brand-primary);
+    display: inline-block;
+  }
+  .h-display {
+    font-size: clamp(40px, 5.6vw, 72px);
+    font-weight: 700;
+    letter-spacing: -1.5px;
+    line-height: 1.02;
+    color: var(--on-surface);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .h-section {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.05;
+    color: var(--on-surface);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .lead {
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--on-surface-variant);
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #6C3FEB 0%, #8C56F4 40%, #A97EF8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Inline reveal */
+  .reveal { opacity: 0; animation: mFadeUp 700ms var(--ease-out) forwards; }
+
+  /* Dotted grid background */
+  .dot-grid {
+    background-image: radial-gradient(circle, var(--gray-200) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="react" src="marketing.jsx"></script>
+  <script type="text/babel" data-presets="react" src="marketing-2.jsx"></script>
+  <script type="text/babel" data-presets="react" src="marketing-3.jsx"></script>
+
+  <template id="__bundler_thumbnail">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+      <defs>
+        <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0%" stop-color="#6C3FEB"/>
+          <stop offset="100%" stop-color="#A97EF8"/>
+        </linearGradient>
+      </defs>
+      <rect width="200" height="200" fill="#F8F8FB"/>
+      <circle cx="100" cy="100" r="62" fill="url(#g)"/>
+      <text x="100" y="118" text-anchor="middle" font-family="system-ui" font-weight="700"
+        font-size="56" fill="#fff">E</text>
+    </svg>
+  </template>
+</body>
+</html>

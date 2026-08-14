@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<title>eventapp · Blog — lista (redesign bento)</title>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="assets/colors_and_type.css">
+<style>
+body{margin:0;font-family:var(--font-sans);color:var(--on-surface);-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+img{display:block;width:100%;height:100%;object-fit:cover}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+a{color:var(--brand-primary);text-decoration:none}a:hover{color:var(--purple-600)}
+.frame{position:absolute;background:var(--surface-bg);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg)}
+.flabel{position:absolute;white-space:nowrap;font:var(--type-overline);letter-spacing:var(--tracking-overline);text-transform:uppercase;color:var(--gray-500)}
+/* tokens as classes */
+.display-lg{font:700 52px/1.06 var(--font-sans);letter-spacing:-1.4px}
+.display-md{font:700 40px/1.12 var(--font-sans);letter-spacing:-1px}
+.title-lg{font:600 22px/1.25 var(--font-sans);letter-spacing:-.5px}
+.title-sm{font:600 17px/1.3 var(--font-sans);letter-spacing:-.3px}
+.label-md{font:600 12px/16px var(--font-sans);letter-spacing:1.2px;text-transform:uppercase}
+.clamp1{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ex{font:var(--type-body-m);letter-spacing:var(--tracking-body-m);color:var(--on-surface-variant)}
+.spacer{flex:1}
+/* chrome */
+.bar{display:flex;align-items:center;gap:14px;padding:0 40px;height:68px;background:var(--surface-high)}
+.bar svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.glyph{width:28px;height:28px;border-radius:8px;background:var(--brand-gradient);color:#fff;display:grid;place-items:center;font:700 15px var(--font-sans)}
+.word{font:700 17px var(--font-sans);letter-spacing:-.4px}
+.citysel{display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:var(--radius-full);background:var(--surface-mid);font:var(--type-label-m)}
+.search{display:flex;align-items:center;gap:9px;padding:10px 16px;border-radius:var(--radius-full);background:var(--surface-low);color:var(--on-surface-muted);font:var(--type-body-m);width:300px}
+.orglink{display:inline-flex;align-items:center;gap:4px;font:var(--type-label-m);color:var(--on-surface-variant)}
+.lang{display:flex;padding:3px;border-radius:var(--radius-full);background:var(--surface-mid);font:var(--type-label-s);letter-spacing:.3px}
+.lang span{padding:5px 10px;border-radius:var(--radius-full);color:var(--on-surface-variant)}
+.lang span.on{background:var(--surface-high);color:var(--on-surface);font-weight:600;box-shadow:var(--shadow-sm)}
+.pill-text{font:var(--type-label-m)}
+.pill-ghost{padding:9px 16px;border-radius:var(--radius-full);background:var(--surface-mid);font:var(--type-label-m)}
+.blogtab{position:relative;font:600 15px var(--font-sans);letter-spacing:-.2px;padding:0 2px}
+.blogtab::after{content:"";position:absolute;left:0;right:0;bottom:-25px;height:3px;border-radius:3px;background:var(--brand-primary)}
+/* bands — tonal shifts, no borders */
+.band{padding:36px 40px 40px;display:flex;flex-direction:column;gap:22px}
+.band.bg{background:var(--surface-bg)}
+.band.low{background:var(--surface-low)}
+.band.high{background:var(--surface-high)}
+.band.deep{background:var(--purple-50)}
+.sechead{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
+.sechead h2{margin:0;font:700 27px/1.15 var(--font-sans);letter-spacing:-.8px}
+.sechead p{margin:6px 0 0;font:var(--type-body-m);color:var(--on-surface-variant)}
+.seclink{font:var(--type-label-m);color:var(--brand-primary);display:inline-flex;align-items:center;gap:5px;flex:none}
+.eyebrow{display:flex;align-items:center;gap:10px;color:var(--on-surface-variant)}
+.tagpill{background:var(--brand-primary);color:#fff;padding:6px 12px;border-radius:var(--radius-full);font:600 11px/1 var(--font-sans);letter-spacing:1.1px;text-transform:uppercase}
+.tagpill.amber{background:var(--color-tertiary)}
+.tagpill.glass{background:var(--glass-heavy);color:var(--gray-900);backdrop-filter:blur(var(--backdrop-blur))}
+.chiprow{display:flex;gap:10px;flex-wrap:wrap}
+.chip{padding:10px 18px;border-radius:var(--radius-full);background:var(--surface-mid);font:var(--type-label-m)}
+.chip.on{background:var(--brand-primary);color:#fff;box-shadow:var(--shadow-brand)}
+.av{width:30px;height:30px;border-radius:var(--radius-full);display:grid;place-items:center;font:600 11px var(--font-sans);flex:none;background:var(--purple-200);color:var(--purple-800)}
+.av.amber{background:var(--amber-200);color:var(--amber-700)}
+.av.sm{width:24px;height:24px;font-size:10px}
+.byline{display:flex;align-items:center;gap:9px}
+.shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,26,.93) 0%,rgba(7,7,26,.64) 40%,rgba(7,7,26,.04) 82%)}
+.shade.soft{background:linear-gradient(to top,rgba(7,7,26,.86) 0%,rgba(7,7,26,.34) 55%,rgba(7,7,26,0) 95%)}
+.onimg{position:relative;color:#fff;display:flex;flex-direction:column;gap:11px}
+.onimg .label-md{color:rgba(255,255,255,.76)}
+.onimg .ex{color:rgba(255,255,255,.76)}
+/* 1 — discover bento */
+.bento{display:grid;grid-template-columns:1.72fr 1fr 1fr;grid-template-rows:auto auto;gap:20px}
+.cover{grid-row:1/3;position:relative;border-radius:var(--radius-xl);overflow:hidden;background:var(--gray-300);min-height:600px;display:flex;flex-direction:column;justify-content:flex-end}
+.cover>img{position:absolute;inset:0}
+.cover .onimg{padding:38px}
+.spot{background:var(--surface-high);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-md);display:flex;flex-direction:column}
+.spot .th{height:186px;flex:none;background:var(--gray-200)}
+.spot .b{padding:20px 20px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
+.spot.tall .th{height:236px}
+.spot.wide{grid-column:2/4;flex-direction:row}
+.spot.wide .th{height:auto;width:246px}
+.spot.wide .b{padding:24px 26px;justify-content:center;gap:12px}
+.metaline{display:flex;align-items:center;gap:9px;color:var(--on-surface-variant);font:600 12px/16px var(--font-sans);letter-spacing:1.2px;text-transform:uppercase}
+.dot{width:4px;height:4px;border-radius:50%;background:var(--gray-300);flex:none}
+/* 2 — trending carousel */
+.rail{display:flex;gap:20px;overflow:hidden;margin:0 -40px;padding:0 40px}
+.tcard{width:322px;flex:none;background:var(--surface-high);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-md);display:flex;flex-direction:column}
+.tcard .th{height:174px;background:var(--gray-200);position:relative;flex:none}
+.tcard .rank{position:absolute;left:16px;top:16px;width:34px;height:34px;border-radius:var(--radius-full);background:var(--glass-heavy);backdrop-filter:blur(var(--backdrop-blur));display:grid;place-items:center;font:700 15px var(--font-sans);color:var(--gray-900)}
+.tcard .b{padding:20px 20px 24px;display:flex;flex-direction:column;gap:10px;flex:1}
+.railnav{display:flex;gap:8px}
+.rbtn{width:40px;height:40px;border-radius:var(--radius-full);background:var(--surface-high);box-shadow:var(--shadow-md);display:grid;place-items:center;color:var(--on-surface-variant)}
+.rbtn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dots{display:flex;gap:6px;align-items:center}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--gray-300)}
+.dots i.on{width:22px;border-radius:var(--radius-full);background:var(--brand-primary)}
+/* ad — banner */
+.adband{padding:0 40px;background:var(--surface-low)}
+.adbanner{position:relative;border-radius:var(--radius-xl);overflow:hidden;height:264px;background:var(--gray-300);display:flex;align-items:center}
+.adbanner>img{position:absolute;inset:0}
+.adbanner .veil{position:absolute;inset:0;background:linear-gradient(100deg,rgba(33,18,90,.92) 0%,rgba(33,18,90,.72) 46%,rgba(33,18,90,.12) 82%)}
+.adbanner .c{position:relative;padding:0 44px;color:#fff;display:flex;flex-direction:column;gap:12px;max-width:640px}
+.adtag{align-self:flex-start;display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:var(--radius-full);background:rgba(255,255,255,.16);color:rgba(255,255,255,.88);font:600 11px/1 var(--font-sans);letter-spacing:1.1px;text-transform:uppercase}
+.adcta{align-self:flex-start;margin-top:4px;padding:12px 24px;border-radius:var(--radius-full);background:#fff;color:var(--purple-700);font:var(--type-label-m);font-weight:600}
+/* 2b — topics */
+.topics{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.topic{position:relative;height:132px;border-radius:var(--radius-xl);overflow:hidden;background:var(--gray-300);display:flex;flex-direction:column;justify-content:flex-end}
+.topic>img{position:absolute;inset:0}
+.topic .tint{position:absolute;inset:0}
+.topic .t1{background:linear-gradient(to top,rgba(33,18,90,.9),rgba(33,18,90,.34))}
+.topic .t2{background:linear-gradient(to top,rgba(184,68,0,.86),rgba(184,68,0,.28))}
+.topic .t3{background:linear-gradient(to top,rgba(7,7,26,.88),rgba(7,7,26,.3))}
+.topic .c{position:relative;padding:16px;color:#fff;display:flex;flex-direction:column;gap:4px}
+.topic .n{font:600 11px/1 var(--font-sans);letter-spacing:.6px;color:rgba(255,255,255,.72)}
+.topic.big{grid-column:span 2;height:132px}
+/* 3 — mixed feed */
+.feed{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
+.fcard{position:relative;border-radius:var(--radius-xl);overflow:hidden;background:var(--surface-high);box-shadow:var(--shadow-md);display:flex;flex-direction:column}
+.fcard.img{background:var(--gray-300);justify-content:flex-end}
+.fcard.img>img{position:absolute;inset:0}
+.fcard.img .onimg{padding:26px}
+.fcard .th{background:var(--gray-200);flex:none;position:relative}
+.fcard .b{padding:20px 22px 24px;display:flex;flex-direction:column;gap:10px;flex:1}
+.play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:var(--radius-full);background:var(--glass-heavy);backdrop-filter:blur(var(--backdrop-blur));display:grid;place-items:center}
+.play::after{content:"";width:0;height:0;border-left:15px solid var(--gray-900);border-top:9px solid transparent;border-bottom:9px solid transparent;margin-left:4px}
+.dur{position:absolute;right:14px;bottom:14px;padding:5px 10px;border-radius:var(--radius-full);background:rgba(7,7,26,.72);color:#fff;font:600 11px/1 var(--font-sans);letter-spacing:.6px}
+.minis{background:var(--surface-high);border-radius:var(--radius-xl);box-shadow:var(--shadow-md);padding:8px 18px 14px;display:flex;flex-direction:column}
+.minis h4{margin:0;padding:12px 0 8px;font:600 12px/16px var(--font-sans);letter-spacing:1.2px;text-transform:uppercase;color:var(--on-surface-variant)}
+.mrow{display:flex;gap:14px;align-items:center;padding:13px 10px;margin:0 -10px;border-radius:var(--radius-lg)}
+.mrow:nth-child(odd){background:var(--surface-low)}
+.mrow .th{width:52px;height:52px;border-radius:var(--radius-md);overflow:hidden;flex:none;background:var(--gray-200)}
+.mrow .t{font:600 15px/1.28 var(--font-sans);letter-spacing:-.3px}
+/* event card inside feed */
+.ecard{background:var(--surface-high);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-md);display:flex;flex-direction:column}
+.ecard .th{height:158px;position:relative;background:var(--gray-200);flex:none}
+.ecard .date{position:absolute;left:14px;top:14px;padding:8px 11px;border-radius:var(--radius-md);background:var(--glass-heavy);backdrop-filter:blur(var(--backdrop-blur));text-align:center;color:var(--gray-900);line-height:1.05}
+.ecard .date b{display:block;font:700 17px var(--font-sans)}
+.ecard .date span{font:600 10px var(--font-sans);letter-spacing:1px;text-transform:uppercase;color:var(--gray-600)}
+.ecard .b{padding:18px 20px 20px;display:flex;flex-direction:column;gap:9px;flex:1}
+.ecard .foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto}
+.price{font:600 14px var(--font-sans);color:var(--brand-primary)}
+.cta{padding:10px 18px;border-radius:var(--radius-full);background:var(--brand-primary);color:#fff;font:var(--type-label-m);box-shadow:var(--shadow-brand)}
+.evtag{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:var(--radius-full);background:var(--brand-primary-container);color:var(--purple-700);font:600 11px/1 var(--font-sans);letter-spacing:.9px;text-transform:uppercase}
+/* ad — native card */
+.adcard{background:var(--amber-50);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-md);display:flex;flex-direction:column}
+.adcard .th{height:206px;background:var(--gray-200);position:relative;flex:none}
+.adcard .sp{position:absolute;left:16px;top:16px;padding:6px 11px;border-radius:var(--radius-full);background:var(--glass-heavy);backdrop-filter:blur(var(--backdrop-blur));font:600 10px/1 var(--font-sans);letter-spacing:1.2px;text-transform:uppercase;color:var(--gray-800)}
+.adcard .b{padding:20px 22px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
+.brandrow{display:flex;align-items:center;gap:10px;margin-top:auto}
+.brandmark{width:30px;height:30px;border-radius:8px;background:var(--amber-200);color:var(--amber-700);display:grid;place-items:center;font:700 12px var(--font-sans);flex:none}
+.loadmore{align-self:center;padding:14px 34px;border-radius:var(--radius-full);background:var(--surface-high);box-shadow:var(--shadow-md);font:var(--type-label-m)}
+/* mobile */
+.m .band{padding:22px 20px 26px;gap:18px}
+.m .sechead h2{font:700 22px/1.18 var(--font-sans);letter-spacing:-.6px}
+.m .display-md{font:700 26px/1.18 var(--font-sans);letter-spacing:-.7px}
+.m .title-lg{font:600 19px/1.26 var(--font-sans);letter-spacing:-.4px}
+.m-bar{display:flex;align-items:center;gap:10px;padding:0 20px;height:56px;background:var(--surface-high)}
+.m-bar svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.m-search{display:flex;align-items:center;gap:8px;margin:12px 20px 0;padding:11px 14px;border-radius:var(--radius-full);background:var(--surface-low);color:var(--on-surface-muted);font:var(--type-body-m)}
+.m .bento{grid-template-columns:1fr;gap:14px}
+.m .cover{grid-row:auto;min-height:392px}
+.m .cover .onimg{padding:22px}
+.m .spot.wide{grid-column:auto}
+.m .spot.wide .th{width:122px}
+.m .spot.wide .b{padding:16px 18px;gap:8px}
+.m .spot .th{height:168px}
+.m .chiprow{flex-wrap:nowrap;overflow:hidden;margin:0 -20px;padding:0 20px}
+.m .chip{flex:none}
+.m .rail{margin:0 -20px;padding:0 20px;gap:14px}
+.m .tcard{width:268px}
+.m .adband{padding:0 20px}
+.m .adbanner{height:auto;padding:0}
+.m .adbanner .veil{background:linear-gradient(to top,rgba(33,18,90,.94) 0%,rgba(33,18,90,.7) 52%,rgba(33,18,90,.24) 100%)}
+.m .adbanner .c{padding:130px 22px 22px;max-width:none}
+.m .topics{grid-template-columns:1fr 1fr;gap:12px}
+.m .topic.big{grid-column:span 2;height:110px}
+.m .topic{height:110px}
+.m .feed{grid-template-columns:1fr;gap:14px}
+.m .feed>*{grid-column:auto!important}
+.m .fcard.img{min-height:344px}
+.m .loadmore{align-self:stretch;text-align:center}
+.tabbar{display:flex;justify-content:space-around;padding:10px 0 16px;background:var(--surface-high)}
+.tabbar span{width:44px;height:30px;border-radius:8px;background:var(--surface-mid)}
+.tabbar span.on{background:var(--brand-primary)}
+/* notes */
+.notes{position:absolute;width:420px;display:flex;flex-direction:column;gap:14px}
+.note{background:var(--surface-high);border-radius:var(--radius-xl);padding:22px;box-shadow:var(--shadow-md);display:flex;flex-direction:column;gap:8px}
+.note h3{margin:0;font:700 16px var(--font-sans);letter-spacing:-.3px}
+.note p{margin:0;font:var(--type-body-m);color:var(--gray-600);letter-spacing:var(--tracking-body-m)}
+.note code{font:var(--type-code);background:var(--surface-low);padding:2px 6px;border-radius:6px;color:var(--purple-700)}
+.note.ad{background:var(--amber-50)}
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail" data-bg-color="#6C3FEB"><svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="800" fill="#6C3FEB"/><rect x="140" y="180" width="520" height="440" rx="40" fill="#F3EEFF"/><rect x="690" y="180" width="370" height="200" rx="32" fill="#C9B0FC"/><rect x="690" y="420" width="370" height="200" rx="32" fill="#A97EF8"/></svg></template>
+
+<svg width="0" height="0" style="position:absolute" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 7-8 12-8 12s-8-5-8-12a8 8 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m20 20-3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol><symbol id="i-left" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol><symbol id="i-right" viewBox="0 0 24 24"><path d="m10 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol><symbol id="i-up" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol><symbol id="i-arr" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol></svg>
+
+<!-- ================= DESKTOP 1440 ================= -->
+<div class="flabel" style="left:60px;top:26px">Blog — lista · redesign bento · desktop 1440</div>
+<div class="frame" data-screen-label="Blog list · desktop" style="left:60px;top:56px;width:1440px">
+  <div class="bar">
+    <div style="display:flex;align-items:center;gap:10px"><span class="glyph">E</span><span class="word">eventapp</span></div>
+    <span class="citysel"><svg><use href="#i-pin"></use></svg>Poznań<svg><use href="#i-chev"></use></svg></span>
+    <span class="search"><svg><use href="#i-search"></use></svg>Szukaj wydarzeń, miejsc, artystów…</span>
+    <div class="spacer"></div>
+    <a class="blogtab" href="#">Blog</a>
+    <span class="pill-ghost" style="display:inline-flex;align-items:center;gap:6px"><svg><use href="#i-plus"></use></svg>Dodaj wydarzenie</span>
+    <a class="orglink" href="#">Dla Organizatorów<svg style="width:14px;height:14px"><use href="#i-up"></use></svg></a>
+    <span class="lang"><span class="on">PL</span><span>EN</span></span>
+    <span class="pill-text">Zaloguj się</span>
+    <span class="pill-ghost">Zarejestruj się</span>
+  </div>
+
+  <!-- 1. DISCOVER BENTO -->
+  <div class="band bg" style="padding-top:28px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px">
+      <div>
+        <div class="eyebrow"><span class="label-md">Blog</span><span style="color:var(--gray-300)">/</span><span class="label-md" style="color:var(--brand-primary)">Poznań</span></div>
+        <h2 style="margin:10px 0 0;font:700 34px/1.1 var(--font-sans);letter-spacing:-1px">Odkryj</h2>
+      </div>
+      <div class="chiprow" style="justify-content:flex-end;max-width:760px">
+        <span class="chip on">Wszystko</span><span class="chip">Nightlife</span><span class="chip">Kultura</span><span class="chip">Muzyka</span><span class="chip">Jedzenie</span><span class="chip">Sport</span><span class="chip">Wywiady</span>
+      </div>
+    </div>
+    <div class="bento">
+      <article class="cover">
+        <img src="assets/sample-event-techno.jpg" alt="">
+        <div class="shade"></div>
+        <div class="onimg">
+          <div style="display:flex;align-items:center;gap:12px"><span class="tagpill">Temat numeru</span><span class="label-md">17 sierpnia · 8 min czytania</span></div>
+          <h3 class="display-md" style="margin:0;max-width:20ch">Nowa fala poznańskich piwnic. Gdzie tańczy się do rana</h3>
+          <p class="ex" style="font:var(--type-body-l);max-width:52ch">Sześć klubów, które w ostatnim roku przedefiniowały nocną scenę miasta — i ludzie, którzy je prowadzą.</p>
+          <div class="byline" style="margin-top:6px"><span class="av">MK</span><span class="label-md" style="color:rgba(255,255,255,.86)">Marta Kowalczyk</span><span class="dot" style="background:rgba(255,255,255,.4)"></span><span class="label-md">12,4 tys. odsłon</span></div>
+        </div>
+      </article>
+      <article class="spot tall">
+        <div class="th"><img src="assets/sample-event-jazz.jpg" alt=""></div>
+        <div class="b">
+          <div class="metaline"><span style="color:var(--brand-primary)">Muzyka</span><span class="dot"></span><span>12 sierpnia</span></div>
+          <h3 class="title-lg" style="margin:0">Jazz wrócił do klubów. Przewodnik po siedmiu scenach</h3>
+          <div class="byline" style="margin-top:auto"><span class="av amber sm">TW</span><span class="ex">Tomasz Wieczorek</span></div>
+        </div>
+      </article>
+      <article class="spot">
+        <div class="th"><img src="assets/sample-event-rock.jpg" alt=""></div>
+        <div class="b">
+          <div class="metaline"><span style="color:var(--brand-primary)">Wywiady</span><span class="dot"></span><span>9 sierpnia</span></div>
+          <h3 class="title-lg" style="margin:0">„Bilety to nie wszystko" — rozmowa z bookerem</h3>
+          <p class="ex clamp2">Jak układa się line-up na jesień i dlaczego mniejsze sceny wygrywają z arenami.</p>
+          <div class="byline" style="margin-top:auto"><span class="av sm">PZ</span><span class="ex">Piotr Zieliński</span></div>
+        </div>
+      </article>
+      <article class="spot wide">
+        <div class="th"><img src="assets/sample-venue-klub-stodola.jpg" alt=""></div>
+        <div class="b">
+          <div class="metaline"><span style="color:var(--brand-primary)">Kultura</span><span class="dot"></span><span>5 sierpnia</span><span class="dot"></span><span>6 min</span></div>
+          <h3 class="title-lg" style="margin:0">Dwanaście wystaw, które warto zobaczyć przed końcem lata</h3>
+          <div class="byline"><span class="av amber sm">AN</span><span class="ex">Anna Nowak</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <!-- 2A. TRENDING RAIL (tonal shift) -->
+  <div class="band low">
+    <div class="sechead">
+      <div>
+        <h2>Na fali w tym tygodniu</h2>
+        <p>Najczęściej czytane teksty ostatnich siedmiu dni</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:18px">
+        <div class="dots"><i class="on"></i><i></i><i></i></div>
+        <div class="railnav"><span class="rbtn"><svg><use href="#i-left"></use></svg></span><span class="rbtn" style="color:var(--on-surface)"><svg><use href="#i-right"></use></svg></span></div>
+      </div>
+    </div>
+    <div class="rail">
+      <article class="tcard">
+        <div class="th"><img src="assets/sample-event-rock.jpg" alt=""><span class="rank">1</span></div>
+        <div class="b"><h3 class="title-lg" style="margin:0;font-size:24px">Gdzie zjeść po koncercie w centrum</h3><p class="ex clamp1">Dziesięć kuchni otwartych po 23:00.</p><span class="label-md" style="color:var(--on-surface-muted);margin-top:auto">4 min · Jedzenie</span></div>
+      </article>
+      <article class="tcard">
+        <div class="th"><img src="assets/sample-event-jazz.jpg" alt=""><span class="rank">2</span></div>
+        <div class="b"><h3 class="title-lg" style="margin:0;font-size:24px">Rezydentury, które warto śledzić</h3><p class="ex clamp1">Pięć nazwisk z piątkowych setów.</p><span class="label-md" style="color:var(--on-surface-muted);margin-top:auto">6 min · Nightlife</span></div>
+      </article>
+      <article class="tcard">
+        <div class="th"><img src="assets/sample-venue-klub-stodola.jpg" alt=""><span class="rank">3</span></div>
+        <div class="b"><h3 class="title-lg" style="margin:0;font-size:24px">Festiwalowy wrzesień w Wielkopolsce</h3><p class="ex clamp1">Kalendarz na cztery weekendy.</p><span class="label-md" style="color:var(--on-surface-muted);margin-top:auto">7 min · Festiwale</span></div>
+      </article>
+      <article class="tcard">
+        <div class="th"><img src="assets/sample-event-techno.jpg" alt=""><span class="rank">4</span></div>
+        <div class="b"><h3 class="title-lg" style="margin:0;font-size:24px">Jak kupować bilety bez pośredników</h3><p class="ex clamp1">Poradnik dla ostrożnych.</p><span class="label-md" style="color:var(--on-surface-muted);margin-top:auto">5 min · Poradniki</span></div>
+      </article>
+    </div>
+  </div>
+
+  <!-- SPACE B — MID-PAGE BANNER -->
+  <div class="adband" style="padding-bottom:40px">
+    <div class="adbanner">
+      <img src="assets/sample-venue-klub-stodola.jpg" alt="">
+      <div class="veil"></div>
+      <div class="c">
+        <span class="adtag">Materiał partnera</span>
+        <h3 class="title-lg" style="margin:0;font-size:30px;letter-spacing:-.8px;color:#fff">Karnet Jesień 2026 — cztery koncerty w cenie dwóch</h3>
+        <p class="ex" style="color:rgba(255,255,255,.8);max-width:46ch">Wspólna oferta ośmiu poznańskich klubów. Sprzedaż do 31 sierpnia.</p>
+        <span class="adcta">Zobacz karnet</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2B. TOPICS (tonal shift) -->
+  <div class="band deep">
+    <div class="sechead">
+      <div><h2>Przeglądaj tematy</h2><p>Dziewiętnaście działów redakcyjnych, od nocnej sceny do kuchni</p></div>
+      <a class="seclink" href="#">Wszystkie tematy<svg style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7"><use href="#i-arr"></use></svg></a>
+    </div>
+    <div class="topics">
+      <div class="topic big"><img src="assets/sample-event-techno.jpg" alt=""><div class="tint t1"></div><div class="c"><span class="label-md">Nightlife</span><span class="n">128 tekstów</span></div></div>
+      <div class="topic"><img src="assets/sample-event-jazz.jpg" alt=""><div class="tint t3"></div><div class="c"><span class="label-md">Muzyka</span><span class="n">214 tekstów</span></div></div>
+      <div class="topic"><img src="assets/sample-venue-klub-stodola.jpg" alt=""><div class="tint t1"></div><div class="c"><span class="label-md">Kultura</span><span class="n">96 tekstów</span></div></div>
+      <div class="topic"><img src="assets/sample-event-rock.jpg" alt=""><div class="tint t2"></div><div class="c"><span class="label-md">Jedzenie</span><span class="n">73 teksty</span></div></div>
+      <div class="topic"><img src="assets/sample-event-techno.jpg" alt=""><div class="tint t2"></div><div class="c"><span class="label-md">Sport</span><span class="n">41 tekstów</span></div></div>
+    </div>
+  </div>
+
+  <!-- 3. MIXED-MEDIA FEED -->
+  <div class="band bg" style="padding-bottom:56px;gap:20px">
+    <div class="sechead">
+      <div><h2>Najnowsze</h2><p>Artykuły, wideo i wydarzenia dopasowane do Poznania</p></div>
+      <div class="chiprow"><span class="chip on">Wszystko</span><span class="chip">Tylko wideo</span><span class="chip">Krótkie</span></div>
+    </div>
+    <div class="feed">
+      <!-- row 1 -->
+      <article class="fcard img" style="grid-column:span 5;min-height:420px">
+        <img src="assets/sample-event-jazz.jpg" alt=""><div class="shade"></div>
+        <div class="onimg">
+          <div class="metaline" style="color:rgba(255,255,255,.76)"><span>Muzyka</span><span class="dot" style="background:rgba(255,255,255,.4)"></span><span>dzisiaj</span></div>
+          <h3 class="title-lg" style="margin:0;font-size:27px;color:#fff">Jam session wrócił na Wildę. Cztery piwnice, jeden kalendarz</h3>
+          <p class="ex clamp2">Muzycy dzielą sprzęt i publiczność. Sprawdziliśmy, jak to działa w praktyce i kto płaci za wieczór.</p>
+          <div class="byline"><span class="av amber sm">TW</span><span class="label-md" style="color:rgba(255,255,255,.82)">Tomasz Wieczorek</span></div>
+        </div>
+      </article>
+      <article class="fcard" style="grid-column:span 4">
+        <div class="th" style="height:226px"><img src="assets/sample-event-rock.jpg" alt=""><span class="play"></span><span class="dur">6:24</span></div>
+        <div class="b">
+          <div class="metaline"><span style="color:var(--brand-primary)">Wideo</span><span class="dot"></span><span>2 dni temu</span></div>
+          <h3 class="title-lg" style="margin:0">Backstage: jedna próba przed trasą</h3>
+          <p class="ex clamp2">Zabraliśmy kamerę na ostatnią próbę zespołu przed jesiennym tournée.</p>
+          <div class="byline" style="margin-top:auto"><span class="av sm">PZ</span><span class="ex">Piotr Zieliński</span></div>
+        </div>
+      </article>
+      <div class="minis" style="grid-column:span 3">
+        <h4>W skrócie</h4>
+        <div class="mrow"><div class="th"><img src="assets/sample-event-techno.jpg" alt=""></div><span class="t clamp2">Klub Basen wydłuża godziny w weekendy</span></div>
+        <div class="mrow"><div class="th"><img src="assets/sample-event-jazz.jpg" alt=""></div><span class="t clamp2">Trzy nowe sceny na Jeżycach do końca roku</span></div>
+        <div class="mrow"><div class="th"><img src="assets/sample-venue-klub-stodola.jpg" alt=""></div><span class="t clamp2">Bilety miejskie z nową taryfą studencką</span></div>
+        <div class="mrow"><div class="th"><img src="assets/sample-event-rock.jpg" alt=""></div><span class="t clamp2">Festiwal uliczny przesunięty na wrzesień</span></div>
+      </div>
+      <!-- row 2 -->
+      <article class="ecard" style="grid-column:span 3">
+        <div class="th"><img src="assets/sample-event-jazz.jpg" alt=""><span class="date"><b>22</b><span>Sie</span></span></div>
+        <div class="b">
+          <span class="evtag">Wydarzenie · pasuje do tematu</span>
+          <h3 class="title-sm" style="margin:0">Jazz Basement: Kwartet Improwizacji</h3>
+          <p class="ex clamp1">Klub Basen, ul. Gwarna 12 · 20:00</p>
+          <div class="foot"><span class="price">od 45 zł</span><span class="cta">Bilety</span></div>
+        </div>
+      </article>
+      <!-- SPACE A — NATIVE INTERSTITIAL -->
+      <article class="adcard" style="grid-column:span 4">
+        <div class="th"><img src="assets/sample-event-techno.jpg" alt=""><span class="sp">Sponsorowane</span></div>
+        <div class="b">
+          <h3 class="title-lg" style="margin:0">Nowy system wejściówek na godziny. Jak działa?</h3>
+          <p class="ex clamp2">Partner platformy testuje wejścia czasowe w sześciu klubach. Sprawdź, gdzie już działają.</p>
+          <div class="brandrow"><span class="brandmark">EP</span><span class="ex" style="font-weight:600;color:var(--on-surface)">Entry Pass</span><div class="spacer"></div><span class="label-md" style="color:var(--brand-primary)">Dowiedz się więcej</span></div>
+        </div>
+      </article>
+      <article class="fcard" style="grid-column:span 5;flex-direction:row">
+        <div class="th" style="width:240px;height:auto"><img src="assets/sample-venue-klub-stodola.jpg" alt=""></div>
+        <div class="b" style="justify-content:center">
+          <div class="metaline"><span style="color:var(--brand-primary)">Kultura</span><span class="dot"></span><span>4 dni temu</span><span class="dot"></span><span>9 min</span></div>
+          <h3 class="title-lg" style="margin:0">Teatr w dawnej hali. Jak Stara Rzeźnia zmieniła sezon</h3>
+          <p class="ex clamp2">Trzy premiery, jedna scena i budżet mniejszy niż rok temu. Rozmowa z dyrekcją artystyczną.</p>
+          <div class="byline"><span class="av amber sm">AN</span><span class="ex">Anna Nowak</span></div>
+        </div>
+      </article>
+      <!-- row 3 -->
+      <article class="fcard" style="grid-column:span 4">
+        <div class="th" style="height:186px"><img src="assets/sample-event-techno.jpg" alt=""></div>
+        <div class="b">
+          <div class="metaline"><span style="color:var(--brand-primary)">Nightlife</span><span class="dot"></span><span>1 sierpnia</span></div>
+          <h3 class="title-lg" style="margin:0">Afterparty bez kolejek: nowy system wejść</h3>
+          <p class="ex clamp2">Kluby testują wejścia na godziny. Komu to się opłaca?</p>
+          <div class="byline" style="margin-top:auto"><span class="av sm">MK</span><span class="ex">Marta Kowalczyk</span></div>
+        </div>
+      </article>
+      <article class="fcard img" style="grid-column:span 3;min-height:300px">
+        <img src="assets/sample-event-rock.jpg" alt=""><div class="shade soft"></div>
+        <div class="onimg" style="padding:22px">
+          <span class="tagpill glass" style="align-self:flex-start">Galeria · 18 zdjęć</span>
+          <h3 class="title-lg" style="margin:0;color:#fff">Weekend w kadrach: Malta Festival</h3>
+        </div>
+      </article>
+      <article class="fcard" style="grid-column:span 5">
+        <div class="th" style="height:186px"><img src="assets/sample-event-jazz.jpg" alt=""><span class="play"></span><span class="dur">12:08</span></div>
+        <div class="b" style="flex-direction:row;align-items:flex-end;gap:20px">
+          <div style="display:flex;flex-direction:column;gap:10px;flex:1">
+            <div class="metaline"><span style="color:var(--brand-primary)">Wideo · Wywiad</span><span class="dot"></span><span>6 dni temu</span></div>
+            <h3 class="title-lg" style="margin:0">Selektorka, która zbudowała scenę z niczego</h3>
+            <p class="ex clamp2">O pierwszych imprezach w garażu, sprzęcie z drugiej ręki i publiczności, która wraca po siedmiu latach.</p>
+          </div>
+          <span class="pill-ghost" style="flex:none">Odtwórz</span>
+        </div>
+      </article>
+    </div>
+    <button class="loadmore">Wczytaj więcej</button>
+  </div>
+</div>
+
+<!-- ================= MOBILE 390 ================= -->
+<div class="flabel" style="left:1600px;top:26px">Blog — lista · redesign bento · mobile 390</div>
+<div class="frame m" data-screen-label="Blog list · mobile" style="left:1600px;top:56px;width:390px">
+  <div class="m-bar"><span class="glyph">E</span><span class="word">eventapp</span><div class="spacer"></div><span class="citysel" style="padding:7px 12px"><svg><use href="#i-pin"></use></svg>Poznań<svg><use href="#i-chev"></use></svg></span><span class="lang"><span class="on">PL</span><span>EN</span></span></div>
+  <div class="m-search"><svg><use href="#i-search"></use></svg>Szukaj wydarzeń, miejsc…</div>
+
+  <!-- 1. DISCOVER BENTO -->
+  <div class="band bg" style="padding-top:18px">
+    <div>
+      <div class="eyebrow"><span class="label-md">Blog</span><span style="color:var(--gray-300)">/</span><span class="label-md" style="color:var(--brand-primary)">Poznań</span></div>
+      <h2 style="margin:8px 0 0;font:700 26px/1.12 var(--font-sans);letter-spacing:-.8px">Odkryj</h2>
+    </div>
+    <div class="chiprow"><span class="chip on">Wszystko</span><span class="chip">Nightlife</span><span class="chip">Kultura</span><span class="chip">Muzyka</span></div>
+    <div class="bento">
+      <article class="cover">
+        <img src="assets/sample-event-techno.jpg" alt="">
+        <div class="shade"></div>
+        <div class="onimg">
+          <div style="display:flex;align-items:center;gap:10px"><span class="tagpill">Temat numeru</span><span class="label-md">8 min</span></div>
+          <h3 class="display-md" style="margin:0">Nowa fala poznańskich piwnic</h3>
+          <div class="byline"><span class="av sm">MK</span><span class="label-md" style="color:rgba(255,255,255,.84)">Marta Kowalczyk · 17.08</span></div>
+        </div>
+      </article>
+      <article class="spot">
+        <div class="th"><img src="assets/sample-event-jazz.jpg" alt=""></div>
+        <div class="b">
+          <div class="metaline"><span style="color:var(--brand-primary)">Muzyka</span><span class="dot"></span><span>12 sierpnia</span></div>
+          <h3 class="title-lg" style="margin:0">Jazz wrócił do klubów. Przewodnik po siedmiu scenach</h3>
+          <div class="byline"><span class="av amber sm">TW</span><span class="ex">Tomasz Wieczorek</span></div>
+        </div>
+      </article>
+      <article class="spot wide">
+        <div class="th"><img src="assets/sample-event-rock.jpg" alt=""></div>
+        <div class="b">
+          <div class="metaline"><span style="color:var(--brand-primary)">Wywiady</span><span class="dot"></span><span>9 sie</span></div>
+          <h3 class="title-lg" style="margin:0;font-size:17px">„Bilety to nie wszystko" — rozmowa z bookerem</h3>
+        </div>
+      </article>
+      <article class="spot wide">
+        <div class="th"><img src="assets/sample-venue-klub-stodola.jpg" alt=""></div>
+        <div class="b">
+          <div class="metaline"><span style="color:var(--brand-primary)">Kultura</span><span class="dot"></span><span>5 sie</span></div>
+          <h3 class="title-lg" style="margin:0;font-size:17px">Dwanaście wystaw przed końcem lata</h3>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <!-- 2A. TRENDING RAIL -->
+  <div class="band low">
+    <div class="sechead">
+      <div><h2>Na fali</h2><p>Najczęściej czytane w tym tygodniu</p></div>
+      <div class="dots"><i class="on"></i><i></i><i></i></div>
+    </div>
+    <div class="rail">
+      <article class="tcard">
+        <div class="th" style="height:150px"><img src="assets/sample-event-rock.jpg" alt=""><span class="rank">1</span></div>
+        <div class="b"><h3 class="title-lg" style="margin:0;font-size:21px">Gdzie zjeść po koncercie w centrum</h3><p class="ex clamp1">Dziesięć kuchni po 23:00.</p><span class="label-md" style="color:var(--on-surface-muted)">4 min · Jedzenie</span></div>
+      </article>
+      <article class="tcard">
+        <div class="th" style="height:150px"><img src="assets/sample-event-jazz.jpg" alt=""><span class="rank">2</span></div>
+        <div class="b"><h3 class="title-lg" style="margin:0;font-size:21px">Rezydentury, które warto śledzić</h3><p class="ex clamp1">Pięć nazwisk z piątków.</p><span class="label-md" style="color:var(--on-surface-muted)">6 min · Nightlife</span></div>
+      </article>
+    </div>
+  </div>
+
+  <!-- SPACE B — MID-PAGE BANNER -->
+  <div class="adband" style="padding-bottom:26px">
+    <div class="adbanner">
+      <img src="assets/sample-venue-klub-stodola.jpg" alt="">
+      <div class="veil"></div>
+      <div class="c">
+        <span class="adtag">Materiał partnera</span>
+        <h3 class="title-lg" style="margin:0;color:#fff">Karnet Jesień 2026 — cztery koncerty w cenie dwóch</h3>
+        <p class="ex" style="color:rgba(255,255,255,.8)">Osiem poznańskich klubów. Sprzedaż do 31 sierpnia.</p>
+        <span class="adcta">Zobacz karnet</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2B. TOPICS -->
+  <div class="band deep">
+    <div class="sechead"><div><h2>Przeglądaj tematy</h2></div><a class="seclink" href="#">Wszystkie</a></div>
+    <div class="topics">
+      <div class="topic big"><img src="assets/sample-event-techno.jpg" alt=""><div class="tint t1"></div><div class="c"><span class="label-md">Nightlife</span><span class="n">128 tekstów</span></div></div>
+      <div class="topic"><img src="assets/sample-event-jazz.jpg" alt=""><div class="tint t3"></div><div class="c"><span class="label-md">Muzyka</span><span class="n">214 tekstów</span></div></div>
+      <div class="topic"><img src="assets/sample-venue-klub-stodola.jpg" alt=""><div class="tint t1"></div><div class="c"><span class="label-md">Kultura</span><span class="n">96 tekstów</span></div></div>
+      <div class="topic"><img src="assets/sample-event-rock.jpg" alt=""><div class="tint t2"></div><div class="c"><span class="label-md">Jedzenie</span><span class="n">73 teksty</span></div></div>
+      <div class="topic"><img src="assets/sample-event-techno.jpg" alt=""><div class="tint t2"></div><div class="c"><span class="label-md">Sport</span><span class="n">41 tekstów</span></div></div>
+    </div>
+  </div>
+
+  <!-- 3. MIXED FEED -->
+  <div class="band bg" style="padding-bottom:32px">
+    <div class="sechead"><div><h2>Najnowsze</h2></div><div class="dots"></div></div>
+    <div class="chiprow"><span class="chip on">Wszystko</span><span class="chip">Tylko wideo</span><span class="chip">Krótkie</span></div>
+    <div class="feed">
+      <article class="fcard img">
+        <img src="assets/sample-event-jazz.jpg" alt=""><div class="shade"></div>
+        <div class="onimg" style="padding:22px">
+          <div class="metaline" style="color:rgba(255,255,255,.76)"><span>Muzyka</span><span class="dot" style="background:rgba(255,255,255,.4)"></span><span>dzisiaj</span></div>
+          <h3 class="title-lg" style="margin:0;font-size:23px;color:#fff">Jam session wrócił na Wildę. Cztery piwnice, jeden kalendarz</h3>
+          <div class="byline"><span class="av amber sm">TW</span><span class="label-md" style="color:rgba(255,255,255,.82)">Tomasz Wieczorek</span></div>
+        </div>
+      </article>
+      <article class="fcard">
+        <div class="th" style="height:196px"><img src="assets/sample-event-rock.jpg" alt=""><span class="play"></span><span class="dur">6:24</span></div>
+        <div class="b">
+          <div class="metaline"><span style="color:var(--brand-primary)">Wideo</span><span class="dot"></span><span>2 dni temu</span></div>
+          <h3 class="title-lg" style="margin:0">Backstage: jedna próba przed trasą</h3>
+          <p class="ex clamp2">Kamera na ostatniej próbie przed jesiennym tournée.</p>
+        </div>
+      </article>
+      <div class="minis">
+        <h4>W skrócie</h4>
+        <div class="mrow"><div class="th"><img src="assets/sample-event-techno.jpg" alt=""></div><span class="t clamp2">Klub Basen wydłuża godziny w weekendy</span></div>
+        <div class="mrow"><div class="th"><img src="assets/sample-event-jazz.jpg" alt=""></div><span class="t clamp2">Trzy nowe sceny na Jeżycach do końca roku</span></div>
+        <div class="mrow"><div class="th"><img src="assets/sample-venue-klub-stodola.jpg" alt=""></div><span class="t clamp2">Bilety miejskie z nową taryfą studencką</span></div>
+      </div>
+      <article class="ecard">
+        <div class="th"><img src="assets/sample-event-jazz.jpg" alt=""><span class="date"><b>22</b><span>Sie</span></span></div>
+        <div class="b">
+          <span class="evtag">Wydarzenie · pasuje do tematu</span>
+          <h3 class="title-sm" style="margin:0">Jazz Basement: Kwartet Improwizacji</h3>
+          <p class="ex clamp1">Klub Basen, ul. Gwarna 12 · 20:00</p>
+          <div class="foot"><span class="price">od 45 zł</span><span class="cta">Bilety</span></div>
+        </div>
+      </article>
+      <!-- SPACE A — NATIVE INTERSTITIAL -->
+      <article class="adcard">
+        <div class="th" style="height:184px"><img src="assets/sample-event-techno.jpg" alt=""><span class="sp">Sponsorowane</span></div>
+        <div class="b">
+          <h3 class="title-lg" style="margin:0">Nowy system wejściówek na godziny. Jak działa?</h3>
+          <p class="ex clamp2">Partner platformy testuje wejścia czasowe w sześciu klubach.</p>
+          <div class="brandrow"><span class="brandmark">EP</span><span class="ex" style="font-weight:600;color:var(--on-surface)">Entry Pass</span><div class="spacer"></div><span class="label-md" style="color:var(--brand-primary)">Więcej</span></div>
+        </div>
+      </article>
+      <article class="fcard" style="flex-direction:row">
+        <div class="th" style="width:130px;height:auto"><img src="assets/sample-venue-klub-stodola.jpg" alt=""></div>
+        <div class="b" style="padding:16px 18px;justify-content:center;gap:8px">
+          <div class="metaline"><span style="color:var(--brand-primary)">Kultura</span><span class="dot"></span><span>4 dni</span></div>
+          <h3 class="title-lg" style="margin:0;font-size:17px">Teatr w dawnej hali. Jak Stara Rzeźnia zmieniła sezon</h3>
+        </div>
+      </article>
+      <article class="fcard img" style="min-height:280px">
+        <img src="assets/sample-event-rock.jpg" alt=""><div class="shade soft"></div>
+        <div class="onimg" style="padding:22px">
+          <span class="tagpill glass" style="align-self:flex-start">Galeria · 18 zdjęć</span>
+          <h3 class="title-lg" style="margin:0;color:#fff">Weekend w kadrach: Malta Festival</h3>
+        </div>
+      </article>
+    </div>
+    <button class="loadmore">Wczytaj więcej</button>
+  </div>
+  <div class="tabbar"><span class="on"></span><span></span><span></span><span></span></div>
+</div>
+
+<!-- ================= NOTES ================= -->
+<div class="flabel" style="left:2110px;top:26px">Struktura i miejsca reklamowe</div>
+<div class="notes" style="left:2110px;top:56px">
+  <div class="note"><h3>1 · Bento „Odkryj"</h3><p>Cover Story zajmuje ~60% szerokości siatki (<code>display_md</code>, gradient overlay). Obok trzy Spotlighty o różnych proporcjach: dwie karty image-top (jedna wyższa) i jedna szeroka image-left — stąd schodkowy rytm bez pustych pól. Na mobile: cover pełnej szerokości, potem jedna karta image-top i dwie kompaktowe.</p></div>
+  <div class="note"><h3>2A · Na fali (karuzela)</h3><p>Pasmo <code>surface_low</code> — separacja tonalna, zero linii. Karty <code>radius_xl</code>, bardzo duży <code>title_lg</code>, jednolinijkowy lead, numer pozycji na szkle. Ostatnia karta przycięta krawędzią pasma, żeby zasygnalizować przesuwanie.</p></div>
+  <div class="note ad"><h3>Miejsce B · Baner śródstronowy</h3><p>Pełna szerokość między modułami A i B, wysokość 232 px, <code>radius_xl</code>, gradient poziomy (kierunek inny niż w kartach — stąd czytelny jako reklama). Etykieta „Materiał partnera", jasne CTA na białym pillu. Na mobile baner zmienia gradient na pionowy i rośnie w wysokość.</p></div>
+  <div class="note"><h3>2B · Tematy</h3><p>Pasmo <code>purple_50</code>. Kafle na zdjęciach kategorii z tintą markową lub amber, nazwa w <code>label_md</code> plus licznik tekstów. Pierwszy kafel podwójnej szerokości ustawia hierarchię.</p></div>
+  <div class="note"><h3>3 · Feed mieszany</h3><p>Siatka 12-kolumnowa, wiersze 5-4-3, 3-4-5, 4-3-5 — asymetria bez dziur. Typy kart: pełnoobrazkowa, wideo (play + czas), lista „W skrócie" z naprzemiennym tłem <code>surface_low</code> zamiast linii, karta pozioma, galeria, oraz <strong>EventCard</strong> wstawiany, gdy temat wydarzenia pokrywa się z sąsiednim artykułem (tu: jazz).</p></div>
+  <div class="note ad"><h3>Miejsce A · Native interstitial</h3><p>Slot w feedzie o wymiarach zwykłej karty (span 4). Tło <code>amber_50</code> jako jedyny sygnał odmienności, plakietka „Sponsorowane" na szkle nad zdjęciem, wiersz z marką i CTA tekstowym. Bez ramek i bez zmiany rytmu siatki.</p></div>
+</div>
+</body>
+</html>

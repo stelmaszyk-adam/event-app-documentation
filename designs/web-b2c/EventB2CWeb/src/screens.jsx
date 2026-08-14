@@ -1,10 +1,10 @@
-// Screens for wydarzka Web B2C
+// Screens for eventapp Web B2C
 const { useState: _us, useEffect: _ue, useMemo: _um, useRef: _ur } = React;
 
 // =============================================================
 // SEARCH & DISCOVERY (split-screen)
 // =============================================================
-function SearchDiscoveryScreen({ city, onNavigate, openCityPicker, openDatePicker, dateLabel }) {
+function SearchDiscoveryScreen({ city, onNavigate, openCityPicker, openDatePicker, dateLabel, openDistancePicker, distanceKm }) {
   const [activeCats, setActiveCats] = _us([]);
   const [sortBy, setSortBy] = _us('Trafność');
   const [liveOnly, setLiveOnly] = _us(false);
@@ -12,6 +12,16 @@ function SearchDiscoveryScreen({ city, onNavigate, openCityPicker, openDatePicke
   const [activePinId, setActivePinId] = _us(null);
   const [saved, setSaved] = _us(new Set());
   const [showSearchArea, setShowSearchArea] = _us(false);
+  const [mapSheetOpen, setMapSheetOpen] = _us(false);
+  const [mapFull, setMapFull] = _us(false);
+  React.useEffect(() => {
+    if (!mapFull) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e) => { if (e.key === 'Escape') setMapFull(false); };
+    window.addEventListener('keydown', onKey);
+    return () => { document.body.style.overflow = prev; window.removeEventListener('keydown', onKey); };
+  }, [mapFull]);
   const cardRefs = _ur({});
 
   const toggleCat = (id) => {
@@ -47,6 +57,8 @@ function SearchDiscoveryScreen({ city, onNavigate, openCityPicker, openDatePicke
         toggleCat={toggleCat}
         onDateClick={openDatePicker}
         dateLabel={dateLabel}
+        onDistanceClick={openDistancePicker}
+        distanceKm={distanceKm}
         sortBy={sortBy}
         setSortBy={setSortBy}
         liveOnly={liveOnly}
@@ -59,7 +71,7 @@ function SearchDiscoveryScreen({ city, onNavigate, openCityPicker, openDatePicke
               <div className="results-count">
                 <em>{filteredEvents.length}</em> wydarzeń w <em>{city.name}</em>
               </div>
-              <div className="results-sub">{dateLabel} · w promieniu 5 km od centrum</div>
+              <div className="results-sub">{dateLabel} · w promieniu {distanceKm} km od centrum</div>
             </div>
           </div>
           <div className="results-list" data-screen-label="Lista wyników">
@@ -101,12 +113,17 @@ function SearchDiscoveryScreen({ city, onNavigate, openCityPicker, openDatePicke
                   Zgłoś je w aplikacji mobilnej — kuratorzy dodadzą je do bazy w 24 h.
                 </span>
               </div>
-              <button className="btn btn-secondary">Pobierz aplikację <Icon.ChevronRight /></button>
+              <button className="btn btn-secondary" onClick={() => onNavigate('add-event')}>Dodaj wydarzenie <Icon.ChevronRight /></button>
             </div>
           </div>
         </section>
 
-        <aside className="map-panel" data-screen-label="Mapa">
+        <aside className={`map-panel ${mapSheetOpen ? 'is-mobile-open' : ''} ${mapFull ? 'is-fullscreen' : ''}`} data-screen-label="Mapa">
+          {mapSheetOpen && (
+            <button className="map-sheet-close btn-icon" onClick={() => setMapSheetOpen(false)} aria-label="Zamknij mapę">
+              <Icon.X />
+            </button>
+          )}
           <MapCanvas />
           {filteredEvents.map(ev => (
             <MapPin key={ev.id}
@@ -126,6 +143,11 @@ function SearchDiscoveryScreen({ city, onNavigate, openCityPicker, openDatePicke
               onClick={() => onNavigate('event', activeEvent.id)}
             />
           )}
+          <button className="map-fab" onClick={() => setMapFull(v => !v)}
+                  aria-label={mapFull ? 'Zamknij pełny ekran' : 'Pełny ekran'}
+                  aria-pressed={mapFull} title={mapFull ? 'Zamknij pełny ekran (Esc)' : 'Pełny ekran'}>
+            {mapFull ? <Icon.Collapse strokeWidth={2} /> : <Icon.Expand strokeWidth={2} />}
+          </button>
           <div className="map-controls">
             <button className="btn-icon" onClick={() => setShowSearchArea(true)} aria-label="Lokalizacja">
               <Icon.Locate />
@@ -143,7 +165,7 @@ function SearchDiscoveryScreen({ city, onNavigate, openCityPicker, openDatePicke
         </aside>
       </main>
 
-      <button className="btn btn-primary show-on-map-fab">
+      <button className="btn btn-primary show-on-map-fab" onClick={() => setMapSheetOpen(true)}>
         <Icon.MapPin /> Pokaż na mapie
       </button>
     </>
@@ -270,7 +292,7 @@ function EventDetailScreen({ eventId, city, onNavigate }) {
 
           <section className="detail-section">
             <h2>Może Cię też zainteresować</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12, marginTop: 12 }}>
+            <div className="related-grid">
               {related.slice(0, 4).map(re => (
                 <EventCard key={re.id}
                   event={re}

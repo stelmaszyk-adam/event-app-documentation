@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<title>eventapp · Blog — mockupy</title>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="assets/colors_and_type.css">
+<style>
+body{margin:0;font-family:var(--font-sans);color:var(--on-surface);-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+img{display:block;width:100%;height:100%;object-fit:cover}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+a{color:var(--brand-primary);text-decoration:none}a:hover{color:var(--purple-600)}
+.frame{position:absolute;background:var(--surface-bg);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg)}
+.flabel{position:absolute;font:var(--type-overline);letter-spacing:var(--tracking-overline);text-transform:uppercase;color:var(--gray-500)}
+/* ---- tokens as classes ---- */
+.display-lg{font:700 52px/1.06 var(--font-sans);letter-spacing:-1.4px}
+.display-md{font:700 40px/1.14 var(--font-sans);letter-spacing:-1px}
+.title-lg{font:600 22px/1.25 var(--font-sans);letter-spacing:-.5px}
+.label-md{font:600 12px/16px var(--font-sans);letter-spacing:1.2px;text-transform:uppercase}
+.body{font:var(--type-body-l);letter-spacing:var(--tracking-body-l);color:var(--on-surface-variant)}
+.clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* ---- chrome ---- */
+.bar{display:flex;align-items:center;gap:14px;padding:0 40px;height:68px;background:var(--surface-high);box-shadow:0 1px 0 var(--gray-150)}
+.bar svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.citysel{display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:var(--radius-full);background:var(--surface-mid);font:var(--type-label-m)}
+.search{display:flex;align-items:center;gap:9px;padding:10px 16px;border-radius:var(--radius-full);background:var(--surface-low);color:var(--on-surface-muted);font:var(--type-body-m);width:320px}
+.orglink{display:inline-flex;align-items:center;gap:4px;font:var(--type-label-m);color:var(--on-surface-variant)}
+.lang{display:flex;padding:3px;border-radius:var(--radius-full);background:var(--surface-mid);font:var(--type-label-s);letter-spacing:.3px}
+.lang span{padding:5px 10px;border-radius:var(--radius-full);color:var(--on-surface-variant)}
+.lang span.on{background:var(--surface-high);color:var(--on-surface);font-weight:600;box-shadow:var(--shadow-sm)}
+.pill-text{font:var(--type-label-m);color:var(--on-surface)}
+.blogtab{position:relative;font:600 15px var(--font-sans);letter-spacing:-.2px;padding:0 2px}
+.blogtab::after{content:"";position:absolute;left:0;right:0;bottom:-25px;height:3px;border-radius:3px;background:var(--brand-primary)}
+.strip{padding:28px 40px 40px;display:flex;flex-direction:column;gap:20px;background:var(--surface-bg)}
+.strip-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px}
+.strip-head h2{margin:0;font:var(--type-headline-m);letter-spacing:var(--tracking-headline-m)}
+.strip-head p{margin:4px 0 0;font:var(--type-body-m);color:var(--on-surface-variant)}
+.grid3s{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid3s .pcard{min-height:280px}
+.grid3s .title-lg{font-size:19px;letter-spacing:-.4px}
+.linkbtn{font:var(--type-label-m);color:var(--brand-primary)}
+.mapstub{height:150px;border-radius:var(--radius-xl);background:repeating-linear-gradient(45deg,var(--gray-150) 0 12px,var(--gray-100) 12px 24px);display:grid;place-items:center;font:var(--type-code);color:var(--gray-500)}
+.glyph{width:28px;height:28px;border-radius:8px;background:var(--brand-gradient);color:#fff;display:grid;place-items:center;font:700 15px var(--font-sans)}
+.word{font:700 17px var(--font-sans);letter-spacing:-.4px}
+.bar nav{display:flex;gap:22px;font:var(--type-label-m);color:var(--on-surface-variant);margin-left:12px}
+.bar nav .on{color:var(--on-surface);font-weight:600}
+.spacer{flex:1}
+.pill{padding:9px 16px;border-radius:var(--radius-full);background:var(--brand-primary);color:#fff;font:var(--type-label-m);box-shadow:var(--shadow-brand)}
+.pill-ghost{padding:9px 16px;border-radius:var(--radius-full);background:var(--surface-mid);font:var(--type-label-m)}
+/* ---- shared blog pieces ---- */
+.wrap{padding:32px 40px 56px;display:flex;flex-direction:column;gap:32px}
+.eyebrow{display:flex;align-items:center;gap:10px;color:var(--on-surface-variant)}
+.hero{position:relative;border-radius:var(--radius-xl);overflow:hidden;background:var(--gray-200)}
+.hero .shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,26,.9) 0%,rgba(7,7,26,.72) 42%,rgba(7,7,26,.34) 78%,rgba(7,7,26,.12) 100%)}
+.hero .txt{position:absolute;left:0;right:0;bottom:0;padding:40px;color:#fff;display:flex;flex-direction:column;gap:14px}
+.hero .txt .label-md{color:rgba(255,255,255,.78)}
+.hero .lede{font:var(--type-body-l);color:rgba(255,255,255,.82);max-width:62ch}
+.tagpill{background:var(--brand-primary);color:#fff;padding:6px 12px;border-radius:var(--radius-full);font:600 11px/1 var(--font-sans);letter-spacing:1.1px;text-transform:uppercase}
+.chiprow{display:flex;gap:10px;flex-wrap:wrap}
+.chip{padding:10px 18px;border-radius:var(--radius-full);background:var(--surface-mid);color:var(--on-surface);font:var(--type-label-m)}
+.chip.on{background:var(--brand-primary);color:#fff;box-shadow:var(--shadow-brand)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.pcard{position:relative;border-radius:var(--radius-xl);overflow:hidden;background:var(--gray-300);min-height:380px;display:flex;flex-direction:column;justify-content:flex-end}
+.pcard>img{position:absolute;inset:0}
+.pcard .shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,26,.92) 0%,rgba(7,7,26,.6) 38%,rgba(7,7,26,.02) 78%)}
+.pcard .body{position:relative;padding:26px;color:#fff;display:flex;flex-direction:column;gap:10px}
+.pcard .label-md{color:rgba(255,255,255,.72)}
+.pcard .title-lg{color:#fff}
+.pcard .ex{font:var(--type-body-m);color:rgba(255,255,255,.72);letter-spacing:var(--tracking-body-m)}
+.av{border-radius:var(--radius-full);display:grid;place-items:center;font:600 12px var(--font-sans);flex:none;width:32px;height:32px;background:var(--purple-200);color:var(--purple-800)}
+.av.amber{background:var(--amber-200);color:var(--amber-700)}
+.av.lg{width:52px;height:52px;font-size:17px}
+.byline{display:flex;align-items:center;gap:10px}
+.loadmore{align-self:center;padding:14px 34px;border-radius:var(--radius-full);background:var(--surface-high);box-shadow:var(--shadow-md);font:var(--type-label-m)}
+/* ---- detail ---- */
+.cols{display:grid;grid-template-columns:1fr 316px;gap:56px;align-items:start}
+.artbody{display:flex;flex-direction:column;gap:20px;max-width:68ch}
+.artbody p{margin:0;font:400 18px/1.72 var(--font-sans);letter-spacing:-.2px;color:var(--gray-700)}
+.artbody h3{margin:14px 0 0;font:600 24px/1.3 var(--font-sans);letter-spacing:-.6px}
+.artbody blockquote{margin:8px 0;padding:4px 0 4px 22px;box-shadow:inset 3px 0 0 var(--purple-200);font:500 22px/1.5 var(--font-sans);letter-spacing:-.5px;color:var(--on-surface)}
+.mini{display:flex;gap:16px;align-items:center;padding:16px;border-radius:var(--radius-xl);background:var(--surface-high);box-shadow:var(--shadow-md)}
+.mini .th{width:96px;height:96px;border-radius:var(--radius-lg);overflow:hidden;flex:none;background:var(--gray-200)}
+.mini .m{display:flex;flex-direction:column;gap:6px;flex:1}
+.mini .cta{padding:11px 20px;border-radius:var(--radius-full);background:var(--brand-primary);color:#fff;font:var(--type-label-m);flex:none}
+.side{display:flex;flex-direction:column;gap:16px}
+.box{background:var(--surface-high);border-radius:var(--radius-xl);padding:22px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:14px}
+.venuebadge{display:inline-flex;align-items:center;gap:6px;background:var(--brand-primary-container);color:var(--purple-700);padding:5px 11px;border-radius:var(--radius-full);font:600 11px/1 var(--font-sans);letter-spacing:.8px;text-transform:uppercase}
+.toc{display:flex;flex-direction:column;gap:2px}
+.toc a{display:flex;gap:12px;padding:9px 0 9px 14px;font:var(--type-body-m);color:var(--on-surface-variant);box-shadow:inset 2px 0 0 var(--surface-mid)}
+.toc a.on{color:var(--brand-primary);font-weight:600;box-shadow:inset 2px 0 0 var(--brand-primary)}
+.share{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:var(--radius-full);background:var(--brand-primary);color:#fff;font:var(--type-label-m);text-align:center;box-shadow:var(--shadow-brand)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.ecard{background:var(--surface-high);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-sm)}
+.ecard .th{height:150px;background:var(--gray-200)}
+.ecard .b{padding:16px;display:flex;flex-direction:column;gap:7px}
+.price{font:600 14px var(--font-sans);color:var(--brand-primary)}
+.rel{background:var(--surface-low);border-radius:var(--radius-2xl);padding:32px;display:flex;flex-direction:column;gap:22px}
+.rel .list{display:flex;flex-direction:column;gap:2px}
+.relrow{display:flex;gap:18px;align-items:center;padding:16px 0}
+.relrow+.relrow{box-shadow:inset 0 1px 0 var(--gray-200)}
+.relrow .th{width:112px;height:76px;border-radius:var(--radius-lg);overflow:hidden;flex:none;background:var(--gray-200)}
+.sect{display:flex;flex-direction:column;gap:18px}
+/* ---- mobile frame ---- */
+.m-bar{display:flex;align-items:center;gap:10px;padding:0 20px;height:56px;background:var(--surface-high);box-shadow:0 1px 0 var(--gray-150)}
+.m-bar svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.m-search{display:flex;align-items:center;gap:8px;margin:0 20px;padding:11px 14px;border-radius:var(--radius-full);background:var(--surface-low);color:var(--on-surface-muted);font:var(--type-body-m)}
+.m-search svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round}
+.m-wrap{padding:16px 20px 40px;display:flex;flex-direction:column;gap:24px}
+.m .display-lg{font:700 30px/1.14 var(--font-sans);letter-spacing:-.8px}
+.m .display-md{font:700 27px/1.2 var(--font-sans);letter-spacing:-.7px}
+.m .title-lg{font:600 19px/1.28 var(--font-sans);letter-spacing:-.4px}
+.m .hero .txt{padding:22px;gap:10px}
+.m .grid2,.m .grid3,.m .cols{grid-template-columns:1fr;gap:18px}
+.m .pcard{min-height:300px}
+.m .artbody p{font:400 17px/1.7 var(--font-sans)}
+.m .chiprow{flex-wrap:nowrap;overflow:hidden;padding-right:20px;margin-right:-20px}
+.m .chip{flex:none}
+.m .mini{flex-direction:column;align-items:stretch}
+.m .mini .th{width:100%;height:130px}
+.m .mini .cta{text-align:center}
+.m .rel{padding:22px;border-radius:var(--radius-xl)}
+.m .relrow{padding:14px 0}
+.tabbar{display:flex;justify-content:space-around;padding:10px 0 16px;background:var(--surface-high);box-shadow:0 -1px 0 var(--gray-150)}
+.tabbar span{width:44px;height:30px;border-radius:8px;background:var(--surface-mid)}
+.tabbar span.on{background:var(--brand-primary)}
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail" data-bg-color="#6C3FEB"><svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="800" fill="#6C3FEB"/><rect x="360" y="240" width="480" height="320" rx="40" fill="#F3EEFF"/><rect x="410" y="420" width="300" height="26" rx="13" fill="#6C3FEB"/><rect x="410" y="470" width="220" height="18" rx="9" fill="#C9B0FC"/><rect x="410" y="290" width="140" height="18" rx="9" fill="#C9B0FC"/></svg></template>
+
+<svg width="0" height="0" style="position:absolute" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 7-8 12-8 12s-8-5-8-12a8 8 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m20 20-3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="i-up" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="18" cy="19" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51 8.59 10.49" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol></svg>
+
+<!-- ============ 1. BLOG LIST — DESKTOP ============ -->
+<div class="flabel" style="left:60px;top:26px">Blog — lista · desktop 1440</div>
+<div class="frame" style="left:60px;top:56px;width:1440px">
+  <div class="bar">
+    <div style="display:flex;align-items:center;gap:10px"><span class="glyph">E</span><span class="word">eventapp</span></div>
+    <span class="citysel"><svg><use href="#i-pin"></use></svg>Poznań<svg><use href="#i-chev"></use></svg></span>
+    <span class="search"><svg><use href="#i-search"></use></svg>Szukaj wydarzeń, miejsc, artystów…</span>
+    <div class="spacer"></div>
+    <a class="blogtab" href="#">Blog</a>
+    <span class="pill-ghost" style="display:inline-flex;align-items:center;gap:6px"><svg><use href="#i-plus"></use></svg>Dodaj wydarzenie</span>
+    <a class="orglink" href="#">Dla Organizatorów<svg style="width:14px;height:14px"><use href="#i-up"></use></svg></a>
+    <span class="lang"><span class="on">PL</span><span>EN</span></span>
+    <span class="pill-text">Zaloguj się</span>
+    <span class="pill-ghost">Zarejestruj się</span>
+  </div>
+  <div class="wrap">
+    <div class="eyebrow"><span class="label-md">Blog</span><span style="color:var(--gray-300)">/</span><span class="label-md" style="color:var(--brand-primary)">Poznań</span></div>
+    <div class="hero" style="height:560px">
+      <img src="assets/sample-event-techno.jpg" alt="">
+      <div class="shade"></div>
+      <div class="txt">
+        <div style="display:flex;align-items:center;gap:12px"><span class="tagpill">Nightlife</span><span class="label-md">17 sierpnia 2026 · 8 min czytania</span></div>
+        <h1 class="display-lg" style="font-size:44px;letter-spacing:-1.1px;max-width:19ch">Nowa fala poznańskich piwnic. Gdzie tańczy się do rana</h1>
+        <p class="lede">Sześć klubów, które w ostatnim roku przedefiniowały nocną scenę miasta — i ludzie, którzy je prowadzą.</p>
+        <div class="byline" style="margin-top:6px"><span class="av">MK</span><span class="label-md" style="color:rgba(255,255,255,.82)">Marta Kowalczyk</span></div>
+      </div>
+    </div>
+    <div class="chiprow">
+      <span class="chip on">Wszystko</span><span class="chip">Nightlife</span><span class="chip">Kultura</span><span class="chip">Muzyka</span><span class="chip">Jedzenie</span><span class="chip">Sport</span><span class="chip">Wywiady</span>
+    </div>
+    <div class="grid2">
+      <article class="pcard"><img src="assets/sample-event-jazz.jpg" alt=""><div class="shade"></div><div class="body">
+        <div class="byline"><span class="av amber">TW</span><span class="label-md">12 sierpnia · Muzyka</span></div>
+        <h2 class="title-lg">Jazz w Poznaniu wrócił do klubów. Przewodnik po siedmiu scenach</h2>
+        <p class="ex clamp2">Od piwnicznych jam sessions po sceny festiwalowe — mapa miejsc, w których w tym sezonie usłyszysz najlepsze składy improwizowane w Wielkopolsce.</p></div></article>
+      <article class="pcard"><img src="assets/sample-event-rock.jpg" alt=""><div class="shade"></div><div class="body">
+        <div class="byline"><span class="av">PZ</span><span class="label-md">9 sierpnia · Wywiady</span></div>
+        <h2 class="title-lg">„Bilety to nie wszystko" — rozmowa z bookerem Klubu Stodoła</h2>
+        <p class="ex clamp2">O tym, jak układa się line-up na jesień, dlaczego mniejsze sceny wygrywają z arenami i co decyduje o powrocie zespołu do miasta.</p></div></article>
+      <article class="pcard"><img src="assets/sample-venue-klub-stodola.jpg" alt=""><div class="shade"></div><div class="body">
+        <div class="byline"><span class="av amber">AN</span><span class="label-md">5 sierpnia · Kultura</span></div>
+        <h2 class="title-lg">Dwanaście wystaw, które warto zobaczyć przed końcem lata</h2>
+        <p class="ex clamp2">Galerie miejskie otwierają sezon wcześniej niż zwykle. Wybraliśmy ekspozycje, na które warto zaplanować osobne popołudnie.</p></div></article>
+      <article class="pcard"><img src="assets/sample-event-techno.jpg" alt=""><div class="shade"></div><div class="body">
+        <div class="byline"><span class="av">MK</span><span class="label-md">1 sierpnia · Nightlife</span></div>
+        <h2 class="title-lg">Afterparty bez kolejek: jak działa nowy system wejściówek</h2>
+        <p class="ex clamp2">Kluby testują wejścia na godziny. Sprawdziliśmy, komu to się opłaca i jak nie przepłacić za wieczór w centrum.</p></div></article>
+    </div>
+    <button class="loadmore">Wczytaj więcej</button>
+  </div>
+</div>
+
+<!-- ============ 2. BLOG LIST — MOBILE ============ -->
+<div class="flabel" style="left:1600px;top:26px">Blog — lista · mobile 390</div>
+<div class="frame m" style="left:1600px;top:56px;width:390px">
+  <div class="m-bar"><span class="glyph">E</span><span class="word">eventapp</span><div class="spacer"></div><span class="citysel" style="padding:7px 12px"><svg><use href="#i-pin"></use></svg>Poznań<svg><use href="#i-chev"></use></svg></span><span class="lang"><span class="on">PL</span><span>EN</span></span></div>
+  <div class="m-search" style="margin-top:12px"><svg><use href="#i-search"></use></svg>Szukaj wydarzeń, miejsc…</div>
+  <div class="m-wrap">
+    <div class="eyebrow"><span class="label-md">Blog</span><span style="color:var(--gray-300)">/</span><span class="label-md" style="color:var(--brand-primary)">Poznań</span></div>
+    <div class="hero" style="height:400px">
+      <img src="assets/sample-event-techno.jpg" alt="">
+      <div class="shade"></div>
+      <div class="txt">
+        <div style="display:flex;align-items:center;gap:10px"><span class="tagpill">Nightlife</span><span class="label-md">8 min</span></div>
+        <h1 class="display-lg">Nowa fala poznańskich piwnic</h1>
+        <div class="byline"><span class="av" style="width:26px;height:26px;font-size:10px">MK</span><span class="label-md" style="color:rgba(255,255,255,.82)">Marta Kowalczyk · 17.08</span></div>
+      </div>
+    </div>
+    <div class="chiprow">
+      <span class="chip on">Wszystko</span><span class="chip">Nightlife</span><span class="chip">Kultura</span><span class="chip">Muzyka</span>
+    </div>
+    <div class="grid2">
+      <article class="pcard"><img src="assets/sample-event-jazz.jpg" alt=""><div class="shade"></div><div class="body">
+        <div class="byline"><span class="av amber" style="width:26px;height:26px;font-size:10px">TW</span><span class="label-md">12 sierpnia · Muzyka</span></div>
+        <h2 class="title-lg">Jazz w Poznaniu wrócił do klubów</h2>
+        <p class="ex clamp2">Od piwnicznych jam sessions po sceny festiwalowe — mapa miejsc z najlepszymi składami sezonu.</p></div></article>
+      <article class="pcard"><img src="assets/sample-event-rock.jpg" alt=""><div class="shade"></div><div class="body">
+        <div class="byline"><span class="av" style="width:26px;height:26px;font-size:10px">PZ</span><span class="label-md">9 sierpnia · Wywiady</span></div>
+        <h2 class="title-lg">„Bilety to nie wszystko" — rozmowa z bookerem</h2>
+        <p class="ex clamp2">Jak układa się line-up na jesień i dlaczego mniejsze sceny wygrywają z arenami.</p></div></article>
+    </div>
+    <button class="loadmore" style="align-self:stretch">Wczytaj więcej</button>
+  </div>
+  <div class="tabbar"><span class="on"></span><span></span><span></span><span></span></div>
+</div>
+
+<!-- ============ 3. BLOG DETAIL — DESKTOP ============ -->
+<div class="flabel" style="left:2110px;top:26px">Blog — artykuł · desktop 1440</div>
+<div class="frame" style="left:2110px;top:56px;width:1440px">
+  <div class="bar">
+    <div style="display:flex;align-items:center;gap:10px"><span class="glyph">E</span><span class="word">eventapp</span></div>
+    <span class="citysel"><svg><use href="#i-pin"></use></svg>Poznań<svg><use href="#i-chev"></use></svg></span>
+    <span class="search"><svg><use href="#i-search"></use></svg>Szukaj wydarzeń, miejsc, artystów…</span>
+    <div class="spacer"></div>
+    <a class="blogtab" href="#">Blog</a>
+    <span class="pill-ghost" style="display:inline-flex;align-items:center;gap:6px"><svg><use href="#i-plus"></use></svg>Dodaj wydarzenie</span>
+    <a class="orglink" href="#">Dla Organizatorów<svg style="width:14px;height:14px"><use href="#i-up"></use></svg></a>
+    <span class="lang"><span class="on">PL</span><span>EN</span></span>
+    <span class="pill-text">Zaloguj się</span>
+    <span class="pill-ghost">Zarejestruj się</span>
+  </div>
+  <div class="wrap" style="padding:32px 80px 64px">
+    <div class="cols">
+      <div style="display:flex;flex-direction:column;gap:36px">
+        <div class="hero" style="height:440px"><img src="assets/sample-event-techno.jpg" alt=""></div>
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;align-items:center;gap:12px"><span class="tagpill">Nightlife</span><span class="label-md" style="color:var(--on-surface-variant)">8 min czytania</span></div>
+          <h1 class="display-md" style="max-width:26ch">Nowa fala poznańskich piwnic. Gdzie tańczy się do rana</h1>
+          <div class="byline" style="gap:12px"><span class="av lg">MK</span><div style="display:flex;flex-direction:column;gap:3px"><span style="font:var(--type-label-m)">Marta Kowalczyk</span><span class="label-md" style="color:var(--on-surface-variant)">17 sierpnia 2026</span></div></div>
+        </div>
+        <div class="artbody">
+          <p>Przez ostatnie dwa lata nocna mapa Poznania przesunęła się o kilkaset metrów. Kluby, które definiowały weekendy w okolicy Starego Rynku, ustąpiły miejsca piwnicom po drugiej stronie Warty — mniejszym, tańszym i prowadzonym przez ludzi, którzy jeszcze niedawno stali za barem.</p>
+          <h3>Piwnica jako format</h3>
+          <p>Nowe miejsca łączy skala: dwie sale, sto pięćdziesiąt osób, jeden dobrze ustawiony system. Bookerzy mówią o tym wprost — mniejsza pojemność oznacza mniejsze ryzyko i odważniejszy line-up. Zamiast jednego dużego nazwiska w miesiącu pojawiają się cztery weekendy z lokalnymi selektorami.</p>
+          <blockquote>„Nie potrzebujemy tysiąca osób. Potrzebujemy stu pięćdziesięciu, które wracają." — Kamil, współzałożyciel Basenu</blockquote>
+          <p>Efekt widać w kalendarzach. Rezydentury wracają po latach przerwy, a wejściówki na piątkowe sety rozchodzą się dzień przed wydarzeniem, bez kampanii i bez pośredników.</p>
+          <div class="mini">
+            <div class="th"><img src="assets/sample-event-rock.jpg" alt=""></div>
+            <div class="m">
+              <span class="label-md" style="color:var(--brand-primary)">Wydarzenie · Sobota, 22.08</span>
+              <span class="title-lg" style="font-size:19px">Basen Night: Selektor Residency</span>
+              <span class="label-md" style="color:var(--on-surface-variant);letter-spacing:.4px;text-transform:none;font-weight:400">Klub Basen, ul. Gwarna 12 · 22:00</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end"><span class="price">od 45 zł</span><span class="cta">Zobacz wydarzenie</span></div>
+          </div>
+          <h3>Kto za tym stoi</h3>
+          <p>Właściciele czterech z sześciu opisywanych miejsc pracowali wcześniej w klubach, które zamknęły się w 2023 roku. Doświadczenie przekłada się na organizację: wspólne kalendarze, wymiana ekip technicznych i nieformalna zasada, że dwa duże wydarzenia nie odbywają się tego samego wieczoru.</p>
+          <h3>Co dalej</h3>
+          <p>Na jesień zapowiedziano dwa kolejne otwarcia, oba w dawnych halach po zakładach przy Zamenhofa. Jeśli utrzymają format, w ciągu roku środek nocnego życia miasta przesunie się na prawy brzeg definitywnie.</p>
+        </div>
+        <div class="sect">
+          <h2 class="title-lg" style="font-size:24px">Wydarzenia z artykułu</h2>
+          <div class="grid3">
+            <div class="ecard"><div class="th"><img src="assets/sample-event-techno.jpg" alt=""></div><div class="b"><span class="label-md" style="color:var(--brand-primary)">Sob, 22.08 · 22:00</span><span class="title-lg" style="font-size:17px">Basen Night: Residency</span><span class="body" style="font:var(--type-body-m)">Klub Basen · Gwarna 12</span><span class="price">od 45 zł</span></div></div>
+            <div class="ecard"><div class="th"><img src="assets/sample-event-jazz.jpg" alt=""></div><div class="b"><span class="label-md" style="color:var(--brand-primary)">Czw, 27.08 · 20:00</span><span class="title-lg" style="font-size:17px">Late Jam Session</span><span class="body" style="font:var(--type-body-m)">Piwnica 21 · Wroniecka 4</span><span class="price">Bezpłatne</span></div></div>
+            <div class="ecard"><div class="th"><img src="assets/sample-venue-klub-stodola.jpg" alt=""></div><div class="b"><span class="label-md" style="color:var(--brand-primary)">Pt, 28.08 · 23:00</span><span class="title-lg" style="font-size:17px">Prawy Brzeg Opening</span><span class="body" style="font:var(--type-body-m)">Hala Zamenhofa</span><span class="price">od 60 zł</span></div></div>
+          </div>
+        </div>
+        <div class="rel">
+          <div style="display:flex;align-items:baseline;justify-content:space-between"><h2 class="title-lg" style="font-size:24px">Czytaj dalej</h2><a href="#" style="font:var(--type-label-m)">Wszystkie artykuły</a></div>
+          <div class="list">
+            <div class="relrow"><div class="th"><img src="assets/sample-event-jazz.jpg" alt=""></div><div style="display:flex;flex-direction:column;gap:6px"><span class="label-md" style="color:var(--on-surface-variant)">Muzyka · 12 sierpnia</span><span class="title-lg" style="font-size:19px">Jazz w Poznaniu wrócił do klubów</span></div></div>
+            <div class="relrow"><div class="th"><img src="assets/sample-event-rock.jpg" alt=""></div><div style="display:flex;flex-direction:column;gap:6px"><span class="label-md" style="color:var(--on-surface-variant)">Wywiady · 9 sierpnia</span><span class="title-lg" style="font-size:19px">„Bilety to nie wszystko" — rozmowa z bookerem</span></div></div>
+            <div class="relrow"><div class="th"><img src="assets/sample-venue-klub-stodola.jpg" alt=""></div><div style="display:flex;flex-direction:column;gap:6px"><span class="label-md" style="color:var(--on-surface-variant)">Kultura · 5 sierpnia</span><span class="title-lg" style="font-size:19px">Dwanaście wystaw przed końcem lata</span></div></div>
+          </div>
+        </div>
+      </div>
+      <!-- sidebar (sticky w implementacji) -->
+      <div class="side">
+        <div class="box">
+          <div class="byline" style="gap:14px"><span class="av lg">MK</span><div style="display:flex;flex-direction:column;gap:5px"><span style="font:var(--type-label-m)">Marta Kowalczyk</span><span class="venuebadge">Redakcja · Poznań</span></div></div>
+          <p class="body" style="font:var(--type-body-m);margin:0">Pisze o nocnej scenie i miejscach, które dopiero się otwierają. Od 2021 roku w eventapp.</p>
+        </div>
+        <div class="box">
+          <span class="label-md" style="color:var(--on-surface-variant)">W tym artykule</span>
+          <div class="toc">
+            <a href="#" class="on">Piwnica jako format</a>
+            <a href="#">Kto za tym stoi</a>
+            <a href="#">Wydarzenia z artykułu</a>
+            <a href="#">Co dalej</a>
+          </div>
+        </div>
+        <button class="share"><svg style="width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round"><use href="#i-share"></use></svg>Udostępnij</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 4. BLOG DETAIL — MOBILE ============ -->
+<div class="flabel" style="left:3610px;top:26px">Blog — artykuł · mobile 390</div>
+<div class="frame m" style="left:3610px;top:56px;width:390px">
+  <div class="m-bar"><span class="glyph">E</span><span class="word">eventapp</span><div class="spacer"></div><span class="citysel" style="padding:7px 12px"><svg><use href="#i-pin"></use></svg>Poznań<svg><use href="#i-chev"></use></svg></span><span class="pill-ghost" style="padding:7px 12px;display:inline-flex;gap:5px;align-items:center"><svg><use href="#i-share"></use></svg>Udostępnij</span></div>
+  <div class="m-wrap">
+    <div class="hero" style="height:230px"><img src="assets/sample-event-techno.jpg" alt=""></div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px"><span class="tagpill">Nightlife</span><span class="label-md" style="color:var(--on-surface-variant)">8 min</span></div>
+      <h1 class="display-md">Nowa fala poznańskich piwnic</h1>
+      <div class="byline"><span class="av">MK</span><div style="display:flex;flex-direction:column;gap:2px"><span style="font:var(--type-label-m)">Marta Kowalczyk</span><span class="label-md" style="color:var(--on-surface-variant)">17 sierpnia 2026</span></div></div>
+    </div>
+    <div class="box" style="padding:16px;gap:10px">
+      <span class="label-md" style="color:var(--on-surface-variant)">W tym artykule</span>
+      <div class="toc"><a href="#" class="on">Piwnica jako format</a><a href="#">Kto za tym stoi</a><a href="#">Co dalej</a></div>
+    </div>
+    <div class="artbody">
+      <p>Przez ostatnie dwa lata nocna mapa Poznania przesunęła się o kilkaset metrów. Kluby ze Starego Rynku ustąpiły miejsca piwnicom po drugiej stronie Warty.</p>
+      <h3>Piwnica jako format</h3>
+      <p>Nowe miejsca łączy skala: dwie sale, sto pięćdziesiąt osób, jeden dobrze ustawiony system. Mniejsza pojemność oznacza odważniejszy line-up.</p>
+      <blockquote>„Nie potrzebujemy tysiąca osób. Potrzebujemy stu pięćdziesięciu, które wracają."</blockquote>
+      <div class="mini">
+        <div class="th"><img src="assets/sample-event-rock.jpg" alt=""></div>
+        <div class="m">
+          <span class="label-md" style="color:var(--brand-primary)">Wydarzenie · Sobota, 22.08</span>
+          <span class="title-lg">Basen Night: Selektor Residency</span>
+          <span class="body" style="font:var(--type-body-m)">Klub Basen, Gwarna 12 · 22:00 · od 45 zł</span>
+        </div>
+        <span class="cta">Zobacz wydarzenie</span>
+      </div>
+      <h3>Kto za tym stoi</h3>
+      <p>Właściciele czterech z sześciu miejsc pracowali wcześniej w klubach zamkniętych w 2023 roku. Doświadczenie przekłada się na organizację.</p>
+    </div>
+    <div class="sect">
+      <h2 class="title-lg" style="font-size:21px">Wydarzenia z artykułu</h2>
+      <div class="grid3">
+        <div class="ecard"><div class="th"><img src="assets/sample-event-techno.jpg" alt=""></div><div class="b"><span class="label-md" style="color:var(--brand-primary)">Sob, 22.08 · 22:00</span><span class="title-lg" style="font-size:17px">Basen Night: Residency</span><span class="price">od 45 zł</span></div></div>
+        <div class="ecard"><div class="th"><img src="assets/sample-event-jazz.jpg" alt=""></div><div class="b"><span class="label-md" style="color:var(--brand-primary)">Czw, 27.08 · 20:00</span><span class="title-lg" style="font-size:17px">Late Jam Session</span><span class="price">Bezpłatne</span></div></div>
+      </div>
+    </div>
+    <div class="rel">
+      <h2 class="title-lg" style="font-size:21px">Czytaj dalej</h2>
+      <div class="list">
+        <div class="relrow"><div class="th" style="width:88px;height:64px"><img src="assets/sample-event-jazz.jpg" alt=""></div><div style="display:flex;flex-direction:column;gap:5px"><span class="label-md" style="color:var(--on-surface-variant)">Muzyka · 12.08</span><span class="title-lg" style="font-size:17px">Jazz wrócił do klubów</span></div></div>
+        <div class="relrow"><div class="th" style="width:88px;height:64px"><img src="assets/sample-event-rock.jpg" alt=""></div><div style="display:flex;flex-direction:column;gap:5px"><span class="label-md" style="color:var(--on-surface-variant)">Wywiady · 9.08</span><span class="title-lg" style="font-size:17px">„Bilety to nie wszystko"</span></div></div>
+      </div>
+    </div>
+    <button class="share">Udostępnij</button>
+  </div>
+  <div class="tabbar"><span class="on"></span><span></span><span></span><span></span></div>
+</div>
+
+<!-- ============ 5. HOME — "Z BLOGA" STRIP (entry point) ============ -->
+<div class="flabel" style="left:4100px;top:26px">Strona główna — sekcja „Z bloga” pod wynikami · desktop 1440</div>
+<div class="frame" style="left:4100px;top:56px;width:1440px">
+  <div class="strip" style="padding-top:20px">
+    <div class="mapstub">wyniki + mapa — istniejący split ekranu głównego</div>
+    <div class="strip-head">
+      <div><h2>Z bloga</h2><p>Przewodniki i wywiady od redakcji — Poznań i okolice</p></div>
+      <span class="linkbtn">Wszystkie artykuły →</span>
+    </div>
+    <div class="grid3s">
+      <article class="pcard"><img src="assets/sample-event-techno.jpg" alt=""><div class="shade"></div><div class="body">
+        <div class="byline"><span class="av ">MK</span><span class="label-md">17 sierpnia · Nightlife</span></div>
+        <h3 class="title-lg">Nowa fala poznańskich piwnic</h3>
+        <p class="ex clamp2">Sześć klubów, które przedefiniowały nocną scenę miasta — i ludzie, którzy je prowadzą.</p></div></article>
+      <article class="pcard"><img src="assets/sample-event-jazz.jpg" alt=""><div class="shade"></div><div class="body">
+        <div class="byline"><span class="av amber">TW</span><span class="label-md">12 sierpnia · Muzyka</span></div>
+        <h3 class="title-lg">Jazz wrócił do klubów</h3>
+        <p class="ex clamp2">Od piwnicznych jam sessions po sceny festiwalowe — mapa miejsc z najlepszymi składami sezonu.</p></div></article>
+      <article class="pcard"><img src="assets/sample-event-rock.jpg" alt=""><div class="shade"></div><div class="body">
+        <div class="byline"><span class="av ">PZ</span><span class="label-md">9 sierpnia · Wywiady</span></div>
+        <h3 class="title-lg">„Bilety to nie wszystko”</h3>
+        <p class="ex clamp2">Jak układa się line-up na jesień i dlaczego mniejsze sceny wygrywają z arenami.</p></div></article>
+    </div>
+  </div>
+</div>
+</body>
+</html>

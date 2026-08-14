@@ -1,8 +1,8 @@
-# Wydarzka — Web B2C Roadmap
+# EventApp — Web B2C Roadmap
 
 > **Platform:** Next.js public pages — read-only discovery (SSR, SEO, OG tags)
-> **Repo:** `wydarzka-web-b2c`
-> **Domain:** `wydarzka.dev`
+> **Repo:** `eventapp-web-b2c`
+> **Domain:** `eventapp.dev`
 > **Central roadmap:** [ROADMAP.md](./ROADMAP.md)
 > **Strategy:** [Read-only discovery strategy](./ROADMAP.md#web-b2c--read-only-discovery-strategy)
 
@@ -65,7 +65,7 @@ The Figma file contains the following screens that define the visual direction f
 - [ ] P0 Environment variable toggle: `NEXT_PUBLIC_API_MOCKING=true`
 - [ ] P0 `.env.mock` file + `pnpm dev:mock` script in `package.json`
 
-### 0.5.3 GitHub Actions — wydarzka-web-b2c
+### 0.5.3 GitHub Actions — eventapp-web-b2c
 
 > Same CI/CD workflow as other web apps — see [central roadmap, section 0.5.3](./ROADMAP.md#053-github-actions--web-apps-b2c--b2b--admin).
 
@@ -167,22 +167,22 @@ The Figma file contains the following screens that define the visual direction f
 
 ### 1.4.25 "For Organizers" Cross-App Link
 
-> Web B2C is the public-facing discovery site. The B2B organizer dashboard lives at `dashboard.wydarzka.dev` (see [ARCHITECTURE.md §Domain Mapping](./ARCHITECTURE.md)). A persistent link in the B2C navigation allows venue owners and event organizers to discover and access the dashboard.
+> Web B2C is the public-facing discovery site. The B2B organizer dashboard lives at `dashboard.eventapp.dev` (see [ARCHITECTURE.md §Domain Mapping](./ARCHITECTURE.md)). A persistent link in the B2C navigation allows venue owners and event organizers to discover and access the dashboard.
 
 - [ ] P0 **Header link — "For Organizers":**
   - Visible in the top navbar on all pages (desktop: text link; tablet/mobile: inside hamburger menu)
-  - Links to `dashboard.wydarzka.dev` (opens in new tab, `target="_blank"` with `rel="noopener noreferrer"`)
+  - Links to `dashboard.eventapp.dev` (opens in new tab, `target="_blank"` with `rel="noopener noreferrer"`)
   - Label: "For Organizers" (PL: "Dla Organizatorów") — uses i18n translation key
   - Positioned after main nav items but before language toggle
   - Visual treatment: tertiary/text style — should not compete with primary CTAs (e.g. no gradient, no button shape)
 - [ ] P0 **Footer link — "Organizer Dashboard":**
   - In a "For Business" or "Organizers" section of the footer (alongside Terms, Privacy, Cookie Policy links)
   - Label: "Organizer Dashboard" (PL: "Panel Organizatora")
-  - Same external link behavior (`dashboard.wydarzka.dev`, new tab)
+  - Same external link behavior (`dashboard.eventapp.dev`, new tab)
   - Optionally include a short description: "Manage your venue, create events, and track analytics"
 - [ ] P1 **Contextual CTA on venue profile page:**
   - Below the venue info section, show a subtle CTA: "Is this your venue? Claim it on the Organizer Dashboard"
-  - Links to `dashboard.wydarzka.dev` (or a deep link to the venue claim flow if available)
+  - Links to `dashboard.eventapp.dev` (or a deep link to the venue claim flow if available)
   - Only shown as a static link (Web B2C has no auth, so no conditional logic based on ownership)
 
 ### 1.4.3 Community Scout — "Know about an event?" CTA

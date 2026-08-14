@@ -308,23 +308,26 @@
 > Before any UI is built — the map must have data.
 
 - [ ] P0 **Source #1 — Google Places API:** finding venues in a city -> checking if they have their own event pages -> automatic email invitation to join the app (sent via Resend)
-- [ ] P0 **Source #2 — Eventbrite public API:** integration with the public API, periodic event fetching from free endpoints
+- [x] P0 **Source #2 — Eventbrite public API:** ❌ **dead end** — Eventbrite shut down its public Event Search API (`GET /v3/events/search/`) on Dec 12, 2019. The current API is org-scoped only (you can list events you personally created/manage, not discover public events city-wide); there is no free path to "all Eventbrite events in Kraków". Re-verified live against current provider docs (Aug 2026), not just the original plan assumption.
 - [ ] P0 **Source #3 — RSS / iCal venue feeds:** venue publishes a feed -> the app subscribes and automatically imports new events
-- [ ] P0 **Source #4 — City portals and cultural institutions:** official public data (e.g., poznan.pl/events, community centers, libraries) — exclusively through official APIs or open data, no scraping
+- [x] P0 **Source #4 — City portals, cultural institutions and ticketing sites (public listings):** official/public event pages read via their public HTML (JSON-LD preferred) or RSS feed, respecting `robots.txt` and rate limits — no login-gated or paywalled content. Validated working sources: `ebilet.pl` and `goout.net` (all cities), `kultura.poznan.pl` (Poznań), `wroclaw.pl` (Wrocław, JSON-LD). The initial implementation badly under-counted two of these — see "Yield note" below — after fixing that: **ebilet ~944 events/7 cities, kultura.poznan.pl ~750 events for Poznań alone.** See `backend/README.md` for the per-site download scripts and current results.
+  - **Yield note (Aug 2026):** ebilet.pl's visible schema.org JSON-LD on a city listing page is only a small "featured" carousel (~20-30 events); the same page also embeds a much bigger dataset in an Angular hydration blob (`serverApp-state`), now parsed directly — took a single city page from ~23 to ~100+ unique events for free (no extra requests). kultura.poznan.pl's listing is paginated (`/events/{page}/`, confirmed ~25 pages); the importer now walks all pages instead of just page 1 — took Poznań from ~40 to ~750 events.
+  - **Dead ends (evaluated, no usable free data — do not re-attempt without a new angle):** poznan.pl `web-service/events` SOAP API (persistent server-side fault), eventim.pl (times out), goingapp.pl (no parseable listings), bilety24.pl (404 on listing URLs), crossweb.pl (Cloudflare-blocked), Warsaw/Kraków/Gdańsk city portals (no public open-data event feed or structured markup found)
+- [x] P0 **Source #4b — Ticketmaster Discovery API:** ✅ the only genuinely free, general-purpose ticketing API left standing after re-verifying provider policies (Aug 2026). Free tier: 5,000 calls/day, 5 req/sec, real per-city `latlong` radius search with pagination (up to 1,000 events/city/run). Implemented as `pnpm download:ticketmaster` (needs a free `TICKETMASTER_API_KEY`, see `backend/README.md`). Songkick (not accepting new API key applications) and Bandsintown (partner-gated since 2025, free `app_id` model deprecated) were evaluated and are **dead ends** — both now require a signed partnership agreement, not just free registration.
 - [ ] P0 **Source #5 — WhatsApp / email bot collecting events from venues:** venue sends event info to a dedicated WhatsApp number or email (inbound via Resend webhook on `submit@wydarzka.dev`) -> auto-parser extracts data and writes to database — zero friction for the owner, full automation
-- [ ] P1 **Source #6 — Self-submission form for venues:** "Add your event" available publicly — supplement for venues without an integrated feed (verify if not already implemented in B2B dashboard)
+- [ ] P1 **Source #6 — Self-submission form for venues:** "Add your event" available publicly — supplement for venues without an integrated feed (verify if not already implemented in B2B dashboard). Primary path for Warsaw, Kraków and Gdańsk until those cities get a working automated source.
 - [ ] P0 Implement **event deduplication pipeline** — the same event from two sources = one entry (fuzzy match: name + date + address)
-- [ ] P0 Implement **venue deduplication pipeline** — the same venue from multiple sources (e.g., Google Places + Eventbrite) = one entry:
+- [ ] P0 Implement **venue deduplication pipeline** — the same venue from multiple sources (e.g., Google Places + Ticketmaster) = one entry:
   - Match on: normalized name + geocoordinate proximity (< 100m) + address similarity
-  - Merge strategy: prefer Google Places for location/photos/hours, Eventbrite for event links, keep all source IDs for traceability
+  - Merge strategy: prefer Google Places for location/photos/hours, ticketing sources for event links, keep all source IDs for traceability
   - `venue_source_mappings` table (venue_id, source, external_id, raw_data_json, last_seen_at) — track each source's reference to the canonical venue
   - On conflict: auto-merge if confidence > 0.9, flag for admin review if 0.7-0.9, skip if < 0.7
   - Re-run deduplication on each pipeline cycle (new imports may match existing venues)
 - [ ] P0 Implement **staleness detection** — events with past dates removed automatically (soft-delete)
 - [ ] P0 Implement source attribution — every aggregated event has a visible "Source: [name]"
-- [ ] P0 Launch pipeline for city #1 (Poznan — as test) and collect >= 500 events
+- [x] P0 Launch pipeline for city #1 (Poznan — as test) and collect >= 500 events — exceeded via `download:poznan` (~750) + `download:ebilet` (~118) alone; still needs ingestion + real dedup to count as "live" events in the DB
 - [x] P0 Configure cron job: pipeline runs every 6 hours automatically
-- [ ] P1 Extend pipeline to remaining 6 cities (Warsaw, Krakow, Wroclaw, Lodz, Gdansk, Szczecin)
+- [ ] P1 Extend pipeline to remaining 6 cities (Warsaw, Krakow, Wroclaw, Lodz, Gdansk, Szczecin) — Wroclaw has a working automated source (see Source #4); Warsaw, Krakow and Gdansk currently have no working free automated source and rely on self-submission (Source #6) + venue outreach (Source #1) until a viable feed is found
 - [ ] P1 Build importer monitoring: last_run, success_rate, error_count, events_imported
 
 ### 0.5.2 GitHub Actions — wydarzka-backend
@@ -785,6 +788,173 @@
 - [ ] P0 `GET /venues/mine` — return all venues where `claimed_by = authenticated user` (with follower count, upcoming event count)
 - [ ] P0 Scope all organizer endpoints (`/events`, `/venues/:id`, `/push`, `/analytics`) to verify the organizer owns the target venue (already implicit in auth guards — verify and test)
 - [ ] P0 Seed data: ensure at least 2 organizer users each own 2-3 venues (for multi-venue testing)
+
+---
+
+## Phase 2.5 — Blog (Week 7-9)
+
+> **Goal:** Editorial content that drives SEO and gives organizers a voice. Two author types: **organizers** (B2B) write about their events/venues; **admins** write city-guide and roundup articles. B2C users are read-only. No comments in MVP.
+>
+> Web B2C counterpart: [ROADMAP-web-b2c.md](./ROADMAP-web-b2c.md#25-blog-pages)
+> Web B2B counterpart: [ROADMAP-web-b2b.md](./ROADMAP-web-b2b.md#25-blog-editor)
+> Web Admin counterpart: [ROADMAP-web-admin-internal.md](./ROADMAP-web-admin-internal.md#36-blog-moderation)
+
+### 2.5.0 Database schema
+
+- [ ] P1 **New enums:**
+  - `blog_category_enum`: `city_guide | event_roundup | venue_spotlight | organizer_story | tips_and_tricks | news | other`
+  - `blog_status_enum`: `draft | pending_review | published | rejected | archived`
+- [ ] P1 **`blog_posts` table:**
+  - `id` (UUID PK), `slug` (VARCHAR 255, UNIQUE NOT NULL — immutable after first publish)
+  - `title` (VARCHAR 300 NOT NULL), `excerpt` (TEXT NOT NULL — 1-3 sentences, doubles as meta description)
+  - `content_json` (JSONB NOT NULL — Tiptap ProseMirror document)
+  - `content_text` (TEXT — FTS-ready plain text, populated by Postgres trigger from `content_json`)
+  - `featured_image_url` (VARCHAR 500)
+  - `author_id` (UUID NOT NULL REFERENCES users), `author_type` (VARCHAR 20: `'organizer' | 'admin'`)
+  - `venue_id` (UUID REFERENCES venues — nullable; for organizer posts about their venue)
+  - `category` (blog_category_enum NOT NULL), `tags` (VARCHAR(50)[] DEFAULT '{}' — max 10)
+  - `status` (blog_status_enum NOT NULL DEFAULT 'draft')
+  - `is_approved` (BOOLEAN NOT NULL DEFAULT FALSE), `rejection_reason` (TEXT)
+  - `approved_by_user_id` (UUID REFERENCES users), `approved_at` (TIMESTAMPTZ)
+  - `published_at` (TIMESTAMPTZ), `view_count` (INTEGER NOT NULL DEFAULT 0)
+  - `reading_time_minutes` (SMALLINT — set by trigger: `ceil(word_count / 200.0)`)
+  - `locale` (VARCHAR 5 NOT NULL DEFAULT 'pl' — `'pl' | 'en'`)
+  - `is_deleted` (BOOLEAN NOT NULL DEFAULT FALSE), `deleted_at` (TIMESTAMPTZ)
+  - `created_at`, `updated_at` (TIMESTAMPTZ NOT NULL DEFAULT NOW())
+- [ ] P1 **`blog_post_photos` table** (mirrors `event_photos` exactly):
+  - `id`, `blog_post_id` (FK → blog_posts ON DELETE CASCADE), `url`, `alt_text`, `caption`, `position`, `uploaded_by_user_id`, `created_at`
+- [ ] P1 **`blog_post_related_events` join table:** `blog_post_id`, `event_id`, `position` — PRIMARY KEY (blog_post_id, event_id)
+- [ ] P1 **Indexes:**
+  - Published list pagination: partial index on `(published_at DESC)` WHERE `status='published' AND is_approved=TRUE AND is_deleted=FALSE`
+  - Author scope: `(author_id, status, created_at DESC)`
+  - Moderation queue: `(status, created_at DESC)` WHERE `status='pending_review' AND is_deleted=FALSE`
+  - FTS: GIN on `to_tsvector('simple', title || ' ' || content_text || ' ' || excerpt)`
+  - Trigram on `title gin_trgm_ops`
+- [ ] P1 **Postgres trigger** on `blog_posts` insert/update:
+  - Extracts all text nodes from `content_json` using `jsonb_path_query_array`, writes to `content_text`
+  - Computes word count → writes `reading_time_minutes = CEIL(word_count / 200.0)`
+
+### 2.5.1 NestJS BlogModule
+
+```
+src/blog/
+  blog.module.ts
+  blog.controller.ts              -- public GET endpoints
+  blog-organizer.controller.ts    -- organizer write endpoints
+  blog-admin.controller.ts        -- /admin/blog/* endpoints
+  blog.service.ts
+  blog-moderation.service.ts
+  blog-uploads.service.ts
+  dto/  (create, update, response DTOs)
+  guards/blog-post-ownership.guard.ts  -- verifies organizer owns the post
+  pipes/blog-content-sanitize.pipe.ts  -- validates Tiptap JSON structure
+```
+
+### 2.5.2 API endpoints
+
+**Public (no auth, rate-limited by existing ThrottlerGuard):**
+
+- [ ] P1 `GET /blog` — cursor-paginated published posts; query params: `category`, `author_type`, `venue_id`, `locale`, `cursor`, `limit` (default 12, max 50)
+- [ ] P1 `GET /blog/:slug` — single published post detail; cached in Redis (`blog:post:{slug}`, TTL: 5 min)
+- [ ] P1 `GET /blog/search?q=` — pg_trgm + FTS, same rate limit as `/events/search` (5/sec, 30/min); Redis cache TTL: 2 min
+- [ ] P1 `GET /venues/:id/blog` — published posts linked to a specific venue
+
+**Organizer-scoped (requires `organizer` role + `BlogPostOwnershipGuard`):**
+
+- [ ] P1 `GET /blog/me` — own posts in all statuses (cursor-based)
+- [ ] P1 `POST /blog` — create draft; returns `201` with created post
+- [ ] P1 `PATCH /blog/:id` — update own post (allowed for `draft` or `rejected` status only)
+- [ ] P1 `DELETE /blog/:id` — soft-delete own post (`draft` or `rejected` only)
+- [ ] P1 `POST /blog/:id/submit` — change status `draft → pending_review` (triggers moderation queue)
+- [ ] P1 `POST /blog/:id/photos` — generate R2 presigned URL + create `blog_post_photos` row (reuses image pipeline from section 2.8)
+- [ ] P1 `DELETE /blog/:id/photos/:photoId` — remove photo
+- [ ] P1 `PATCH /blog/:id/photos/reorder` — update photo positions (same pattern as `venue_photos`)
+
+**Admin-scoped (requires `admin` role):**
+
+- [ ] P1 `GET /admin/blog` — all posts any status (cursor-based, filterable by status, author_type, category)
+- [ ] P1 `GET /admin/blog/moderation` — `pending_review` queue; response includes `meta.total` for sidebar badge (`blog:moderation:count` Redis key, TTL: 30 sec)
+- [ ] P1 `PATCH /admin/blog/:id/approve` — set `is_approved=true`, `status='published'`, `published_at=now()`; queue approval email (see section 2.5.4)
+- [ ] P1 `PATCH /admin/blog/:id/reject` — set `status='rejected'`, store `rejection_reason`; queue rejection email
+- [ ] P1 `POST /admin/blog` — admin creates post, published immediately (no moderation step)
+- [ ] P1 `PATCH /admin/blog/:id` — admin edits any post
+- [ ] P1 `DELETE /admin/blog/:id` — admin soft-deletes any post; audit log entry
+
+### 2.5.3 Moderation flow
+
+```
+organizer POST /blog (creates draft)
+  └── POST /blog/:id/submit → status: pending_review
+        ├── PATCH /admin/blog/:id/approve → status: published, is_approved: true
+        │     └── email: blog-post-approved (Resend + Bull queue)
+        └── PATCH /admin/blog/:id/reject  → status: rejected, rejection_reason stored
+              └── email: blog-post-rejected (Resend + Bull queue)
+
+admin POST /admin/blog → status: published (immediate, no moderation)
+```
+
+### 2.5.4 Email templates
+
+- [ ] P1 `blog-post-approved.tsx` — React Email template: "Your article was published: [title]. View at [url]"
+- [ ] P1 `blog-post-rejected.tsx` — React Email template: "Your article needs revision: [title]. Reason: [reason]"
+- Both queued via Bull `email-sending` queue (reuses existing `EmailModule` pattern from section 0.2.2)
+
+### 2.5.5 Redis caching
+
+Following existing key patterns (ARCHITECTURE.md §13):
+
+- `blog:post:{slug}` — TTL: 5 min; invalidated on approve/update/delete
+- `blog:list:{hash}` — TTL: 3 min; hash of query params; pattern-deleted on any blog post mutation
+- `blog:moderation:count` — TTL: 30 sec; pending review count for admin sidebar badge
+
+### 2.5.6 Slug generation
+
+- Derive from title: `slugify(title, { locale: 'pl', lower: true })` → handles ą→a, ę→e, etc.
+- Uniqueness enforced by UNIQUE index; append `-2`, `-3` on conflict
+- Slug is immutable after first publish (the edit form's slug field becomes read-only on `status='published'`)
+
+### 2.5.7 Rate limiting
+
+- `POST /blog` (create): `@Throttle(5, 60)` — max 5 creates/minute per organizer
+- `POST /blog/:id/submit`: same limit
+- `GET /blog/search`: same limits as `GET /events/search` (5/sec, 30/min)
+
+### 2.5.8 Content format — Tiptap ProseMirror JSON
+
+> **Decision: JSONB** (`content_json`), not raw HTML, not Markdown.
+>
+> - JSONB can be introspected by Postgres (trigger extracts text for FTS and word count)
+> - No XSS risk from stored HTML; Tiptap JSON cannot contain `<script>` nodes by design
+> - Renders server-side on Web B2C via `@tiptap/html` `generateHTML()` — zero client JS for article body
+> - Same Tiptap library used in all three frontends (B2B editor, Admin editor, B2C renderer)
+
+**Supported Tiptap extensions (backend validates via `blog-content-sanitize.pipe.ts`):**
+- StarterKit (Bold, Italic, H2, H3, lists, blockquote, undo/redo)
+- Image (inline — uploaded via R2 presigned URL flow)
+- Link (sanitized, `rel="noopener noreferrer"` enforced)
+- YouTube embed (sandboxed iframe node)
+- **EventCard** (custom node): `{ type: 'event-card', attrs: { eventId: 'uuid' } }` — rendered on B2C as a mini event card by fetching `GET /events/:id`
+
+### 2.5.9 Analytics events
+
+Extend PostHog tracking (section 4.3):
+
+- `blog_post_viewed` (post_id, author_type, category)
+- `blog_post_created` (author_id)
+- `blog_post_submitted` (author_id)
+- `blog_post_approved` / `blog_post_rejected` (admin_id, post_id)
+- `blog_cta_clicked` (type: 'event_card' | 'venue_link' | 'ticket_link')
+
+### 2.5.10 Seed data additions
+
+- [ ] P1 30 blog posts in `blog_posts`: 20 from organizer authors (linked to venues), 10 from admin authors (city guides)
+  - Status mix: 15 published, 8 draft, 5 pending_review, 2 rejected
+  - Each with 0-3 photos in `blog_post_photos`; related events linked for 10 posts
+- [ ] P1 MSW mock handlers: `GET /blog`, `GET /blog/:slug`, `POST /blog`, `GET /admin/blog/moderation`, `PATCH /admin/blog/:id/approve`
+
+### 2.5.11 OpenAPI spec
+
+Every endpoint gets full `@ApiTags('blog')`, `@ApiOperation`, `@ApiResponse`, and `@ApiQuery` decorators — so all three frontend codegen runs (`pnpm api:generate`) include blog types automatically.
 
 ---
 

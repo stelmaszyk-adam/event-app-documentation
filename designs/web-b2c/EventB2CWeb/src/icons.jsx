@@ -15,6 +15,8 @@ const Icon = {
   ChevronRight: _I(16, <path d="m9 6 6 6-6 6"/>),
   ChevronLeft: _I(16, <path d="m15 6-6 6 6 6"/>),
   X: _I(18, <path d="M18 6 6 18M6 6l12 12"/>),
+  Expand: _I(18, <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>),
+  Collapse: _I(18, <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/>),
   MapPin: _I(18, <><path d="M20 10c0 7-8 12-8 12s-8-5-8-12a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></>),
   Calendar: _I(18, <><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></>),
   Clock: _I(18, <><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></>),
@@ -53,6 +55,12 @@ const Icon = {
   Tag: _I(16, <><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z"/><line x1="7" y1="7" x2="7.01" y2="7"/></>),
   AtSign: _I(14, <><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.9 7.9"/></>),
   Eye: _I(18, <><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></>),
+  Mail: _I(18, <><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2.5 6.5 9.5 7 9.5-7"/></>),
+  Lock: _I(18, <><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></>),
+  EyeOff: _I(18, <><path d="M2 12s3-7 10-7c1.6 0 3 .4 4.2 1M22 12s-3 7-10 7c-1.6 0-3-.4-4.2-1"/><path d="M4 4l16 16"/></>),
+  Check: _I(18, <path d="m5 13 4 4L19 7"/>),
+  User: _I(18, <><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></>),
+  LogOut: _I(18, <><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></>),
 };
 
 Object.assign(window, { Icon });

@@ -10,7 +10,7 @@
 |---|---|---|---|
 | `wydarzka-backend` | REST API, aggregation pipeline, push jobs, auth | NestJS, Drizzle ORM, PostgreSQL + PostGIS, Redis, Bull | Railway |
 | `wydarzka-mobile-b2c` | Consumer mobile app (iOS + Android) | React Native (CLI), React Navigation, MapLibre Native | App Store / Google Play (Fastlane) |
-| `wydarzka-web-b2c` | Public read-only discovery pages (SSR, SEO, OG tags) | Next.js (App Router), SSR | Cloudflare Pages / Vercel |
+| `wydarzka-web-b2c` | Public discovery pages (SSR, SEO, OG tags) + authenticated event submission and event tips | Next.js (App Router), SSR | Cloudflare Pages / Vercel |
 | `wydarzka-web-b2b` | Organizer dashboard — venue & event management | Next.js (App Router), TanStack Query | Cloudflare Pages / Vercel |
 | `wydarzka-web-admin-internal` | Internal admin panel — moderation, KPIs, user mgmt | Next.js (App Router), TanStack Query | Cloudflare Pages / Vercel (IP-restricted) |
 
@@ -536,7 +536,8 @@ Supporting tools (P1, post-launch):
 
 | Surface | Auth Required | Auth Method |
 |---|---|---|
-| Web B2C (public pages) | No | Unauthenticated — read-only access |
+| Web B2C (browsing) | No | Unauthenticated — map, discovery, event/venue pages |
+| Web B2C (write actions) | Yes | JWT via `httpOnly` cookies (email+password / Google OAuth); required for event submission and event tips |
 | Mobile B2C (browsing) | No | Map and discovery work without login |
 | Mobile B2C (actions) | Yes | JWT (email+password / Google OAuth / Apple Sign In) |
 | Web B2B | Yes | JWT (organizer email+password) |
@@ -548,7 +549,7 @@ Supporting tools (P1, post-launch):
 
 | Role | Can access | Scope |
 |---|---|---|
-| `user` | Mobile B2C actions (follow, save, submit events, submit event tips) | Own data only |
+| `user` | Mobile B2C actions (follow, save, submit events, submit event tips) + Web B2C actions (submit events, submit event tips) | Own data only |
 | `organizer` | Web B2B dashboard | Own venue(s) only |
 | `admin` | Web Admin panel + all API endpoints | Full system access |
 

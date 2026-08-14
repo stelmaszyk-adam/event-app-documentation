@@ -1,4 +1,4 @@
-// Mock data for wydarzka Web B2C — Poznań events
+// Mock data for eventapp Web B2C — Poznań events
 // Map coords are in 0..1000 (x), 0..720 (y) — for our stylized SVG map canvas.
 
 const CATEGORIES = [
@@ -30,11 +30,12 @@ const CITIES = [
 ];
 
 // Mock photos — reuse the 3 sample images, with deterministic Unsplash URLs as fallback
+const __R = window.__resources || {};
 const IMG = {
-  jazz:   'assets/sample-event-jazz.jpg',
-  rock:   'assets/sample-event-rock.jpg',
-  techno: 'assets/sample-event-techno.jpg',
-  venue:  'assets/sample-venue-klub-stodola.jpg',
+  jazz:   __R.imgJazz   || 'assets/sample-event-jazz.jpg',
+  rock:   __R.imgRock   || 'assets/sample-event-rock.jpg',
+  techno: __R.imgTechno || 'assets/sample-event-techno.jpg',
+  venue:  __R.imgVenue  || 'assets/sample-venue-klub-stodola.jpg',
 };
 
 const EVENTS = [
@@ -246,4 +247,6 @@ const VENUE_DETAILS = {
   },
 };
 
-Object.assign(window, { CATEGORIES, CITIES, EVENTS, VENUE_DETAILS, IMG });
+const VENUES = Array.from(new Map(EVENTS.map(e => [e.venue.id, e.venue])).values());
+
+Object.assign(window, { CATEGORIES, CITIES, EVENTS, VENUE_DETAILS, VENUES, IMG });

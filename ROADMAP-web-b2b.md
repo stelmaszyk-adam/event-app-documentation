@@ -324,6 +324,96 @@
 
 ---
 
+## Phase 2.5 — Blog Editor (Week 8)
+
+> **Goal:** Give organizers a full editorial tool to write articles about their events and venues. Posts go through admin moderation before publishing. Admin users can write articles without moderation, directly from the admin panel.
+>
+> Backend counterpart: [ROADMAP-backend.md](./ROADMAP-backend.md#25-blog-week-7-9)
+> Web B2C counterpart: [ROADMAP-web-b2c.md](./ROADMAP-web-b2c.md#25-blog-pages)
+
+### 2.5.1 Routes
+
+```
+app/(dashboard)/blog/page.tsx          -- organizer's post list
+app/(dashboard)/blog/new/page.tsx      -- editor: create new post
+app/(dashboard)/blog/[id]/edit/        -- editor: update existing post
+```
+
+### 2.5.2 Blog post list page
+
+- [ ] P1 `useGetBlogMe()` orval TanStack Query hook — fetches `GET /blog/me`
+- [ ] P1 shadcn/ui DataTable with columns: Title, Status badge, Category, Date, Actions (Edit, Delete)
+- [ ] P1 **Status badges** (consistent with existing event status badges):
+  - `draft` → neutral `surface_container_high`
+  - `pending_review` → `warning_container` (amber/orange)
+  - `published` → `success_container` (green)
+  - `rejected` → `error_container` (red) + inline rejection reason expandable
+- [ ] P1 Empty state: "You haven't written any articles yet — Start writing" (with CTA to `/blog/new`)
+
+### 2.5.3 Blog editor (Client Component — Tiptap requires browser)
+
+> **Why Client Component:** Tiptap is a browser-only rich text editor. The route shell is a Server Component; only the editor itself is a Client island (same pattern as any interactive form in the dashboard).
+
+**Left panel (75% width):**
+
+- [ ] P1 **Title input** — large, `title_lg` style; live character counter (max 300)
+- [ ] P1 **Excerpt textarea** — auto-resize, max 300 chars with live counter; label: "Short summary (used as search result and OG description)"
+- [ ] P1 **Tiptap editor** with glassmorphism toolbar (DESIGN.md §7.6: 70% opacity `surface_container_lowest` + `backdrop-filter: blur(20px)`):
+  - **StarterKit:** Bold, Italic, H2, H3, bullet list, ordered list, blockquote, undo/redo
+  - **Image extension:** organizer clicks image button → file picker → file uploaded via `POST /blog/:id/photos` (R2 presigned URL, reuses same `ImageUploadZone` component as venue/event photos from section 2.3.1) → `blog_post_photos` row created → R2 URL inserted as Tiptap image node
+  - **Link extension:** sanitized; `rel="noopener noreferrer"` enforced server-side; backend `blog-content-sanitize.pipe.ts` validates
+  - **YouTube embed:** sandboxed iframe node (paste YouTube URL → auto-converts)
+  - **EventCard (custom Tiptap node):** toolbar button "Embed event" → modal shows organizer's own events (`GET /events?venue_id=xxx`) → on selection stores `{ type: 'event-card', attrs: { eventId: 'uuid' } }` → rendered on B2C as a mini event card inline; preview mode shows the card using shadcn/ui Card component
+
+**Right panel (25% width, sticky sidebar):**
+
+- [ ] P1 **Category select** — shadcn/ui Select with `blog_category_enum` options: City Guide, Event Roundup, Venue Spotlight, Organizer Story, Tips & Tricks, News, Other
+- [ ] P1 **Venue association** — dropdown from `GET /venues/mine`; pre-selects the organizer's active venue; optional (a post doesn't have to be about a specific venue)
+- [ ] P1 **Related events multi-select** — checkboxes from `GET /events?venue_id=xxx`; selected events stored in `blog_post_related_events` join table; displayed as "Related events" section on B2C detail page
+- [ ] P1 **Featured image** — drag-and-drop upload zone (same `ImageUploadZone` as venue/event photos, section 2.3.1); stored as `featured_image_url` on the post; shown as hero and OG image on B2C
+- [ ] P1 **Locale toggle** — PL / EN — sets `locale` field on the post
+- [ ] P1 **Action buttons:**
+  - "Save draft" — calls `PATCH /blog/:id` (or `POST /blog` on first save) with `status: 'draft'`; shows toast "Draft saved"
+  - "Preview" — opens a right-side drawer/modal with `generateHTML()` output styled as the B2C reading page (read-only Tiptap instance with `editable: false`)
+  - "Submit for review" — calls `POST /blog/:id/submit`; shows confirmation: "Your article will be reviewed within 24h. You'll receive an email when it's approved."
+
+### 2.5.4 Auto-save
+
+- [ ] P1 **Auto-save to localStorage every 30 seconds** while editor is open — key: `blog-draft-{id}` (same pattern as event editor auto-save from section 2.4.2)
+- [ ] P1 **Draft recovery on page load:** if `localStorage.getItem('blog-draft-{id}')` exists, show banner "You have unsaved changes — Restore?" with preview of saved content
+- [ ] P1 **Clear draft** on successful submission (`POST /blog/:id/submit`) or on "Discard changes" button click
+
+### 2.5.5 Submit flow
+
+1. Organizer clicks "Submit for review"
+2. `POST /blog/:id/submit` → backend changes `status → pending_review`
+3. TanStack Query invalidates `useGetBlogMe()` cache
+4. Redirect to `/blog` list page
+5. Toast notification: "Your article has been submitted for review. You'll receive an email when approved."
+6. Backend queues `blog-post-approved` / `blog-post-rejected` email via Bull (section 2.5.4 in backend roadmap)
+
+### 2.5.6 Sidebar navigation entry
+
+- [ ] P1 Add "Blog" to the organizer dashboard sidebar (between "Events" and "Analytics"):
+  - Icon: `Pencil` (Lucide)
+  - Label: "Blog" (PL: "Blog")
+  - Sub-items: "My Articles" → `/blog`, "New Article" → `/blog/new`
+  - Badge: count of `pending_review` posts (from `useGetBlogMe()` filtered by status)
+
+### 2.5.7 MSW mock handlers
+
+- [ ] P1 `GET /blog/me` → 5 seeded posts (mix of draft, pending, published, rejected)
+- [ ] P1 `POST /blog` → 201 with created draft
+- [ ] P1 `PATCH /blog/:id` → 200 with updated post
+- [ ] P1 `POST /blog/:id/submit` → 200 with status `pending_review`
+- [ ] P1 `POST /blog/:id/photos` → 201 with presigned URL object
+
+### 2.5.8 API client codegen
+
+- [ ] P1 After backend blog endpoints are implemented: run `pnpm api:generate` to regenerate orval TanStack Query hooks in `src/api/generated/`; confirm no TypeScript errors before building blog UI
+
+---
+
 ## Phase 4 — Testing and Launch (Week 9-12)
 
 ### 4.1 Testing

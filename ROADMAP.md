@@ -7,7 +7,7 @@
 | Roadmap | Repo / App | File |
 |---------|-----------|------|
 | Mobile B2C | React Native (CLI) — iOS + Android consumer app | [ROADMAP-mobile-b2c.md](./ROADMAP-mobile-b2c.md) |
-| Web B2C | Next.js public pages — read-only discovery (SSR, SEO, OG tags) | [ROADMAP-web-b2c.md](./ROADMAP-web-b2c.md) |
+| Web B2C | Next.js public pages — discovery (SSR, SEO, OG tags) + authenticated user actions (event submission, event tips) | [ROADMAP-web-b2c.md](./ROADMAP-web-b2c.md) |
 | Web B2B | Next.js organizer dashboard — venue & event management | [ROADMAP-web-b2b.md](./ROADMAP-web-b2b.md) |
 | Web Admin | Next.js admin panel (`wydarzka-web-admin-internal` repo) — internal tools, IP-restricted | [ROADMAP-web-admin-internal.md](./ROADMAP-web-admin-internal.md) |
 | Backend | NestJS API server, database, infrastructure, aggregation pipeline | [ROADMAP-backend.md](./ROADMAP-backend.md) |
@@ -200,7 +200,7 @@ Map pins use the **category** field directly. Each of the 12 categories has a di
 
 | Feature | Platforms involved | Sections |
 |---------|-------------------|----------|
-| Auth | Mobile B2C + Web B2B + Web Admin + Backend | 1.1 in each roadmap |
+| Auth | Mobile B2C + Web B2C + Web B2B + Web Admin + Backend | 1.1 in each roadmap |
 | Admin auth hardening (2FA, session timeout, lockout) | Web Admin + Backend | 1.1.0 (backend), 1.1 (admin) |
 | Push notifications | Mobile B2C + Web B2B + Backend | 1.5 (mobile), 2.5 (B2B), 1.5/2.5 (backend) |
 | Venue claim flow | Web B2B + Backend | 2.1 in each |
@@ -216,8 +216,10 @@ Map pins use the **category** field directly. Each of the 12 categories has a di
 | Performance budgets | Web B2C + Backend | 1.14 (web B2C), 4.2.1 (backend) |
 | Error & empty states | All frontends | 1.16 (web B2C), 2.10 (B2B), 3.7 (admin), various (mobile) |
 | Responsive design | Web B2C + Web B2B | 1.15 (web B2C), 2.10 (B2B) |
-| Community Scout (event tips) | Mobile B2C + Web B2C + Web Admin + Backend | 1.7.1 (mobile), 1.4.3 (web B2C), 3.1.1 (admin), 1.7.1 (backend) |
+| Community Scout (event tips) | Mobile B2C + Web B2C + Web Admin + Backend | 1.7.1 (mobile), 1.4.3 + 1.7.1 (web B2C), 3.1.1 (admin), 1.7.1 (backend) |
+| Event submission (B2C users) | Mobile B2C + Web B2C + Web Admin + Backend | 1.7 (mobile), 1.7 (web B2C), 3.1 (admin), 1.2 (backend) |
 | Health check | Backend | 1.2 (backend), 4.3 (backend) |
+| **Blog** | Web B2C + Web B2B + Web Admin + Backend | 2.5 (backend), 2.5 (web B2C), 2.5 (web B2B), 3.9 (admin) |
 
 ---
 
@@ -229,7 +231,8 @@ Map pins use the **category** field directly. Each of the 12 categories has a di
 | 3-4 | Phase 1: Auth, API backend, aggregation for 7 cities |
 | 5-6 | Phase 1 cont.: B2C mobile app (map, discovery, venue profile) |
 | 7-8 | Phase 1 cont. + Phase 2: Push, social sharing, B2B dashboard (claim + event management) |
-| 9-10 | Phase 3: Admin panel, moderation, analytics |
+| 7-9 | **Phase 2.5 (Blog):** `BlogModule` backend + DB schema (Week 7), organizer blog editor in B2B (Week 8), public blog pages on Web B2C (Week 9) |
+| 9-10 | Phase 3: Admin panel, moderation, analytics (includes blog moderation queue — see section 3.6) |
 | 11 | Phase 4: Tests, App Store submission, launch preparation |
 | 12 | **LAUNCH** — outreach to first 50 venues in Poznan, KPI monitoring |
 
@@ -250,9 +253,9 @@ Map pins use the **category** field directly. Each of the 12 categories has a di
 
 ---
 
-## Web B2C — Read-Only Discovery Strategy
+## Web B2C — Discovery Strategy
 
-> **Principle:** Web B2C is a read-only discovery tool (browsing, searching). Actions requiring an account (follow, save, push) direct to the mobile app.
+> **Principle:** Web B2C is primarily a discovery tool (browsing, searching). Browsing requires no login. Authenticated users (logged-in B2C users) can submit events and event tips directly from the web. Social engagement actions (follow, save, push notifications) still direct to the mobile app.
 
 ### Why a lightweight web B2C in MVP
 
@@ -260,17 +263,17 @@ Map pins use the **category** field directly. Each of the 12 categories has a di
 - **Lower friction for discovery.** Not everyone will install an app to browse events.
 - **Share links that convert.** Shared links land on a full event page with context, not just a "download the app" wall.
 - **Low incremental cost.** The API is already built for mobile. A Next.js SSR frontend adds ~1-2 weeks.
-- **Retention still happens on mobile.** Web is read-only — follow/save/push all redirect to the app.
+- **Retention still happens on mobile.** Follow/save/push all redirect to the app; event submission is available on both web and mobile.
 
 ### Implementation phases
 
 | Phase | What to do | When |
 |-------|------------|------|
-| **MVP** | Lightweight read-only web app: map with pins, filtering, event/venue pages — all SSR for SEO. Interactive actions redirect to mobile app via smart banners. | Week 5-8 |
+| **MVP** | Discovery web app: map with pins, filtering, event/venue pages — all SSR for SEO. Auth + event submission + event tips for logged-in users. Social actions (follow, save, push) redirect to mobile app via smart banners. | Week 5-8 |
 | **Post-launch** | Text search, additional SEO landing pages, performance optimization. | Month 3-4 |
-| **Scale** | Full interactive web B2C (follow, save, web push) — only if desktop traffic > 15%. | Month 6+ |
+| **Scale** | Full social web B2C (follow, save, web push) — only if desktop traffic > 15%. | Month 6+ |
 
-### Scope (read-only)
+### Scope
 
 **Allowed on web (without login):**
 - Browsing the map, filtering by category/date/city
@@ -278,12 +281,17 @@ Map pins use the **category** field directly. Each of the 12 categories has a di
 - CTA "Buy tickets" / "Navigate" (external links)
 - Share event (link)
 
+**Allowed on web (with login — B2C `user` role):**
+- Submit an event (goes to moderation queue — same as mobile)
+- Submit an event tip (Community Scout — same as mobile)
+- View submission and tip status (`/my-submissions`, `/my-tips`)
+
 **Directs to mobile app (smart banner):**
-- Follow venue, save event, push notifications, submit event, submit event tip (Community Scout)
+- Follow venue, save event, push notifications
 
 **B2C <-> B2B navigation:**
 - B2C site (`wydarzka.dev`) links to B2B dashboard (`dashboard.wydarzka.dev`) and vice versa
-- No shared auth session — B2C is unauthenticated; organizers navigate to `dashboard.wydarzka.dev` and log in separately
+- No shared auth session — B2C users log in at `wydarzka.dev`; organizers log in separately at `dashboard.wydarzka.dev`
 
 ---
 
@@ -460,7 +468,7 @@ Repo: wydarzka-web-admin-internal (Next.js — Admin Panel, IP-restricted)
 Repo: wydarzka-backend (NestJS — standalone Node.js server)
     |-- AuthModule, EventsModule, VenuesModule, UsersModule
     |-- NotificationsModule, UploadsModule, ImportersModule
-    |-- ClaimsModule, AdminModule
+    |-- ClaimsModule, AdminModule, BlogModule
 
 Infrastructure
     |-- PostgreSQL + PostGIS (Railway)

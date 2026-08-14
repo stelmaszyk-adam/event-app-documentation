@@ -1,4 +1,4 @@
-// Overlays for wydarzka Web B2C
+// Overlays for eventapp Web B2C
 const { useState: _ous, useMemo: _oum } = React;
 
 // =============================================================
@@ -163,6 +163,66 @@ function DatePickerOverlay({ value, onClose, onApply }) {
 }
 
 // =============================================================
+// DISTANCE PICKER OVERLAY
+// =============================================================
+function DistancePickerOverlay({ value, onClose, onApply, cityName }) {
+  const [km, setKm] = _ous(value || 5);
+  const MIN = 5, MAX = 150;
+  const pct = ((km - MIN) / (MAX - MIN)) * 100;
+  const presets = [5, 15, 30, 60, 150];
+
+  return (
+    <div className="scrim" onClick={onClose}>
+      <div className="dialog" style={{ maxWidth: 440 }} onClick={(e) => e.stopPropagation()}>
+        <div className="dialog-head">
+          <h2 className="dialog-title">Odległość od miasta</h2>
+          <button className="btn-icon" onClick={onClose} aria-label="Zamknij"><Icon.X /></button>
+        </div>
+        <div className="dialog-body">
+          <p style={{ font: 'var(--type-body-m)', color: 'var(--on-surface-variant)', margin: '0 0 24px' }}>
+            Pokaż wydarzenia w promieniu wybranej odległości od centrum <strong>{cityName}</strong>.
+          </p>
+          <div className="distance-readout">
+            <span className="distance-value">{km}</span>
+            <span className="distance-unit">km</span>
+          </div>
+          <div className="distance-slider" style={{ '--pct': `${pct}%` }}>
+            <input
+              type="range"
+              min={MIN}
+              max={MAX}
+              step={1}
+              value={km}
+              onChange={(e) => setKm(Number(e.target.value))}
+              aria-label="Odległość w km"
+            />
+          </div>
+          <div className="distance-scale">
+            <span>{MIN} km</span>
+            <span>{MAX} km</span>
+          </div>
+          <div className="preset-row" style={{ marginTop: 20 }}>
+            {presets.map(p => (
+              <button
+                key={p}
+                className={`chip ${km === p ? 'is-selected' : ''}`}
+                onClick={() => setKm(p)}
+              >
+                {p} km
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="dialog-foot">
+          <button className="btn btn-tertiary" onClick={() => setKm(5)}>Wyczyść</button>
+          <button className="btn btn-primary" onClick={() => onApply(km)}>Zastosuj</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =============================================================
 // COOKIE CONSENT BANNER
 // =============================================================
 function CookieBanner({ onClose, onManage }) {
@@ -255,4 +315,4 @@ function CookiePrefsOverlay({ onClose, onSave }) {
   );
 }
 
-Object.assign(window, { CityPickerOverlay, DatePickerOverlay, CookieBanner, CookiePrefsOverlay });
+Object.assign(window, { CityPickerOverlay, DatePickerOverlay, DistancePickerOverlay, CookieBanner, CookiePrefsOverlay });

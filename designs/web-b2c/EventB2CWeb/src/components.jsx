@@ -1,4 +1,4 @@
-// Shared components for wydarzka Web B2C
+// Shared components for eventapp Web B2C
 const { useState, useEffect, useRef, useMemo } = React;
 
 // ---------- ICONS FROM CATEGORY ----------
@@ -14,13 +14,44 @@ function Logo({ onClick }) {
   return (
     <button onClick={onClick} style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
       <span className="logo-glyph">E</span>
-      <span className="logo-wordmark">wydarzka</span>
+      <span className="logo-wordmark">eventapp</span>
     </button>
   );
 }
 
+// ---------- HEADER "MORE" MENU ----------
+function MoreMenu({ onNavigate, lang, setLang, view }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="user-menu-wrap">
+      <button className={`more-menu-btn ${open ? 'is-open' : ''}`} onClick={() => setOpen(o => !o)} aria-expanded={open}>
+        Więcej
+        <Icon.ChevronDown />
+      </button>
+      {open && (
+        <>
+          <div className="user-menu-scrim" onClick={() => setOpen(false)} />
+          <div className="user-menu">
+            <button className={view === 'blog' || view === 'blog-post' ? 'is-active' : ''} onClick={() => { setOpen(false); onNavigate('blog'); }}><Icon.Sparkles /> Blog</button>
+            <button onClick={() => { setOpen(false); onNavigate('add-event'); }}><Icon.Plus /> Dodaj wydarzenie</button>
+            <a className="user-menu-link" href="#" target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}><Icon.ArrowUpRight /> Dla Organizatorów</a>
+            <div className="user-menu-sep" />
+            <div className="user-menu-lang">
+              <span>Język</span>
+              <div className="lang-toggle">
+                <button className={lang === 'pl' ? 'is-active' : ''} onClick={() => setLang('pl')}>PL</button>
+                <button className={lang === 'en' ? 'is-active' : ''} onClick={() => setLang('en')}>EN</button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 // ---------- TOP HEADER ----------
-function AppHeader({ city, onPickCity, onNavigate, lang, setLang }) {
+function AppHeader({ city, onPickCity, onNavigate, lang, setLang, user, onLogout, view }) {
   return (
     <header className="app-header">
       <div className="app-header-inner">
@@ -30,18 +61,17 @@ function AppHeader({ city, onPickCity, onNavigate, lang, setLang }) {
           <span>{city.name}</span>
           <Icon.ChevronDown />
         </button>
-        <div className="search-input">
-          <Icon.Search />
-          <input placeholder="Szukaj wydarzeń, miejsc, artystów…" />
-        </div>
         <div style={{ flex: 1 }}></div>
-        <a className="nav-link-org" href="#" target="_blank" rel="noopener noreferrer">
-          Dla Organizatorów
-          <Icon.ArrowUpRight />
-        </a>
-        <div className="lang-toggle">
-          <button className={lang === 'pl' ? 'is-active' : ''} onClick={() => setLang('pl')}>PL</button>
-          <button className={lang === 'en' ? 'is-active' : ''} onClick={() => setLang('en')}>EN</button>
+        <MoreMenu onNavigate={onNavigate} lang={lang} setLang={setLang} view={view} />
+        <div className="auth-header-actions">
+          {user ? (
+            <UserMenu user={user} onNavigate={onNavigate} onLogout={onLogout} />
+          ) : (
+            <>
+              <button className="btn btn-tertiary" onClick={() => onNavigate('login')}>Zaloguj się</button>
+              <button className="btn btn-primary" onClick={() => onNavigate('register')}>Zarejestruj się</button>
+            </>
+          )}
         </div>
       </div>
     </header>
@@ -49,9 +79,15 @@ function AppHeader({ city, onPickCity, onNavigate, lang, setLang }) {
 }
 
 // ---------- FILTER BAR ----------
-function FilterBar({ activeCats, toggleCat, onDateClick, dateLabel, sortBy, setSortBy, liveOnly, setLiveOnly }) {
+function FilterBar({ activeCats, toggleCat, onDateClick, dateLabel, onDistanceClick, distanceKm, sortBy, setSortBy, liveOnly, setLiveOnly }) {
   return (
     <div className="filter-bar">
+      <div className="filter-search">
+        <div className="search-input">
+          <Icon.Search />
+          <input placeholder="Szukaj wydarzeń, miejsc, artystów…" />
+        </div>
+      </div>
       <div className="filter-bar-inner">
         <div className="chip-row">
           <button
@@ -82,6 +118,11 @@ function FilterBar({ activeCats, toggleCat, onDateClick, dateLabel, sortBy, setS
         <button className="chip" onClick={onDateClick}>
           <Icon.Calendar />
           {dateLabel}
+          <Icon.ChevronDown />
+        </button>
+        <button className={`chip ${distanceKm !== 5 ? 'is-selected' : ''}`} onClick={onDistanceClick}>
+          <Icon.Navigation />
+          Do {distanceKm} km
           <Icon.ChevronDown />
         </button>
         <button className="chip" onClick={() => {
@@ -257,7 +298,7 @@ function MapPopup({ event, onClose, onClick }) {
 }
 
 // ---------- FOOTER ----------
-function AppFooter() {
+function AppFooter({ onNavigate }) {
   return (
     <>
       <footer className="app-footer">
@@ -265,7 +306,7 @@ function AppFooter() {
           <div className="footer-brand">
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
               <span className="logo-glyph">E</span>
-              <span className="logo-wordmark">wydarzka</span>
+              <span className="logo-wordmark">eventapp</span>
             </div>
             <p>Odkrywaj koncerty, kluby, wystawy i wydarzenia w polskich miastach. Twoja lokalna scena, w jednym miejscu.</p>
             <div className="footer-app-badges">
@@ -287,6 +328,7 @@ function AppFooter() {
               <li><a href="#">Warszawa</a></li>
               <li><a href="#">Wrocław</a></li>
               <li><a href="#">Wszystkie miasta</a></li>
+              <li><a href="#blog" onClick={(e) => { e.preventDefault(); onNavigate && onNavigate('blog'); }}>Blog</a></li>
             </ul>
           </div>
           <div>
@@ -319,7 +361,7 @@ function AppFooter() {
           </div>
         </div>
         <div className="app-footer-bottom">
-          <span>© 2026 wydarzka · Wszystkie prawa zastrzeżone</span>
+          <span>© 2026 eventapp · Wszystkie prawa zastrzeżone</span>
           <div className="social-row">
             <button className="btn-icon" aria-label="Instagram"><Icon.Instagram /></button>
             <button className="btn-icon" aria-label="Facebook"><Icon.Facebook /></button>
@@ -332,6 +374,6 @@ function AppFooter() {
 }
 
 Object.assign(window, {
-  CatIcon, Logo, AppHeader, FilterBar, EventCard,
+  CatIcon, Logo, MoreMenu, AppHeader, FilterBar, EventCard,
   MapCanvas, MapPin, MapPopup, AppFooter,
 });

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<title>eventapp Studio — Panel organizatora</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; min-height: 100vh; background: var(--surface-bg); }
+  body {
+    font-family: var(--font-sans);
+    color: var(--on-surface);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Scrollbars */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--gray-200); border-radius: 9999px; border: 2px solid var(--surface-bg);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gray-300); }
+
+  /* Selection */
+  ::selection { background: var(--purple-200); color: var(--purple-900); }
+
+  /* Common animations */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes scaleIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes eventappShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+  /* Inputs */
+  input::placeholder, textarea::placeholder { color: var(--on-surface-muted); }
+  input[type="date"], input[type="time"] {
+    color-scheme: light;
+    font-family: var(--font-sans);
+  }
+  select { color: var(--on-surface); }
+  textarea { font-family: var(--font-sans); }
+
+  /* Focus visible */
+  button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 2px;
+  }
+
+  #root { min-height: 100vh; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  a { color: var(--brand-primary); text-decoration: none; }
+  a:hover { color: var(--purple-600); text-decoration: underline; }
+
+  /* ---- Blog rich-text editor content ---- */
+  .be-content:empty:before { content: attr(data-placeholder); color: var(--on-surface-muted); }
+  .be-content > *:first-child { margin-top: 0; }
+  .be-content p { margin: 0 0 0.9em; }
+  .be-content h2 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin: 1.5em 0 0.5em; }
+  .be-content h3 { font-size: 19px; font-weight: 600; letter-spacing: -0.3px; margin: 1.4em 0 0.4em; }
+  .be-content ul, .be-content ol { margin: 0 0 1em; padding-left: 1.4em; }
+  .be-content li { margin-bottom: 0.35em; }
+  .be-content blockquote { margin: 1.4em 0; padding: 2px 0 2px 20px; border-left: 3px solid var(--brand-primary);
+    font-size: 19px; line-height: 1.55; color: var(--gray-700); font-style: italic; }
+  .be-content a { color: var(--brand-primary); text-decoration: underline; text-decoration-color: var(--purple-200); }
+  .be-figure { margin: 1.6em 0; }
+  .be-figure img { width: 100%; border-radius: var(--radius-lg); display: block; }
+  .be-figure figcaption { margin-top: 8px; font-size: 13px; color: var(--on-surface-variant); text-align: center; }
+  .be-embed { margin: 1.6em 0; aspect-ratio: 16/9; border-radius: var(--radius-lg); background: var(--gray-900);
+    display: flex; align-items: center; justify-content: center; gap: 14px; color: rgba(255,255,255,0.72); }
+  .be-embed-play { width: 46px; height: 46px; border-radius: 9999px; background: rgba(255,255,255,0.14);
+    display: inline-flex; align-items: center; justify-content: center; font-size: 15px; color: #fff; }
+  .be-embed-meta { font-family: var(--font-mono); font-size: 12px; line-height: 1.5; }
+  .be-event-card { margin: 1.6em 0; display: flex; align-items: center; gap: 14px; padding: 12px;
+    border-radius: var(--radius-lg); background: var(--surface-high); border: 1px solid var(--outline);
+    box-shadow: var(--shadow-sm); }
+  .be-event-img { width: 64px; height: 64px; border-radius: 12px; flex: 0 0 auto; background-size: cover; background-position: center; }
+  .be-event-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .be-event-kicker { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--brand-primary); }
+  .be-event-title { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; }
+  .be-event-meta { font-size: 12px; color: var(--on-surface-variant); }
+  .be-event-cta { flex: 0 0 auto; font-size: 13px; font-weight: 500; padding: 8px 16px; border-radius: 9999px;
+    background: var(--brand-primary); color: #fff; }
+  .be-event-inline { padding: 10px 14px; border-left: 3px solid var(--purple-200); background: var(--purple-50);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0; font-size: 15px; }
+
+  /* ---- Public article preview ---- */
+  .blog-public-body { font-size: 18px; line-height: 1.72; color: var(--gray-800); letter-spacing: -0.2px; }
+  .blog-public-body p { margin: 0 0 1.2em; text-wrap: pretty; }
+  .blog-public-body h2 { font-size: 27px; font-weight: 700; letter-spacing: -0.6px; margin: 1.8em 0 0.5em; color: var(--gray-900); }
+  .blog-public-body h3 { font-size: 21px; font-weight: 600; margin: 1.6em 0 0.4em; color: var(--gray-900); }
+  .blog-public-body blockquote { margin: 1.6em 0; padding-left: 22px; border-left: 3px solid var(--brand-primary);
+    font-size: 21px; line-height: 1.5; font-style: italic; color: var(--gray-700); }
+  .blog-public-body ul, .blog-public-body ol { padding-left: 1.4em; margin: 0 0 1.2em; }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="react" src="blog.jsx"></script>
+  <script type="text/babel" data-presets="react" src="blog-modals.jsx"></script>
+  <script type="text/babel" data-presets="react" src="blog-editor.jsx"></script>
+  <script type="text/babel" data-presets="react" src="bundle.jsx"></script>
+
+  <template id="__bundler_thumbnail">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+      <defs>
+        <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0%" stop-color="#6C3FEB"/>
+          <stop offset="100%" stop-color="#A97EF8"/>
+        </linearGradient>
+      </defs>
+      <rect width="200" height="200" fill="url(#g)"/>
+      <rect x="60" y="60" width="80" height="80" rx="20" fill="#fff"/>
+      <text x="100" y="118" text-anchor="middle" font-family="system-ui" font-weight="700"
+        font-size="50" fill="#6C3FEB">E</text>
+    </svg>
+  </template>
+</body>
+</html>
