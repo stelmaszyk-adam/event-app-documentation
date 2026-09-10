@@ -163,7 +163,7 @@
 
 - [ ] P0 Edit venue profile:
   - Name, description (max 500 characters)
-  - Photo gallery management (upload up to 5 photos, drag-to-reorder, set main photo, delete individual photos — Cloudflare R2)
+  - Photo gallery management (upload up to 8 photos, drag-to-reorder, set main photo, delete individual photos — Cloudflare R2)
   - Venue category
   - Opening hours (per day of week)
   - Temporary closures (e.g., "Closed for renovation Jan 15-Feb 1") — date range + optional reason, displayed on venue profile
@@ -309,6 +309,30 @@
 - [ ] P0 **"My Venues" list page** — overview of all organizer's venues with key stats (follower count, upcoming events count) and quick-switch links
 - [ ] P0 Aggregate overview on dashboard home: combined follower count and event count across all venues (with per-venue breakdown)
 
+### 2.11 Team / Multi-User Management
+
+> Organizers can invite team members (managers, bookers, social media staff) to share access to a venue's dashboard. Designed as a current (non-deferred) feature per marketing copy.
+
+- [ ] P0 **Invite team member** — send email invitation; invited user receives a link to set a password and gains access to the venue
+- [ ] P0 **Role assignment** — at minimum: Admin (full access) vs Member (cannot transfer ownership or delete venue)
+- [ ] P0 **Team member list** — shows name, email, role, last active; actions: change role, remove
+- [ ] P0 **Audit log** — record which team member performed key actions (event created/edited/deleted, push sent, venue profile updated); visible to Admins in settings
+- [ ] P0 **Separate logins** — each team member authenticates with their own credentials (not shared password)
+
+### 2.12 Account Settings & Organizer Profile
+
+> Separate from venue profile (§2.3). Covers the organizer's own account data and preferences. Designs exist: `documentation/designs/web-b2b/screenshot/settings_page.pdf`, `organizer_profile_page.pdf`.
+
+- [ ] P0 **Settings page** (`/settings`):
+  - Change email address (with re-verification)
+  - Change password
+  - Notification preferences (e.g., email digest frequency, moderation alerts)
+  - Danger zone: delete account (with confirmation and data-export reminder)
+- [ ] P0 **Organizer profile page** (`/profile`):
+  - Display name, avatar, contact email (shown on venue profile pages to end-users if opted in)
+  - Language preference (PL / EN)
+- [ ] P1 **Weekly analytics digest email** — opt-in summary of the past 7 days (follower growth, top event by views, push open rate) sent every Monday
+
 ### 2.10 Responsive Design & Error States
 
 - [ ] P0 **Responsive dashboard layout:**
@@ -342,28 +366,34 @@ app/(dashboard)/blog/[id]/edit/        -- editor: update existing post
 ### 2.5.2 Blog post list page
 
 - [ ] P1 `useGetBlogMe()` orval TanStack Query hook — fetches `GET /blog/me`
-- [ ] P1 shadcn/ui DataTable with columns: Title, Status badge, Category, Date, Actions (Edit, Delete)
+- [ ] P1 shadcn/ui DataTable with columns: Thumbnail + Title, Status badge, Category, Date, Actions (Edit, Delete)
+  - Title column also shows: language badge (PL/EN pill), and a secondary line with view count (published posts) or excerpt status ("Zajawka gotowa" / "Bez zajawki")
+  - Delete is disabled while post is `pending_review` (tooltip explains why)
+- [ ] P1 **Filter tabs** (pill-style tab bar): All / Drafts / In review / Published / Rejected — each tab shows count badge
+- [ ] P1 **Search input** — live filter by title within the current tab
 - [ ] P1 **Status badges** (consistent with existing event status badges):
   - `draft` → neutral `surface_container_high`
   - `pending_review` → `warning_container` (amber/orange)
   - `published` → `success_container` (green)
-  - `rejected` → `error_container` (red) + inline rejection reason expandable
-- [ ] P1 Empty state: "You haven't written any articles yet — Start writing" (with CTA to `/blog/new`)
+  - `rejected` → interactive `error_container` badge (click to expand rejection details inline, see below)
+- [ ] P1 **Rejection accordion** — clicking the `Rejected` badge expands an inline panel below the row showing: rejection reason text, reviewer name + timestamp, "Edit article" CTA, and "Reply to editorial team" secondary button
+- [ ] P1 Empty state: "You haven't written any articles yet — Start writing" (with CTA to `/blog/new`) — also shows category idea chips (City Guide, Event Roundup, Venue Spotlight) as inspiration prompts
 
 ### 2.5.3 Blog editor (Client Component — Tiptap requires browser)
 
 > **Why Client Component:** Tiptap is a browser-only rich text editor. The route shell is a Server Component; only the editor itself is a Client island (same pattern as any interactive form in the dashboard).
 
-**Left panel (75% width):**
+**Left panel (primary column):**
 
 - [ ] P1 **Title input** — large, `title_lg` style; live character counter (max 300)
 - [ ] P1 **Excerpt textarea** — auto-resize, max 300 chars with live counter; label: "Short summary (used as search result and OG description)"
-- [ ] P1 **Tiptap editor** with glassmorphism toolbar (DESIGN.md §7.6: 70% opacity `surface_container_lowest` + `backdrop-filter: blur(20px)`):
+- [ ] P1 **Tiptap editor** with glassmorphism toolbar (DESIGN.md §7.6: ~78% opacity `surface_container_lowest` + `backdrop-filter: blur(16px) saturate(180%)`):
   - **StarterKit:** Bold, Italic, H2, H3, bullet list, ordered list, blockquote, undo/redo
-  - **Image extension:** organizer clicks image button → file picker → file uploaded via `POST /blog/:id/photos` (R2 presigned URL, reuses same `ImageUploadZone` component as venue/event photos from section 2.3.1) → `blog_post_photos` row created → R2 URL inserted as Tiptap image node
-  - **Link extension:** sanitized; `rel="noopener noreferrer"` enforced server-side; backend `blog-content-sanitize.pipe.ts` validates
-  - **YouTube embed:** sandboxed iframe node (paste YouTube URL → auto-converts)
-  - **EventCard (custom Tiptap node):** toolbar button "Embed event" → modal shows organizer's own events (`GET /events?venue_id=xxx`) → on selection stores `{ type: 'event-card', attrs: { eventId: 'uuid' } }` → rendered on B2C as a mini event card inline; preview mode shows the card using shadcn/ui Card component
+  - **Image extension:** organizer clicks image button → file picker → file uploaded via `POST /blog/:id/photos` (R2 presigned URL, reuses same `ImageUploadZone` component as venue/event photos from section 2.3.1) → `blog_post_photos` row created → R2 URL inserted as Tiptap image node; images wrapped in `<figure>` with editable `<figcaption>`
+  - **Link extension:** sanitized; `rel="noopener noreferrer"` enforced server-side; backend `blog-content-sanitize.pipe.ts` validates; URL popover with live https:// validation
+  - **YouTube embed:** sandboxed iframe node (paste YouTube URL → auto-converts); extracts video ID from `youtube.com/watch?v=`, `youtu.be/`, `shorts/` formats
+  - **EventCard (custom Tiptap node):** toolbar button "Embed event" → modal (`EmbedEventModal`) shows organizer's own events (`GET /events?venue_id=xxx`) with search and upcoming/past/all filter tabs → on selection stores `{ type: 'event-card', attrs: { eventId: 'uuid' } }` → two insert format options: **Card** (non-editable block with image, title, date/time, venue, price CTA) or **Inline text** (plain linked line `Event title · date, time · price`) — rendered on B2C as a mini event card inline; preview mode shows the card using shadcn/ui Card component
+- [ ] P1 **Word count + reading time bar** below editor: shows live word count, estimated reading time (`⌈words/200⌉ min`), and a note that pasted Markdown/styled text is sanitized on save
 
 **Right panel (25% width, sticky sidebar):**
 
@@ -414,6 +444,42 @@ app/(dashboard)/blog/[id]/edit/        -- editor: update existing post
 
 ---
 
+## Phase 3 — Marketing Landing Page (Week 8-9)
+
+> **Goal:** Public-facing landing page at `dashboard.wydarzka.dev` (unauthenticated) to convert venue owners into registered organizers. Separate from the authenticated dashboard. Designs live in `documentation/designs/web-b2b/EventB2BWeb/marketing.jsx`, `marketing-2.jsx`, `marketing-3.jsx`.
+
+### 3.1 Routes
+
+```
+app/(marketing)/page.tsx           -- landing page (unauthenticated root)
+app/(marketing)/layout.tsx         -- marketing layout (no dashboard sidebar)
+```
+
+### 3.2 Page sections (in order)
+
+- [ ] P1 **Nav** — sticky, glassmorphism on scroll; links: "How it works", "Features", "Roadmap", "Comparison", "Price", "FAQ"; CTA: "Claim your venue" (primary) + "Log in" (ghost)
+- [ ] P1 **Hero** — headline + subheadline, two CTAs (claim venue + "See the panel live" → links to dashboard demo), trust chips ("No card", "5-minute verification", "0% commission"), animated product mockup (browser frame showing dashboard with floating push notification card and follower-growth chip)
+- [ ] P1 **Cities strip** — 7 Polish cities with event counts; "First city" badge on Kraków
+- [ ] P1 **Pain points** — 6 before/after cards (strikethrough pain vs. eventapp fix)
+- [ ] P1 **How it works** — 4-step grid: Find venue (10s) → Verify (2 min) → Publish events (90s/event) → Notify followers (1× daily)
+- [ ] P1 **Features grid** — three tiers: "Now" (8 features), "Next" (Q3–Q4 2026, 3 features), "Later" (Phase 5, 3 features)
+- [ ] P1 **Roadmap timeline** — visual roadmap strip showing shipped vs upcoming milestones
+- [ ] P1 **Comparison table** — eventapp vs Facebook Events vs Eventbrite (rows: cost, push reach, analytics, ticket commission, setup time)
+- [ ] P1 **Pricing** — free tier highlighted; future paid tiers shown as "Coming soon"
+- [ ] P1 **FAQ** — accordion; ~8 questions covering verification, pricing, multiple venues, recurring events, data ownership
+- [ ] P1 **CTA banner** — full-width gradient section; "Claim your venue for free — takes 5 minutes"
+- [ ] P1 **Footer** — links: Privacy Policy, Terms of Service, Contact; language toggle PL/EN
+
+### 3.3 Implementation notes
+
+- [ ] P1 Marketing pages are Server Components (Next.js App Router); no client-side state except Nav scroll effect and FAQ accordion (minimal Client islands)
+- [ ] P1 `reveal` scroll-in animations via CSS `@keyframes` + IntersectionObserver (match design prototype)
+- [ ] P1 Dot-grid background ornament (CSS `radial-gradient` mask) and radial violet glow behind hero — CSS-only, no canvas
+- [ ] P1 `mFloat` keyframe animation on floating dashboard cards in hero mockup
+- [ ] P1 OG meta tags: title, description, image for social sharing
+
+---
+
 ## Phase 4 — Testing and Launch (Week 9-12)
 
 ### 4.1 Testing
@@ -454,4 +520,4 @@ app/(dashboard)/blog/[id]/edit/        -- editor: update existing post
 
 ---
 
-*Living document — update after each sprint. Last updated: April 2026.*
+*Living document — update after each sprint. Last updated: August 2026.*

@@ -7,6 +7,14 @@
 
 ---
 
+> ## Design Status — August 2026
+>
+> An interactive HTML prototype (`documentation/designs/web-b2c/EventB2CWeb/`) was produced in place of a Figma file. It covers the core screens and components below. Completed items are marked `[x]`. Items still needing design work remain `[ ]`.
+>
+> **⚠️ Category system divergence** — the prototype uses 13 categories that do not match the canonical 12 from ARCHITECTURE.md. See note at the end of Phase 0.2.
+
+---
+
 ## Phase 0 — Foundations & Component Library
 
 Before designing any screens, set up the Figma file structure, tokens, and reusable components.
@@ -25,132 +33,141 @@ Before designing any screens, set up the Figma file structure, tokens, and reusa
 - [ ] Create all Text Styles per §9.7 (display, headline, title, body, label)
 - [ ] Create all Effect Styles per §9.8 (elevation/sm through elevation/xl, glass/blur)
 
+> *Note: CSS token system (`colors_and_type.css`) is implemented in the HTML prototype and maps to the above variable collections.*
+
 ### 0.2 Core Components
 
 Build as Figma components with variants and auto-layout. Follow token bindings from DESIGN.md §9.9.
 
 #### Buttons
-- [ ] **Primary button** — gradient fill (`primary` to `primary_container`), `radius/full`, states: default, hover, pressed, disabled
-- [ ] **Secondary button (Glass)** — glassmorphic fill with backdrop blur, states: default, hover, pressed, disabled
-- [ ] **Tertiary button** — transparent, `primary` text only, states: default, hover, pressed, disabled
-- [ ] **Icon button** — circular, for map controls and actions
-- [ ] All buttons: min height 48px, touch target 44x44px
+- [x] **Primary button** — gradient fill, `radius/full`, states: default, hover, pressed, disabled
+- [x] **Secondary button (Glass)** — glassmorphic fill, states: default, hover, pressed, disabled
+- [x] **Tertiary button** — transparent, `primary` text only, states: default, hover, pressed, disabled
+- [x] **Icon button** — circular, for map controls and actions
+- [x] All buttons: min height 48px, touch target 44x44px
 
 #### Cards
-- [ ] **Event card (large)** — image-dominant, `radius/xl`, gradient overlay on bottom 30%, title + date/time + venue metadata. No borders — tonal layering only
-- [ ] **Event card (compact/list)** — horizontal layout with thumbnail, for list view
-- [ ] **Event mini-card** — appears on map pin click: photo + name + time + venue, compact size
-- [ ] **Venue card** — venue photo, name, category, follower count, upcoming event count
+- [x] **Event card (large/grid)** — used in related events section; `radius/xl`, gradient overlay, title + date/time + venue metadata
+- [x] **Event card (compact/list)** — horizontal layout with thumbnail, for search results list
+- [x] **Event mini-card** — `MapPopup` on map pin click: photo + name + time + venue, with "View details" link
+- [ ] **Venue card** — standalone venue card (photo, name, category, follower count, upcoming event count) — not yet designed as a reusable component; venue appears inline only on Event Detail
 
 #### Navigation
-- [ ] **Top header/navbar** — logo, city selector, search bar, "For Organizers" link, language toggle (PL/EN)
-  - Desktop: full horizontal layout with all elements visible; "For Organizers" as a tertiary text link positioned after main nav items but before language toggle — should not visually compete with primary CTAs (no gradient, no button shape, subtle styling)
-  - Tablet: condensed, search may collapse; "For Organizers" link remains visible or moves into collapsible menu
-  - Mobile: hamburger or minimal bar, search icon triggers overlay; "For Organizers" inside hamburger menu
-- [ ] **Footer** — organized in sections:
-  - **Discover:** city links, category links
-  - **For Organizers:** "Organizer Dashboard" link (→ `dashboard.wydarzka.dev`, external, new tab) with optional short description "Manage your venue, create events, and track analytics"
-  - **Legal:** Terms of Service, Privacy Policy, Cookie Policy, "Manage cookie preferences"
-  - **Get the App:** app store badges
-  - **Social:** social media links
+- [x] **Top header/navbar** — logo, city selector, "Więcej" dropdown (Blog, Add Event, For Organizers, language toggle), auth actions
+  - Desktop: full horizontal layout ✅
+  - Tablet/Mobile: "Więcej" dropdown collapses secondary items ✅
+  - > *Note: header structure differs from roadmap spec — search bar moved to filter bar below header, not in header itself*
+- [x] **Footer** — `AppFooter` component with Discover, For Organizers, Legal, Get the App, Social sections
 
 #### Chips & Badges
-- [ ] **Category filter chip** — unselected (`surface/container-high`) and selected (`brand/primary`) states per §9.9
-- [ ] **Date filter** — calendar date-range picker with quick-select presets (Today, Tomorrow, This weekend)
-- [ ] **"Live Now" badge** — `tertiary` color, pulsing indicator
-- [ ] **"Selling Fast" badge** — `tertiary` color
-- [ ] **Recurring event badge** — "Part of a weekly series" indicator
-- [ ] **"Tipped by @username" badge** — community scout attribution
+- [x] **Category filter chip** — unselected and selected states, per-category accent color
+- [x] **Date filter** — opens `DatePickerOverlay` with calendar and quick-select presets (Today, Tomorrow, This weekend, This week, Custom range)
+- [x] **"Live Now" badge** — `badge-live` style with indicator
+- [x] **"Selling Fast" badge** — `badge-fast` with flame icon
+- [x] **Recurring event badge** — `badge-recur` with repeat icon
+- [x] **"Tipped by @username" badge** — community scout attribution on card and detail page
+- [x] **Distance filter chip** — opens `DistancePickerOverlay` with slider (5–150 km) *(addition beyond original roadmap)*
 
 #### Inputs
-- [ ] **Search input** — `surface/container-low` fill, icon prefix, focus state with ghost border per §9.9
-- [ ] **City selector dropdown** — list of Polish cities
+- [x] **Search input** — `search-input` class, icon prefix, in filter bar below header
+- [x] **City selector** — button in header, opens `CityPickerOverlay` with searchable city grid
 
 #### Overlays & Banners
-- [ ] **Cookie consent banner** — Accept all / Reject all / Manage preferences; glassmorphic or surface container
-- [ ] **Smart banner (app install)** — "Save this event in the app" / "Follow this venue in the app" with app store link
-- [ ] **Smart banner (community scout)** — "Submit an event tip in the app" with app store link / deep link to tip form
-- [ ] **"Know about an event?" CTA** — footer or sidebar element on map/listing pages, links to community scout smart banner or app store
-- [ ] **"Search this area" pill** — appears on map after pan/zoom, primary style, triggers list refresh
-- [ ] **City picker overlay** — shown when geolocation fails; grid of city options
-- [ ] **Toast / inline error** — for API errors with retry option
-- [ ] **Network error banner** — "Check your connection"
+- [x] **Cookie consent banner** — Accept all / Reject all / Manage preferences; solid surface style
+- [x] **Smart banner (app install)** — "Zapisz w aplikacji" on Event Detail with App Store / Google Play badges
+- [ ] **Smart banner (community scout)** — "Submit an event tip in the app" — the "add event" flow is now a full web screen, not a smart banner
+- [x] **"Know about an event?" CTA** — bottom of results list, links to Add Event screen
+- [x] **"Search this area" pill** — `map-search-area` — appears on map after pan, triggers list refresh
+- [x] **City picker overlay** — `CityPickerOverlay` — searchable grid of cities; shows "city not yet available" empty state with notify CTA
+- [ ] **Toast / inline error** — form-level inline errors exist on auth/add-event screens; no global toast component yet
+- [ ] **Network error banner** — not designed
 
 #### Loading & Empty States
-- [ ] **Skeleton loader: event card** — shimmer placeholder matching card dimensions
-- [ ] **Skeleton loader: venue profile** — shimmer for photo, text blocks, event list
-- [ ] **Skeleton loader: map pins** — placeholder pin clusters
-- [ ] **Empty state: no events found** — illustration + message + suggestion to change filters/city
-- [ ] **Empty state: venue has no upcoming events** — friendly message
-- [ ] **404 page** — "Page not found" with search and homepage link
-- [ ] **500 / error page** — "Something went wrong" with "Try again" and homepage link
+- [ ] **Skeleton loader: event card** — not designed
+- [ ] **Skeleton loader: venue profile** — not designed
+- [ ] **Skeleton loader: map pins** — not designed
+- [x] **Empty state: no events found** — search screen shows icon + message + "change filters" suggestion
+- [x] **Empty state: venue has no upcoming events** — friendly message with follow CTA
+- [ ] **404 page** — not designed
+- [ ] **500 / error page** — not designed
+
+---
+
+> ### ⚠️ Category System Divergence
+>
+> The canonical 12-category system (per ARCHITECTURE.md) is:
+> `music, nightlife, performing_arts, arts_culture, sport_fitness, food_drink, education, business, family, festival, wellness, other`
+>
+> The prototype uses **13 categories** (+ special "live"):
+> `music, club, art, food, sport, theatre, comedy, tech, film, festival, wellness, kids`
+>
+> **Mismatches:**
+> - `nightlife` → `club` *(label change only — acceptable)*
+> - `performing_arts` → `theatre` *(narrower — excludes comedy and film which became separate categories)*
+> - `arts_culture` → `art` *(narrower label)*
+> - `sport_fitness` → `sport` *(narrower label)*
+> - `food_drink` → `food` *(narrower label)*
+> - `education` → `tech` *(significant conceptual mismatch — tech events are a subset)*
+> - `family` → `kids` *(label change — acceptable)*
+> - `business` → **missing entirely**
+> - `other` → **missing entirely**
+> - `comedy`, `film` → **new categories not in canonical set**
+>
+> **Action required:** align the category set with ARCHITECTURE.md before implementation. Either extend the canonical list or remap the prototype categories.
 
 ---
 
 ## Phase 1 — Screen Design: Search & Discovery
 
-The primary experience. Follows a **Booking.com-style split-screen pattern**: the search results list and map are always visible together on desktop/tablet — no toggle between separate views. The list and map are synchronized: interacting with one highlights the corresponding element in the other.
+The primary experience. **Booking.com-style split-screen pattern** on desktop/tablet; list-first with full-screen map overlay on mobile.
 
 ### 1.1 Search Results — Split-Screen Layout (Booking.com Pattern)
 
 > Reference: ROADMAP-web-b2c §1.3
 
 **Desktop (1024px+)**
-- [ ] **Split-screen layout:** scrollable results list (left, ~55-60% width) + sticky interactive map (right, ~40-45% width), both filling viewport height below header
-- [ ] Results list is a **vertical list of horizontal cards** — each card shows: thumbnail image (left), event title + date/time + venue + category badge + price indicator (right). Not a grid — single column of rich list items
-- [ ] **Horizontal filter bar** pinned below header (above results): category chips (multiselect, horizontally scrollable), date filter dropdown (calendar date-range picker with quick-select presets: Today / Tomorrow / This weekend), "Happening Now" toggle, sort dropdown (Relevance / Date / Distance)
-- [ ] City selector and text search bar remain in the main header
-- [ ] **Map-list synchronization:**
-  - Hovering a list card highlights the corresponding map pin (scale up + accent ring)
-  - Clicking a map pin scrolls the list to the corresponding card and highlights it
-  - Moving/zooming the map updates the list to show only events visible in the current map bounds (with "Search this area" button pattern like Booking.com)
-- [ ] Custom pin icons per category (12 categories, using map pin palette from DESIGN.md §7.1)
-- [ ] Pin clustering visualization at high zoom-out
-- [ ] Event mini-card popup on pin click (photo + name + time + venue, with "View details" link)
-- [ ] "Use my location" button on map (corner control)
-- [ ] **Results count** displayed above list: "127 events in Poznań" (updates on filter/map change)
-- [ ] Cursor-based infinite scroll on the list panel
-- [ ] "Know about an event?" CTA at bottom of results list
+- [x] **Split-screen layout:** scrollable results list (left, ~55%) + sticky interactive map (right, ~45%)
+- [x] Results list is a vertical list of horizontal event cards
+- [x] **Horizontal filter bar** pinned below header: category chips, date filter, distance filter, "Happening Now" toggle, sort dropdown (Relevance / Date / Distance)
+- [x] City selector in main header; text search bar in filter bar
+- [x] **Map-list synchronization:** hover card → pin highlights; click pin → list scrolls + card highlights
+- [x] Custom pin icons per category (color-coded by category)
+- [x] Pin clustering visualization (`+8` cluster decoy)
+- [x] Event mini-card popup on pin click (`MapPopup`)
+- [x] Map fullscreen expand/collapse button (Esc to close)
+- [x] "Use my location" button on map (Locate icon)
+- [x] **Results count** displayed above list with date label and distance
+- [ ] Cursor-based infinite scroll — mock data only, no real pagination
+- [x] "Know about an event?" CTA at bottom of results list
 
 **Tablet (768-1023px)**
-- [ ] Same split-screen layout with adjusted proportions: results list (~50%) + map (~50%)
-- [ ] Horizontal filter bar scrollable, may truncate to "Filters" button opening a sheet for overflow
-- [ ] Cards slightly more compact — smaller thumbnails
-- [ ] Same map-list sync behavior as desktop
+- [ ] Explicit tablet breakpoint — prototype adapts via CSS but no dedicated tablet-specific layout verified
 
 **Mobile (320-767px)**
-- [ ] **List-first view** by default: full-width vertical list of horizontal event cards
-- [ ] Horizontal filter bar as scrollable chip row above the list
-- [ ] **Floating "Show on map" button** (bottom-center, primary style) — opens full-screen map overlay
-- [ ] Full-screen map overlay:
-  - Map fills entire viewport below header
-  - Category pins with clustering
-  - Mini-card popup on pin click
-  - "Show list" floating button to return to list view
-  - "Use my location" floating button
-  - Horizontal filter chips remain visible at top of map
-- [ ] "Search this area" pill appears when user pans the map
-- [ ] Infinite scroll on list view
+- [x] **List-first view** by default
+- [x] Horizontal filter bar as scrollable chip row
+- [x] **Floating "Show on map" button** (`show-on-map-fab`) — opens full-screen map sheet (`mapSheetOpen`)
+- [x] Full-screen map overlay with "close" button
+- [x] "Search this area" pill on map
 
 ### 1.2 Event Cards — Search Result Variant
 
-> Horizontal card layout optimized for scanning search results (Booking.com style)
-
-- [ ] **Horizontal layout:** thumbnail image (left, fixed width ~120-160px desktop, ~100px mobile) + content stack (right)
-- [ ] Content stack: event title (`title/md`), date + time (`label/md`), venue name + address (`body/sm`), category chip (small), price indicator or "Free" badge
-- [ ] Card background: `surface/container-lowest`, corner radius `radius/lg`
-- [ ] **Hover state:** subtle tonal lift (background shifts to `surface/container-low`), corresponding map pin highlights
-- [ ] **Active/highlighted state** (when pin clicked): left accent border using `brand/primary`, slightly elevated tonal shift
-- [ ] Badges overlay on thumbnail: "Live Now" (pulsing), "Selling Fast", "Recurring", "Tipped by @username"
-- [ ] Card separation: `space_4` (16px) vertical gap — tighter than grid cards for scan efficiency
-- [ ] Entire card is clickable, links to event detail page
+- [x] **Horizontal layout:** thumbnail (left) + content stack (right)
+- [x] Content stack: title, date + time, venue name + address, category chip, price indicator or "Free" badge
+- [x] Card background: `surface/container-lowest`, `radius/lg`
+- [x] **Hover state:** `is-highlighted` class — tonal background shift + map pin highlights
+- [x] **Active/highlighted state** (when pin clicked): `is-highlighted` with left accent border
+- [x] Badges overlay on thumbnail: Live Now, Selling Fast, Recurring
+- [x] "Tipped by @username" in card footer
+- [x] Favorite/save button (heart icon) per card
+- [x] Entire card is clickable → event detail page
 
 ### 1.3 City Listing Pages
 
 > SEO pages: `/poznan`, `/krakow`, `/wroclaw`, etc.
 
-- [ ] Hero section with city name (display typography), event count, optional city photo
-- [ ] Category quick-links row (chips linking to `/poznan/music`, etc.)
+- [ ] Hero section with city name, event count, optional city photo
+- [ ] Category quick-links row
 - [ ] Featured/upcoming events grid below hero
 - [ ] "This weekend in [City]" section
 - [ ] All three breakpoints
@@ -159,20 +176,20 @@ The primary experience. Follows a **Booking.com-style split-screen pattern**: th
 
 > SEO pages: `/poznan/music`, `/krakow/this-weekend`
 
-- [ ] Category header with icon and name (headline typography)
+- [ ] Category header with icon and name
 - [ ] Filtered event grid for that category + city
-- [ ] Breadcrumb navigation (Home > Poznan > Music)
+- [ ] Breadcrumb navigation
 - [ ] All three breakpoints
 
 ### 1.5 First-Visit / Onboarding States
 
 > Reference: ROADMAP-web-b2c §1.3.0
 
-- [ ] **State: geolocation prompt** — "Use my location" button on map, no browser prompt until click
-- [ ] **State: geolocation denied** — "Location unavailable — select your city" with city picker
-- [ ] **State: IP geolocation fallback** — map centers on detected city, subtle info note
-- [ ] **State: city picker overlay** — when no city can be detected, full overlay with city grid
-- [ ] **State: return visit** — loads last selected city from localStorage, "Change city" visible in header
+- [ ] **State: geolocation prompt** — "Use my location" button, no browser prompt until click
+- [ ] **State: geolocation denied** — city picker fallback
+- [ ] **State: IP geolocation fallback** — map centers on detected city, info note
+- [x] **State: city picker overlay** — `CityPickerOverlay` with city grid; "city not available" empty state with notify CTA
+- [x] **State: return visit** — city selector in header shows last-selected city ("Change city" visible)
 
 ---
 
@@ -182,36 +199,78 @@ The primary experience. Follows a **Booking.com-style split-screen pattern**: th
 
 > Reference: ROADMAP-web-b2c §1.4.1
 
-- [ ] **Photo gallery** — clickable thumbnails or carousel; full-bleed hero image on mobile
-- [ ] **Event info block:** name (display/headline typography), date, time, address
-- [ ] **Description** — body text, expandable if long
-- [ ] **Venue link** — venue name linking to venue profile page
-- [ ] **CTA: "Buy tickets"** — primary button, deep link to external ticketing
-- [ ] **CTA: "Navigate"** — secondary button, link to Google Maps
-- [ ] **Source attribution** — for aggregated events, subtle label
-- [ ] **"Share" button** — copy link action
-- [ ] **"Add to calendar" dropdown** — Google Calendar, Apple Calendar (.ics), Outlook (.ics)
-- [ ] **Smart banner: "Save this event in the app"** — app store link
-- [ ] **Smart banner: "Follow this venue in the app"** — app store link
-- [ ] **Recurring event indicator** — badge + "View all dates" expandable list
-- [ ] **"Tipped by @username"** — community scout attribution badge
-- [ ] **Related events section** — horizontal scroll of similar events
-- [ ] All three breakpoints
+- [x] **Photo gallery** — hero image + clickable thumbnail row (4 thumbnails)
+- [x] **Event info block:** name (display typography), date, time, address with breadcrumb
+- [x] **Description** — body text section ("O wydarzeniu"), hashtag row
+- [x] **Venue link** — venue mini-card in aside, links to venue profile
+- [x] **CTA: "Buy tickets"** — primary button in price aside card
+- [x] **CTA: "Navigate"** — secondary button
+- [ ] **Source attribution** — not yet designed
+- [x] **"Share" button** — icon button on hero image
+- [x] **"Add to calendar" dropdown** — Google Calendar, Apple Calendar (.ics), Outlook (.ics) as expandable section
+- [x] **Smart banner: "Save this event in the app"** — `smart-banner` with App Store / Google Play badges
+- [ ] **Smart banner: "Follow this venue in the app"** — not separate on event detail (only on venue profile)
+- [x] **Recurring event indicator** — badge on card + "See all dates" link in meta block
+- [x] **"Tipped by @username"** — badge below event title
+- [x] **Related events section** — horizontal/grid of similar events ("Może Cię też zainteresować")
+- [x] **Save / favorite button** — heart button in price aside
+- [x] All three breakpoints via responsive CSS
 
 ### 2.2 Venue Profile Page
 
 > Reference: ROADMAP-web-b2c §1.4.2
 
-- [ ] **Photo gallery** — grid or carousel
-- [ ] **Venue info:** name (headline typography), category, description
-- [ ] **Opening hours** — including temporary closures, holiday hours, "open until late"
-- [ ] **Follower count** — with icon
-- [ ] **Upcoming events list** — vertical list of event cards
-- [ ] **Empty state: no upcoming events** — friendly message
-- [ ] **Address with embedded map** — small static map or interactive map snippet
-- [ ] **Smart banner: "Follow this venue in the app"** — app store link
-- [ ] **"Is this your venue?" CTA** — subtle contextual link below venue info: "Is this your venue? Claim it on the Organizer Dashboard" → links to `dashboard.wydarzka.dev` (external, new tab). Tertiary text style, visually understated — not a primary CTA. Positioned after venue description, before upcoming events list
-- [ ] All three breakpoints
+- [x] **Photo hero** — full-bleed hero image with category badge and share button
+- [x] **Venue info:** name (headline typography), category, description
+- [x] **Opening hours** — day grid with current day highlighted, "open until X" status
+- [x] **Follower count** — with Users icon
+- [x] **Upcoming events list** — clickable rows with thumbnail, date block, title
+- [x] **Empty state: no upcoming events** — friendly message with follow suggestion
+- [x] **Address with map** — stylized SVG map snippet in aside with "Navigate" button
+- [x] **Smart banner: "Follow this venue in the app"** — aside smart banner
+- [x] **"Is this your venue?" CTA** — `claim-cta` in venue description section, links to Organizer Dashboard (external, new tab)
+- [x] All three breakpoints via responsive CSS
+
+---
+
+## Phase 2.5 — Additional Screens (Beyond Original Roadmap)
+
+*These screens were designed in the prototype but were not in the original roadmap. They represent scope additions that need product review before implementation.*
+
+### 2.5.1 Authentication Screens
+
+> The original roadmap described web-b2c as read-only with no user accounts. The prototype adds a full auth flow gated behind certain actions (Add Event, Save favorites).
+
+- [x] **Login screen** — Google OAuth button + email/password form, "Remember me", forgot password link, auth intent banner ("You're adding an event — log in to continue")
+- [x] **Register screen** — Google OAuth + email form, password strength meter, terms + newsletter checkboxes
+- [x] **Password reset screen** — email input → "link sent" confirmation state
+- [x] **Auth aside** — benefits panel shown on login/register screens ("Add events", "Save favorites", "Reminders")
+- [x] **User menu** — avatar chip in header with dropdown: Add Event, Saved Events, Account Settings, Logout
+- [x] Auth gate on Add Event — unauthenticated users redirected to login; intent preserved and user returned to form after auth
+
+> **Decision needed:** Confirm whether web-b2c will have user accounts or remain read-only per original spec. If accounts are added, the auth screens above cover the needed flows.
+
+### 2.5.2 Add Event / Community Submission Screen
+
+> The roadmap described community event tips as an in-app (mobile) feature. The prototype implements a full web form for event submission.
+
+- [x] **Add Event screen** — multi-section form: basic info (name, venue, description), datetime (start/end), category, ticket details (price, URL), address
+- [x] **Organizer callout banner** — prominent redirect to Organizer Dashboard for venue owners
+- [x] **Auth gate** — non-logged-in users see login screen first; redirected back to form after auth
+- [x] **Submitted event** — created event appears in the results list immediately (optimistic, prototype only)
+
+> **Decision needed:** Confirm whether community event submission belongs in web-b2c or only in the mobile app. If keeping it in web-b2c, align with the backend API for event submission.
+
+### 2.5.3 Blog
+
+> Not mentioned in any roadmap. The prototype adds an editorial blog section.
+
+- [x] **Blog strip on home** — `BlogStrip` component: horizontal scroll of 3 featured posts, rendered at bottom of search screen
+- [x] **Blog list screen** — filterable by category (Wszystko, Nightlife, Kultura, Muzyka, Jedzenie, Sport, Wywiady); card grid with author, read time, excerpt
+- [x] **Blog detail screen** — article body with headings, quotes, paragraphs; embedded event cards inline in body; author bio, related posts strip
+- [x] Blog navigable from "Więcej" menu in header
+
+> **Decision needed:** Confirm whether blog/editorial content is in scope for web-b2c. It represents a new content type requiring backend support (CMS or database table), author management, and content moderation. It is not referenced in ROADMAP-web-b2c.md or ARCHITECTURE.md.
 
 ---
 
@@ -219,7 +278,7 @@ The primary experience. Follows a **Booking.com-style split-screen pattern**: th
 
 ### 3.1 Static / Legal Pages
 
-- [ ] **Terms of Service** (`/terms`) — clean, readable layout, version indicator ("Last updated: ...")
+- [ ] **Terms of Service** (`/terms`) — clean, readable layout, version indicator
 - [ ] **Privacy Policy** (`/privacy`) — same layout as ToS
 - [ ] **Cookie Policy** (`/cookie-policy`) — table of cookies/trackers, purpose, retention
 - [ ] All use body typography on `surface` background, max-width content container
@@ -229,14 +288,14 @@ The primary experience. Follows a **Booking.com-style split-screen pattern**: th
 
 - [ ] **404 — Page Not Found** — illustration, headline, message, search bar, link to homepage
 - [ ] **500 — Server Error** — illustration, headline, "Try again" button, link to homepage
-- [ ] Both: brand-consistent with Radiant Curator aesthetic, no generic/template look
+- [ ] Both: brand-consistent with Radiant Curator aesthetic
 
 ### 3.3 Cookie Consent Modal
 
-- [ ] **Initial banner** — bottom-of-screen, glassmorphic or solid surface, three buttons: Accept all / Reject all / Manage preferences
-- [ ] **Preferences modal** — category toggles: Essential (always on, disabled toggle), Analytics, Marketing
-- [ ] **Re-consent trigger** — "Manage cookie preferences" footer link opens preferences modal
-- [ ] Mobile + desktop variants
+- [x] **Initial banner** — bottom-of-screen, solid surface, three buttons: Accept all / Reject all / Manage preferences
+- [x] **Preferences modal** — category toggles: Essential (always on, disabled), Analytics, Marketing
+- [x] **Re-consent trigger** — "Manage cookie preferences" footer link opens preferences modal
+- [ ] Mobile + desktop variants explicitly verified
 
 ---
 
@@ -247,7 +306,7 @@ The primary experience. Follows a **Booking.com-style split-screen pattern**: th
 > Reference: DESIGN.md §7.7 motion tokens
 
 - [ ] **Chip selection** — pop animation (`easing_pop`, `duration_instant`)
-- [ ] **Map pin click** — mini-card slide-in, `duration_normal`, `easing_decelerate`; corresponding list card highlights with accent border
+- [ ] **Map pin click** — mini-card slide-in, `duration_normal`, `easing_decelerate`; list card highlights with accent border
 - [ ] **Card hover** — map pin highlight syncs instantly, `duration_instant`
 - [ ] **Filter change** — results list fade/reflow, `duration_normal`; map pins update simultaneously
 - [ ] **Map pan/zoom** — "Search this area" pill fades in, `duration_fast`; list updates on click with skeleton transition
@@ -275,7 +334,8 @@ The primary experience. Follows a **Booking.com-style split-screen pattern**: th
 
 > Reference: DESIGN.md §7.2
 
-- [ ] Switch all screens to Dark mode using the Colors collection (Mode: Dark)
+- [x] Dark mode toggle implemented via `data-theme="dark"` on `<html>` (prototype tweaks panel)
+- [x] Accent color theming (Purple / Indigo / Rose / Teal variants) implemented in prototype
 - [ ] Verify contrast ratios meet WCAG AA on dark surfaces
 - [ ] Adjust glassmorphism recipe: `surface/container` at 60% opacity (dark mode variant)
 - [ ] Verify map pins remain distinguishable on dark map tiles
@@ -291,6 +351,9 @@ The primary experience. Follows a **Booking.com-style split-screen pattern**: th
 - [ ] 404 / 500 error pages
 - [ ] Cookie consent banner/modal
 - [ ] Smart banners
+- [ ] Auth screens
+- [ ] Add Event screen
+- [ ] Blog screens
 
 ---
 
@@ -302,17 +365,23 @@ Ensure every screen has been designed for all three breakpoints:
 
 | Screen | Mobile (320-767) | Tablet (768-1023) | Desktop (1024+) |
 |---|---|---|---|
-| Search & discovery (split-screen) | [ ] | [ ] | [ ] |
+| Search & discovery (split-screen) | [x] | [ ] | [x] |
 | City listing | [ ] | [ ] | [ ] |
 | Category listing | [ ] | [ ] | [ ] |
-| Event detail | [ ] | [ ] | [ ] |
-| Venue profile | [ ] | [ ] | [ ] |
+| Event detail | [x] | [ ] | [x] |
+| Venue profile | [x] | [ ] | [x] |
 | Terms of Service | [ ] | [ ] | [ ] |
 | Privacy Policy | [ ] | [ ] | [ ] |
 | Cookie Policy | [ ] | [ ] | [ ] |
 | 404 page | [ ] | [ ] | [ ] |
 | 500 page | [ ] | [ ] | [ ] |
-| Cookie consent | [ ] | [ ] | [ ] |
+| Cookie consent | [x] | [ ] | [x] |
+| Login | [x] | [ ] | [x] |
+| Register | [x] | [ ] | [x] |
+| Password Reset | [x] | [ ] | [x] |
+| Add Event | [x] | [ ] | [x] |
+| Blog list | [x] | [ ] | [x] |
+| Blog detail | [x] | [ ] | [x] |
 
 ### 6.2 Design QA Checklist
 
@@ -333,6 +402,7 @@ Ensure every screen has been designed for all three breakpoints:
 - [ ] Document component variant props and when to use each
 - [ ] Export design tokens via Figma Variables or Token Studio for `tailwind.config.ts` mapping
 - [ ] Provide asset exports: category icons (SVG), placeholder illustrations, favicon set (16, 32, 192, 512px)
+  - *14 category SVG icons already exported in `assets/` — review against final canonical category set*
 - [ ] Link each screen to its corresponding ROADMAP-web-b2c section for implementation context
 
 ---
@@ -341,55 +411,73 @@ Ensure every screen has been designed for all three breakpoints:
 
 Complete list of unique screens/views to design:
 
-| # | Screen | Route | Priority |
-|---|---|---|---|
-| 1 | Search & discovery (split-screen) | `/[city]` — list + map side-by-side (desktop/tablet), list-first with map overlay (mobile) | P0 |
-| 3 | City listing page | `/poznan`, `/krakow`, etc. | P0 |
-| 4 | Category listing page | `/[city]/[category]` | P0 |
-| 5 | Event detail page | `/[city]/event/[slug]` | P0 |
-| 6 | Venue profile page | `/[city]/venue/[slug]` | P0 |
-| 7 | Terms of Service | `/terms` | P0 |
-| 8 | Privacy Policy | `/privacy` | P0 |
-| 9 | Cookie Policy | `/cookie-policy` | P0 |
-| 10 | 404 — Not Found | any invalid route | P0 |
-| 11 | 500 — Server Error | error state | P0 |
-| 12 | City picker overlay | first visit (no geo) | P0 |
-| 13 | Cookie consent banner | first visit | P0 |
-| 14 | Cookie preferences modal | from banner or footer | P0 |
-| 15 | Search results view | `/[city]?q=...` | P1 |
+| # | Screen | Route | Priority | Status |
+|---|---|---|---|---|
+| 1 | Search & discovery (split-screen) | `/[city]` | P0 | ✅ Designed |
+| 2 | City listing page | `/poznan`, `/krakow`, etc. | P0 | ❌ Missing |
+| 3 | Category listing page | `/[city]/[category]` | P0 | ❌ Missing |
+| 4 | Event detail page | `/[city]/event/[slug]` | P0 | ✅ Designed |
+| 5 | Venue profile page | `/[city]/venue/[slug]` | P0 | ✅ Designed |
+| 6 | Terms of Service | `/terms` | P0 | ❌ Missing |
+| 7 | Privacy Policy | `/privacy` | P0 | ❌ Missing |
+| 8 | Cookie Policy | `/cookie-policy` | P0 | ❌ Missing |
+| 9 | 404 — Not Found | any invalid route | P0 | ❌ Missing |
+| 10 | 500 — Server Error | error state | P0 | ❌ Missing |
+| 11 | City picker overlay | first visit (no geo) | P0 | ✅ Designed |
+| 12 | Cookie consent banner | first visit | P0 | ✅ Designed |
+| 13 | Cookie preferences modal | from banner or footer | P0 | ✅ Designed |
+| 14 | Search results view | `/[city]?q=...` | P1 | ⚠️ Partial (same screen, no dedicated state) |
+| 15 | Login | `/login` | — | ✅ Designed (addition) |
+| 16 | Register | `/register` | — | ✅ Designed (addition) |
+| 17 | Password Reset | `/reset-password` | — | ✅ Designed (addition) |
+| 18 | Add Event | `/add-event` | — | ✅ Designed (addition) |
+| 19 | Blog list | `/blog` | — | ✅ Designed (addition) |
+| 20 | Blog detail | `/blog/[slug]` | — | ✅ Designed (addition) |
 
 ## Appendix B — Component Inventory
 
-| # | Component | Variants | States |
-|---|---|---|---|
-| 1 | Button | Primary, Secondary (Glass), Tertiary, Icon | Default, Hover, Pressed, Focused, Disabled |
-| 2 | Event card | Large (detail/city pages), Search result (horizontal), Mini (map popup) | Default, Hover, Highlighted (pin-synced), Loading (skeleton) |
-| 3 | Venue card | Standard | Default, Hover, Loading (skeleton) |
-| 4 | Category chip | — | Unselected, Selected |
-| 5 | Date filter (range picker + presets) | — | Closed, Open (calendar visible), Range selected, Preset selected |
-| 6 | Badge | Live Now, Selling Fast, Recurring, Community Tip | — |
-| 7 | Search input | — | Empty, Filled, Focused |
-| 8 | City selector | — | Collapsed, Expanded |
-| 9 | Top navbar | — | Desktop, Tablet, Mobile |
-| 10 | Footer | — | Desktop, Mobile |
-| 11 | Cookie banner | — | Visible, Hidden |
-| 12 | Smart banner | Event, Venue, Community Scout | Visible, Dismissed |
-| 13 | Toast | Error, Success, Info | Entering, Visible, Exiting |
-| 14 | Skeleton loader | Card, Profile, Map pins | Shimmer animation |
-| 15 | Empty state | No events, No venue events, No search results | — |
-| 16 | Map pin | 12 category variants | Default, Hover, Selected |
-| 17 | Pin cluster | — | Various counts |
-| 18 | Language toggle | — | PL active, EN active |
-| 19 | "Show on map" / "Show list" FAB | — (mobile only) | Map mode, List mode |
-| 20 | Calendar dropdown | — | Closed, Open (3 options) |
-| 21 | "Know about an event?" CTA | Sidebar, Footer | Default, Hover |
-| 22 | "For Organizers" nav link | Header (text link), Hamburger menu item | Default, Hover |
-| 23 | "Is this your venue?" CTA | Venue profile page | Default, Hover |
-| 24 | "Search this area" pill | Map overlay (all breakpoints) | Hidden, Visible |
-| 25 | Sort dropdown | Relevance, Date, Distance | Collapsed, Expanded |
-| 26 | Filter bar | Horizontal chip bar + dropdowns | Desktop (full), Tablet (scrollable), Mobile (scrollable chips) |
-| 27 | Results count label | — | Default, Updating (skeleton flash) |
+| # | Component | Variants | States | Status |
+|---|---|---|---|---|
+| 1 | Button | Primary, Secondary (Glass), Tertiary, Icon | Default, Hover, Pressed, Focused, Disabled | ✅ |
+| 2 | Event card | Search result (horizontal), Mini (map popup) | Default, Hover, Highlighted (pin-synced), Saved | ✅ |
+| 3 | Event card large | Grid variant (related events) | Default, Hover | ✅ |
+| 4 | Venue card | — | — | ❌ Missing standalone |
+| 5 | Category chip | — | Unselected, Selected | ✅ |
+| 6 | Date filter (range picker + presets) | — | Closed, Open, Range selected, Preset selected | ✅ |
+| 7 | Distance filter (slider + presets) | — | Closed, Open, Value selected | ✅ (addition) |
+| 8 | Badge | Live Now, Selling Fast, Recurring, Community Tip, Free | — | ✅ |
+| 9 | Search input | — | Empty, Filled, Focused | ✅ |
+| 10 | City selector | — | Collapsed, Expanded (overlay) | ✅ |
+| 11 | Top navbar | — | Desktop (with Więcej menu), Mobile (same) | ✅ |
+| 12 | Footer | — | Desktop, Mobile | ✅ |
+| 13 | Cookie banner | — | Visible | ✅ |
+| 14 | Cookie preferences modal | — | Open | ✅ |
+| 15 | Smart banner | Event save, Venue follow | Visible | ✅ |
+| 16 | Toast | Error, Success, Info | — | ❌ Missing |
+| 17 | Skeleton loader | Card, Profile, Map pins | Shimmer | ❌ Missing |
+| 18 | Empty state | No events, No venue events | — | ✅ |
+| 19 | Map pin | 13 category variants | Default, Hover, Selected | ✅ |
+| 20 | Pin cluster | — | Various counts | ✅ |
+| 21 | Language toggle | — | PL active, EN active | ✅ (in Więcej menu) |
+| 22 | "Show on map" / "Show list" FAB | — (mobile only) | Map mode, List mode | ✅ |
+| 23 | Calendar dropdown | — | Closed, Open | ✅ |
+| 24 | "Know about an event?" CTA | Bottom of results list | Default | ✅ |
+| 25 | "For Organizers" nav link | In Więcej dropdown | Default, Hover | ✅ |
+| 26 | "Is this your venue?" CTA | Venue profile | Default | ✅ |
+| 27 | "Search this area" pill | Map overlay | Hidden, Visible | ✅ |
+| 28 | Sort dropdown | Relevance, Date, Distance | Collapsed, Cycling | ✅ |
+| 29 | Filter bar | Horizontal chip bar + dropdowns | Desktop (full), Mobile (scrollable) | ✅ |
+| 30 | Results count label | — | Default | ✅ |
+| 31 | Login form | — | Empty, Filled, Loading, Error | ✅ (addition) |
+| 32 | Register form | — | Empty, Filled, Loading, Error, PW strength | ✅ (addition) |
+| 33 | Password reset form | — | Empty, Sent | ✅ (addition) |
+| 34 | User menu (header) | — | Logged out (Login/Register buttons), Logged in (avatar + dropdown) | ✅ (addition) |
+| 35 | Auth aside | — | Add-event intent, Generic | ✅ (addition) |
+| 36 | Add Event form | — | Empty, Filled, Error, Organizer callout | ✅ (addition) |
+| 37 | Blog card | Featured, Standard | Default, Hover | ✅ (addition) |
+| 38 | Blog strip | — | Default | ✅ (addition) |
+| 39 | Author bio | — | Default | ✅ (addition) |
 
 ---
 
-*Living document — update as design progresses. Last updated: May 2026.*
+*Living document — update as design progresses. Last reviewed: August 2026.*
