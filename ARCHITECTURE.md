@@ -113,7 +113,12 @@ Frontends can consume the spec in two ways:
 
 ### 3.5 API versioning (MVP)
 
-No versioning for MVP. The API is at a single version. Breaking changes are coordinated via team communication (Slack/Discord) and simultaneous frontend updates. Must be introduced before the first mobile production release (cannot force-update installed apps). Also reconsider when the team grows beyond 3 developers or external consumers appear. See [ROADMAP.md — Versioning trigger](./ROADMAP.md#versioning-trigger) for the full trigger list.
+URI versioning is enabled (backend task `phase-3-admin/05-api-versioning`), ahead of the first mobile production release as required by the [versioning trigger](./ROADMAP.md#versioning-trigger) — installed apps cannot be force-updated.
+
+- Every route resolves under `/api/v1/...` (NestJS `enableVersioning({ type: URI, defaultVersion: '1' })` plus the global `api` prefix, both in `backend/src/common/utils/configure-api-versioning.ts`, used by `main.ts`, the OpenAPI export and e2e tests).
+- Fixed, unversioned paths stay outside the prefix: `/.well-known/*` (Universal/App Links), `GET /health` and `GET /ready` (infra probes), and `/webhooks/*` (Resend and Twilio call the URLs registered in their dashboards).
+- A breaking change ships as `v2` on the affected routes (`@Controller({ version: '2' })` or `@Version('2')`) while `v1` stays live until old mobile builds age out. Details: `backend/docs/api-versioning.md`.
+- Frontends generate their clients from `backend/docs/openapi.json`, so the `/api/v1` paths reach them on their next `api:generate`.
 
 ---
 
