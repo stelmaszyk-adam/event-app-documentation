@@ -803,6 +803,31 @@ Each environment has fully isolated credentials. No cross-environment data shari
 
 > Implementation tasks are tracked in Phase 4 (section 4.1) of each platform ROADMAP.
 
+### 17.5 Per-Task Verification
+
+Every task is verified before it is committed, and the **kind of test follows the kind of deliverable**. A checkbox is ticked `[x]` only when its code *and* its matching test exist in the tree; a deliverable that cannot be tested here is deferred (`- [~] … — deferred: <reason>`), never ticked bare.
+
+| Deliverable | Required test |
+|---|---|
+| Endpoint, service method, guard, interceptor, queue job | Unit spec next to the file; integration spec with supertest when it touches the DB or the full request pipeline |
+| Store, hook, util, mapper, validator, server action | Unit test next to the file or in `__tests__/` |
+| Screen, page, or component **with behavior** (state, form, filter, conditional render, error/empty state) | UI test: render it and interact with it — Vitest + Testing Library on web, Jest + React Native Testing Library on mobile |
+| Purely presentational component, style or token change | No test — type-check plus the production build cover it; note the decision in the task file |
+| Critical cross-screen user flow | E2E spec in `e2e/` (Playwright on web, Detox/Maestro on mobile) — scoped in Phase 4 of the platform ROADMAP |
+| Migration or schema change | The generated migration applied by `pnpm db:migrate` plus a spec on the code reading the new columns |
+
+Current runner readiness per repo (a UI deliverable in a repo whose runner is missing is deferred as ` — deferred: no UI test runner in <repo>`):
+
+| Repo | Unit / component | E2E |
+|---|---|---|
+| `backend` | Jest — `pnpm test` | supertest — `pnpm test:e2e` (needs Postgres+PostGIS) |
+| `web-b2c` | Vitest — `pnpm test` | Playwright — `pnpm test:e2e` (6 browser projects over a real `next build`) |
+| `web-b2b` | none yet — `pnpm test` only runs `node --test` on lib and ESLint-rule tests | not set up |
+| `web-admin-internal` | none yet | not set up |
+| `mobile-b2c` | Jest — `pnpm test`; no React Native Testing Library yet | not set up |
+
+`scripts/verify.sh` runs lint, type-check, the unit/component suite and (web) the production build on every task. The E2E suites are far slower than one task loop, so they run opt-in (`VERIFY_E2E=1 ./scripts/verify.sh <repo>`) and in CI, not on every task.
+
 ---
 
 ## 18. Rate Limiting Architecture

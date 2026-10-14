@@ -964,29 +964,29 @@ Every endpoint gets full `@ApiTags('blog')`, `@ApiOperation`, `@ApiResponse`, an
 
 > Web Admin counterpart: [ROADMAP-web-admin-internal.md](./ROADMAP-web-admin-internal.md#31-event-moderation)
 
-- [ ] P0 Moderation queue endpoints:
+- [x] P0 Moderation queue endpoints:
   - `GET /admin/moderation/events` — list events pending review (filterable by source: `user_submit` | `new_venue` | `reported`; sortable by `created_at`; cursor-based pagination)
   - `PATCH /admin/moderation/events/:id/approve` — approve event for publishing
   - `PATCH /admin/moderation/events/:id/reject` — reject event (body: `{ reason: string }`)
   - `PATCH /admin/moderation/events/:id/request-info` — request additional info from submitter (body: `{ message: string }`)
-- [ ] P0 Notification to user/venue after each decision (email via Resend + in-app push)
-- [ ] P0 Auto-alert: if event has >= 3 reports from users -> appears in queue
+- [x] P0 Notification to user/venue after each decision (email via Resend + in-app push)
+- [x] P0 Auto-alert: if event has >= 3 reports from users -> appears in queue
 
 ### 3.2 Venue management
 
 > Web Admin counterpart: [ROADMAP-web-admin-internal.md](./ROADMAP-web-admin-internal.md#32-venue-management)
 
-- [ ] P0 Admin venue management endpoints:
+- [x] P0 Admin venue management endpoints:
   - `GET /admin/venues` — list all venues (filterable by status: `unclaimed` | `claimed` | `banned` | `pending`; sortable by `created_at`, `follower_count`; cursor-based pagination)
   - `GET /admin/venues/:id` — venue detail with claim history, event history, follower count
   - `PATCH /admin/venues/:id/ban` — ban venue (body: `{ reason: string }`); sends notification to owner
   - `PATCH /admin/venues/:id/warn` — warn venue owner (body: `{ message: string }`)
   - `PATCH /admin/claims/:id/approve` — approve claim request
   - `PATCH /admin/claims/:id/reject` — reject claim request (body: `{ reason: string }`)
-- [ ] P0 Audit log recording: every admin action persisted with actor, action, target, timestamp
+- [x] P0 Audit log recording: every admin action persisted with actor, action, target, timestamp
   - `GET /admin/audit-log` — list audit log entries (filterable by admin user, action type, date range, target entity; cursor-based pagination)
   - `GET /admin/audit-log/export` — CSV download of audit log entries (for compliance reviews)
-- [ ] P1 Admin venue create/edit endpoints:
+- [x] P1 Admin venue create/edit endpoints:
   - `POST /admin/venues` — create venue (admin bypass of claim flow)
   - `PATCH /admin/venues/:id` — edit venue data
 
@@ -994,9 +994,9 @@ Every endpoint gets full `@ApiTags('blog')`, `@ApiOperation`, `@ApiResponse`, an
 
 > Web Admin counterpart: [ROADMAP-web-admin-internal.md](./ROADMAP-web-admin-internal.md#33-user-management)
 
-- [ ] P0 Reputation score system: +1 for each approved event, -3 for each rejected event
-- [ ] P0 Automatic upgrade to "Trusted reporter" upon reaching reputation >= 5 (5 approved events without rejections) -> events skip moderation
-- [ ] P0 Admin user management endpoints:
+- [x] P0 Reputation score system: +1 for each approved event, -3 for each rejected event
+- [x] P0 Automatic upgrade to "Trusted reporter" upon reaching reputation >= 5 (5 approved events without rejections) -> events skip moderation
+- [x] P0 Admin user management endpoints:
   - `GET /admin/users` — list all users (filterable by role: `user` | `organizer` | `admin`, status: `active` | `banned`; searchable by email; sortable by `created_at`, `reputation_score`; cursor-based pagination)
   - `GET /admin/users/:id` — user detail (email, registration date, follow count, submitted event count, reputation score, claim history)
   - `PATCH /admin/users/:id/ban` — ban user (body: `{ reason: string }`); blocks event submissions and claims
@@ -1156,4 +1156,72 @@ Every endpoint gets full `@ApiTags('blog')`, `@ApiOperation`, `@ApiResponse`, an
 
 ---
 
-*Living document — update after each sprint. Last updated: April 2026.*
+## Phase 6 — AI Planner (Month 7+)
+
+> Cross-cutting decisions and the gate are in [ROADMAP.md — Phase 6](./ROADMAP.md#phase-6--ai-planner-month-7-post-traction). Only §6.1 and §6.2 may start before the Phase 5 go/no-go. Everything runs server-side; the model is Claude Haiku 4.5 through `@anthropic-ai/sdk` (exact version pinned), never called from a frontend.
+
+### 6.0 AI module foundations
+
+- [ ] P1 `src/ai/` module: `AiClientService` wrapping `@anthropic-ai/sdk` (`ANTHROPIC_API_KEY` in env validation, `AI_MODEL` default `claude-haiku-4-5`, `AI_ENABLED` flag — when false every AI feature degrades gracefully instead of throwing)
+- [ ] P1 Usage accounting: every call records `input_tokens` / `output_tokens` from `response.usage` into an `ai_usage` table (id, feature [`enrichment` | `plan_intent` | `plan_narrative`], model, input_tokens, output_tokens, cached_input_tokens, request_id, created_at)
+- [ ] P1 Daily token budget guard (`AI_DAILY_TOKEN_BUDGET`, Redis counter per UTC day): over budget → enrichment jobs pause, planner returns `AI_BUDGET_EXCEEDED` (429); Sentry alert at 80% and 100%
+- [ ] P1 Error codes in `error-codes.ts`: `AI_UNAVAILABLE` (503), `AI_BUDGET_EXCEEDED` (429), `PLAN_INTENT_UNCLEAR` (422), `PLAN_NOT_FOUND` (404)
+- [ ] P1 Unit tests with the SDK client mocked — CI never calls the real API
+
+### 6.1 Event & venue enrichment (ingestion-time tagging)
+
+- [ ] P1 Controlled vocabulary in `database/schema/enums.ts`: `vibe` enum (~20 values, e.g. `relaxed`, `intimate`, `lively`, `romantic`, `artsy`, `underground`, `upscale`, `casual`, `cozy`, `energetic`, `quiet`), `indoor_outdoor` enum (`indoor` | `outdoor` | `mixed` | `unknown`), `crowd_level` enum (`low` | `medium` | `high` | `unknown`), `suitable_for` enum (`solo` | `couple` | `friends` | `family` | `groups`)
+- [ ] P1 Tables: `event_attributes` (event_id PK/FK, vibes vibe[], indoor_outdoor, crowd_level, suitable_for suitable_for[], confidence numeric, source_hash, model, tagged_at) and `venue_attributes` (venue_id PK/FK, vibes, indoor_outdoor, suitable_for, confidence, source_hash, model, tagged_at); SQL migration + Drizzle schema in the same change
+- [ ] P1 Bull queue `ai-enrichment`: after each importer run and on native event approval, enqueue events/venues whose `source_hash` (sha256 of name + description + category + venue type) is missing or changed
+- [ ] P1 Processor builds one Message Batch (`client.messages.batches.create`, up to 1,000 items) with structured outputs (`output_config.format`, Zod schema of the enums above), polls until `processing_status === "ended"`, writes results keyed by `custom_id` (never by position), stores usage; idempotent and safe to re-run
+- [ ] P1 `GET /events` and `GET /events/:id` expose `attributes`; new filters `vibes[]`, `indoorOutdoor`, `suitableFor` on `GET /events` (indexed with GIN on the array columns); same for `GET /venues`
+- [ ] P2 `GET /admin/ai/enrichment` — coverage per city (tagged / total), last run, failures, tokens spent
+- [ ] P1 Unit tests: hash change detection, batch result mapping, enum validation of model output (invalid tag → `unknown`, never a crash)
+
+### 6.2 Weather service
+
+- [ ] P1 `src/weather/` module: `WeatherService.getForecast(cityId, date)` → hourly `{ hour, precipitationProbability, temperatureC, weatherCode }` from Open-Meteo using the city's lat/lng from `cities`
+- [ ] P1 Redis cache key `weather:{cityId}:{yyyy-mm-dd}`, TTL 1 h; provider timeout 2 s; on any failure return `null` so the planner skips weather swaps instead of failing
+- [ ] P1 Env: `WEATHER_API_URL` (default Open-Meteo), `WEATHER_ENABLED`
+- [ ] P1 Unit tests with mocked HTTP: cache hit, provider error, date outside the 7-day forecast window
+
+### 6.3 Planner: intent parsing
+
+- [ ] P1 `POST /plans` body `{ prompt (2-500 chars), city (slug, as returned by `GET /cities`), date? (default today), origin? { lat, lng } }` — the slug is resolved to the `cities` row server-side; unknown slug → 404 `CITY_NOT_FOUND` (add to `error-codes.ts` if missing); JWT optional — authenticated users get 60/day, anonymous callers 5/day per IP (new presets in `throttle-presets.ts`) plus 2/sec, 10/min for everyone
+- [ ] P1 `PlanIntentService.parse(prompt, locale)` → `PlanIntent` via `client.messages.parse` + `zodOutputFormat`: `{ timeWindow: { start, end }, partySize, companions, vibes[], categories[] (12 shared enums), avoid[] (`crowds` | `loud` | `alcohol` | `outdoor` | `long_walks`), budget (`free` | `low` | `mid` | `high` | `any`), foodWanted, drinkWanted, maxWalkMinutes (default 15), language }`; `max_tokens` 512; system prompt contains the category and vibe taxonomy only (no event data)
+- [ ] P1 System prompt and taxonomy are a stable prefix; prompt text is the only volatile part (prepares for prompt caching — note Haiku 4.5 needs a 4,096-token prefix to cache, so caching is optional here)
+- [ ] P1 Redis cache `plan:intent:{sha256(normalized prompt + city slug + language)}`, TTL 24 h; cache hits skip the model entirely and are counted for the KPI
+- [ ] P1 `parsed_output === null` or empty time window → `PLAN_INTENT_UNCLEAR` with a localized hint; SDK errors → `AI_UNAVAILABLE`
+- [ ] P1 Eval fixture `test/fixtures/planner-intents.json`: 100 prompts (70 pl / 30 en) with expected intents; `pnpm ai:eval` script runs them against the live model, prints field-level accuracy and cost from usage — manual, never in CI
+- [ ] P1 Unit tests with mocked client: Polish and English prompts, defaults, cache hit path, unclear prompt, budget exceeded
+
+### 6.4 Planner: itinerary builder (deterministic)
+
+- [ ] P1 `PlannerService.build(intent, city, date, origin?)`: candidate events = approved, not cancelled, in city, overlapping the time window, category in intent (or any), excluding `avoid` conflicts (e.g. `crowds` → `crowd_level != high`, `outdoor` → `indoor_outdoor != outdoor`); ranked by vibe overlap, `suitable_for` match, distance from origin, and `view_count` as a tiebreaker
+- [ ] P1 Dining/drink slot: venues with `venue_type` in (`restaurant`, `cafe`, `bar`) within `maxWalkMinutes` of the anchor event (haversine on `lat`/`lng`, 80 m per minute — reuse the geo helpers from `events.service.ts`), open during the slot per `venue_opening_hours` + `venue_hours_overrides`, ranked by vibe overlap
+- [ ] P1 Scheduling: slots `[food?] → event → [drink/food?]` with 15-minute buffers and the walk time between consecutive slots; `endTime` falls back to `startTime + 2 h` when the event has no end
+- [ ] P1 Weather swaps: if `WeatherService` reports precipitation probability > 50% during an outdoor slot, replace it with the best indoor candidate and set `swappedForWeather: true` with the reason
+- [ ] P1 Persist: `plans` table (id, user_id nullable, city_id, prompt, locale, intent jsonb, slots jsonb, weather_summary jsonb, model, intent_cache_hit boolean, created_at); response `{ data: Plan }` with `slots[]` (`type`, `startTime`, `endTime`, `event|venue`, `walkMinutesFromPrevious`, `reason`, `alternatives[]` (2 per slot), `swappedForWeather`)
+- [ ] P1 `GET /plans/:id` (public, by UUID — plans are shareable), `GET /me/plans` (cursor pagination)
+- [ ] P1 Empty result handling: no anchor event → 200 with `slots: []` and `emptyReason` (`no_events_in_window` | `no_match_for_vibes`) so clients can relax filters; PostHog `plan_empty`
+- [ ] P2 `POST /plans/:id/narrative` → ≤120-word localized description of the plan (Haiku 4.5, `max_tokens` 300), cached on the plan row
+- [ ] P1 Unit tests: ranking, walking radius, opening-hours exclusion, weather swap, buffers, empty result; e2e for `POST /plans` with mocked AI client and seeded data
+
+### 6.5 Feedback loop
+
+- [ ] P1 `POST /plans/:id/adjustments` body `{ slotIndex, action (`replace` | `remove` | `shift` | `reorder`), replacementId?, shiftMinutes?, newIndex? }` → `plan_adjustments` table (id, plan_id, user_id nullable, slot_index, action, from_item_type, from_item_id, to_item_id, shift_minutes, created_at); owner or anonymous creator (plan id acts as capability) may adjust
+- [ ] P1 PostHog server events (consent-gated via existing `PosthogService`): `plan_generated` (city, cache hit, slot count, weather swap), `plan_adjusted` (action, slot type), `plan_empty`, `plan_shared`
+- [ ] P2 Weekly Bull cron: aggregate most common swaps per city and vibe into `plan_swap_stats` for the admin KPI page
+- [ ] P2 Personalization v1 (ranking only, no training): per-user vibe profile from saved events + accepted/rejected slots, applied as a bounded boost in `PlannerService` ranking; unit-tested, feature-flagged
+- [ ] P1 Unit tests: adjustment validation, ownership rules, PostHog payloads
+
+### 6.6 Cost & quality controls
+
+- [ ] P1 `GET /admin/kpis/ai` — daily tokens and estimated cost per feature, intent cache hit rate, parse failure rate, budget guard trips (reads `ai_usage` + Redis counters)
+- [ ] P1 Model switch procedure documented in `backend/README.md`: run `pnpm ai:eval` on current and candidate model, compare field accuracy and cost per correct parse, change `AI_MODEL` only when both hold
+- [ ] P1 Rate limits and budget guard covered by e2e tests (throttled response shape, `AI_BUDGET_EXCEEDED` shape)
+
+---
+
+
+*Living document — update after each sprint. Last updated: October 2026 (Phase 6 AI Planner added).*

@@ -551,4 +551,23 @@ Per DESIGN.md ("Radiant Curator" design system):
 
 ---
 
-*Living document — update after each sprint. Last updated: August 2026 (status synced from `web-b2c` repo).*
+## Phase 6 — AI Planner (Month 7+)
+
+> Gate and decisions: [ROADMAP.md — Phase 6](./ROADMAP.md#phase-6--ai-planner-month-7-post-traction). Backend contract: [ROADMAP-backend.md §6.3-6.5](./ROADMAP-backend.md#phase-6--ai-planner-month-7). The web app only calls `POST /plans` (anonymous, 5/day per IP) and renders `GET /plans/:id`.
+
+### 6.1 Planner landing and plan pages
+
+- [ ] P1 Route `/[locale]/[city]/planuj` (en: `/plan`): SSR landing page with localized copy, 4 example prompts rendered as links that prefill the form, and JSON-LD `WebPage`; listed in `sitemap.xml` per city
+- [ ] P1 Client form (prompt ≤500 chars, date: today / tomorrow / weekend) → `POST /plans` via the generated `openapi-fetch` client from a route handler (keeps the API base server-side); loading skeleton; error copy for `PLAN_INTENT_UNCLEAR`, `AI_UNAVAILABLE`, `AI_BUDGET_EXCEEDED`, throttled (show remaining daily quota from the throttle headers)
+- [ ] P1 Route `/[locale]/plan/[id]`: SSR itinerary (timeline of slots with times, walk minutes, weather badge), OG tags + dynamic OG image via the existing `og` endpoint, `noindex` (user-generated, ephemeral)
+- [ ] P1 Slot editing on the plan page (alternatives, remove, shift ±30 min) calling `POST /plans/:id/adjustments`; edits are visible to anyone with the link, matching backend ownership rules
+- [ ] P1 Smart banner / CTA "Zapisz plan w aplikacji" linking to the app with the universal link (consistent with the Phase 1 social-action redirect strategy)
+- [ ] P1 Empty result handling with `emptyReason` copy and one-click relaxed resubmit
+- [ ] P1 Analytics (consent-gated): `planner_submitted`, `planner_slot_edited`, `plan_page_viewed`, `planner_app_cta_clicked`
+- [ ] P1 i18n (`next-intl`) for all copy; a11y: form labels, focus management after submit, timeline as an ordered list
+- [ ] P1 Tests: route handler unit tests (error mapping), component tests with MSW for success / unclear / empty / throttled, E2E: landing renders SSR, plan page renders from a seeded plan id
+
+---
+
+
+*Living document — update after each sprint. Last updated: October 2026 (Phase 6 AI Planner added).*

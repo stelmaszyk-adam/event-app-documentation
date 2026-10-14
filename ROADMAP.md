@@ -220,6 +220,7 @@ Map pins use the **category** field directly. Each of the 12 categories has a di
 | Event submission (B2C users) | Mobile B2C + Web B2C + Web Admin + Backend | 1.7 (mobile), 1.7 (web B2C), 3.1 (admin), 1.2 (backend) |
 | Health check | Backend | 1.2 (backend), 4.3 (backend) |
 | **Blog** | Web B2C + Web B2B + Web Admin + Backend | 2.5 (backend), 2.5 (web B2C), 2.5 (web B2B), 3.9 (admin) |
+| **AI Planner** | Mobile B2C + Web B2C + Backend | 6.1-6.6 (backend), 6.1 (mobile), 6.1 (web B2C) — see [Phase 6](#phase-6--ai-planner-month-7-post-traction) |
 
 ---
 
@@ -344,6 +345,7 @@ Map pins use the **category** field directly. Each of the 12 categories has a di
 | 6 | **Third-party API changes** — Eventbrite, Google Places, Twilio rate limits or pricing changes | Medium — pipeline disruption | Low | Abstraction layer per source. Multiple sources reduce single-point dependency. Monitor deprecation notices. |
 | 7 | **Single developer bottleneck** — key-person risk for a 1-3 person team | High — project stalls | Medium | Thorough documentation (this roadmap). Clean code with tests. No tribal knowledge. |
 | 8 | **Push notification fatigue** — users opt out due to too many notifications | Medium — kills retention | Low | Rate limit: 1 push/day/venue. Quiet hours. Per-venue mute. Monitor opt-out rate (target < 15%). |
+| 9 | **AI planner cost or quality drift** (Phase 6) — LLM bill grows with traffic, or a model change silently degrades intent parsing | Medium — cost overrun, bad plans | Low | Daily token budget with Sentry alert, Redis intent cache, rate limits, 100-prompt eval set gating every model switch. Haiku 4.5 at launch scale is tens of USD per month. |
 
 ---
 
@@ -428,6 +430,46 @@ Introduce API versioning (`/api/v1/`) before:
 
 ---
 
+## Phase 6 — AI Planner (Month 7+, post-traction)
+
+> **Gate:** do not start product work before the Phase 5 go/no-go, 6 months of usage data and at least 1,000 approved events in the launch city. The only Phase 6 work allowed earlier is data enrichment (backend §6.1) and weather (backend §6.2), because they also improve plain filtering today.
+
+### The product
+
+The user types one sentence instead of using filters — e.g. *"Zaplanuj spokojne sobotnie popołudnie w Poznaniu dla dwojga: kameralne wydarzenia kulturalne i dobre jedzenie, bez tłumów"* — and gets a complete, editable itinerary: an anchor event, a place to eat or drink within a short walk, timed slots, and indoor swaps when rain is forecast. Every manual edit (swap a café for a pub, shift dinner by 30 minutes) is recorded and feeds ranking.
+
+### Cross-cutting decisions
+
+| Decision | Choice | Why |
+|---|---|---|
+| Where inference runs | **Backend, cloud-hosted.** Claude Haiku 4.5 via the Claude API (`@anthropic-ai/sdk`), behind a backend `AiModule` | On-device SLMs were rejected: the parsed intent must reach the backend anyway (no privacy gain), a 1-2 GB model download and slow cold starts on mid-range Android, weak Polish on 1-3B models, and logic on the phone cannot be shared with Web B2C or covered by the OpenAPI contract |
+| What the model does | Only two narrow jobs: (1) prompt → `PlanIntent` JSON via structured outputs, (2) optional short narrative | Small, checkable tasks where Haiku 4.5 holds quality; everything else is deterministic and unit-testable |
+| What code does | Candidate search, vibe scoring, walking radius, opening hours, weather swaps, slot scheduling | Deterministic, no hallucinated venues, works the same for every model version |
+| Data enrichment | Events and venues are tagged at ingestion (vibes, indoor/outdoor, crowd level, suitable-for) by a Bull job using the **Message Batches API** (50% cheaper) | The planner can only filter on data that exists; batch runs are asynchronous so latency does not matter |
+| Weather | Open-Meteo hourly forecast per city, cached in Redis per city and day | Free tier for development; licence for commercial use must be confirmed before launch |
+| Feedback loop | `plan_adjustments` table + PostHog events from the first release; ranking boosts from saved events and adjustments later (no model training) | Starts collecting the data personalization needs without committing to an ML stack |
+| Cost controls | Redis cache of parsed intents, per-user and per-IP rate limits like `/events/search`, `max_tokens` cap, daily token budget with Sentry alert | Keeps the bill bounded by design, not by hoping |
+| Model changes | A 100-prompt Polish/English eval set with expected intents; switch models only when cost per correct parse improves | "Cheaper with the same quality" is measured, not assumed |
+
+### Cost envelope (Claude Haiku 4.5, Oct 2026 list prices: $1 / $5 per million input / output tokens)
+
+| Load | ~800 input + ~200 output tokens per plan | With ~30% Redis intent cache hits |
+|---|---|---|
+| 1,000 plans / day | ~55 USD / month | ~40 USD / month |
+| 10,000 plans / day | ~550 USD / month | ~400 USD / month |
+
+Enrichment tagging: ~1,000 tokens per event at batch prices ≈ 0.75 USD per 1,000 events, run once per new or changed event.
+
+### Platform sections
+
+| Platform | Sections |
+|---|---|
+| Backend | [ROADMAP-backend.md §6](./ROADMAP-backend.md#phase-6--ai-planner-month-7) — 6.1 enrichment, 6.2 weather, 6.3 intent parsing, 6.4 itinerary builder, 6.5 feedback loop, 6.6 cost & quality |
+| Mobile B2C | [ROADMAP-mobile-b2c.md §6](./ROADMAP-mobile-b2c.md#phase-6--ai-planner-month-7) — planner screen, itinerary editing, sharing |
+| Web B2C | [ROADMAP-web-b2c.md §6](./ROADMAP-web-b2c.md#phase-6--ai-planner-month-7) — SEO planner landing page, shareable plan page |
+
+---
+
 ## What is NOT in MVP (intentionally cut)
 
 | Feature | Reason for cutting |
@@ -442,7 +484,7 @@ Introduce API versioning (`/api/v1/`) before:
 | CUT Facebook / Instagram venue verification | Meta API — weeks of procedures. Phase 2+. |
 | CUT Mobile dashboard for organizers | Web is sufficient. Bar owner manages at the computer. |
 | CUT Hyper-Boost / contextual advertising | Requires scale. Phase 3+. |
-| CUT Advanced analytics / AI recommendations | Requires data. Minimum 6 months of traction. |
+| DEFERRED Advanced analytics / AI recommendations | Requires data. Minimum 6 months of traction. Planned as [Phase 6 — AI Planner](#phase-6--ai-planner-month-7-post-traction). |
 
 ---
 

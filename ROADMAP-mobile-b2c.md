@@ -419,4 +419,26 @@
 
 ---
 
-*Living document — update after each sprint. Last updated: April 2026.*
+## Phase 6 — AI Planner (Month 7+)
+
+> Gate and decisions: [ROADMAP.md — Phase 6](./ROADMAP.md#phase-6--ai-planner-month-7-post-traction). Backend contract: [ROADMAP-backend.md §6.3-6.5](./ROADMAP-backend.md#phase-6--ai-planner-month-7). The app never calls an LLM directly; it only calls `POST /plans` and `POST /plans/:id/adjustments`.
+
+### 6.1 Planner screen
+
+- [ ] P1 Entry point: "Zaplanuj" / "Plan my day" action on the Map tab (glass FAB per DESIGN.md) and in Search empty state; opens `PlannerScreen`
+- [ ] P1 Prompt input (multiline, 500 chars) with 4 localized example chips ("spokojne popołudnie dla dwojga", "wieczór z przyjaciółmi", "sobota z dziećmi", "coś kulturalnego dziś"), date picker (today / tomorrow / weekend), uses selected city and, with permission, current location as `origin`
+- [ ] P1 Loading state with skeleton timeline; errors mapped to copy: `PLAN_INTENT_UNCLEAR` → hint + keep prompt, `AI_UNAVAILABLE` / `AI_BUDGET_EXCEEDED` → "try again later" and a link to regular filters, throttled → countdown
+- [ ] P1 Itinerary view: vertical timeline of slots (time, event or venue card, walk minutes between slots, weather badge when `swappedForWeather`); tapping a card opens the existing event / venue detail screen
+- [ ] P1 Edit a slot: bottom sheet with the 2 alternatives + "remove" + "shift ±30 min"; every edit calls `POST /plans/:id/adjustments` and updates the local plan (Zustand `plannerStore`); optimistic with rollback on error
+- [ ] P1 Empty result (`slots: []`): show `emptyReason` copy with one-tap "relax" actions (widen time window, any category) that resubmit the prompt
+- [ ] P1 Save plan: "My plans" list under Profile backed by `GET /me/plans` (login required — anonymous users see a login prompt explaining why)
+- [ ] P1 Share plan via the existing share sheet with the universal link `https://wydarzka.dev/plan/{id}`; deep link opens the plan screen (extend the Phase 1.8 route map)
+- [ ] P1 Analytics (consent-gated, existing PostHog setup): `planner_opened`, `planner_submitted` (prompt length, chip used), `planner_slot_edited`, `planner_shared`
+- [ ] P1 i18n: all strings in `pl` and `en`; a11y: timeline is a list with accessible labels, 44 pt targets
+- [ ] P1 Offline: last generated plan cached in MMKV and shown with the "Last updated" indicator from §1.3.1
+- [ ] P1 Tests: `plannerStore` unit tests (adjust/rollback), screen tests with MSW mocks for success, unclear intent, empty result, throttled
+
+---
+
+
+*Living document — update after each sprint. Last updated: October 2026 (Phase 6 AI Planner added).*
